@@ -217,9 +217,9 @@ def generate_launch_description():
   ld.add_action(start_amcl_cmd)
   ld.add_action(start_lifecycle_manager_cmd)
   ld.add_action(start_map_server_cmd)
-  ld.add_action(start_costmap_filter_info_server_cmd)  
+  #ld.add_action(start_costmap_filter_info_server_cmd)  
   ld.add_action(trajectory_node)  
   #ld.add_action(subscriber_node)
-  #ld.add_action(locker_node)
+  ld.add_action(locker_node)
 
   return ld
