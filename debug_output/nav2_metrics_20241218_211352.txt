@@ -1,0 +1,201 @@
+=== Registro de Navegación Nav2 (usando AMCL) ===
+
+Fecha y hora de inicio: 2024-12-18 21:13:52
+
+
+Estado de navegación 0: COMPLETADO
+
+Estado de navegación: EJECUTANDO
+Iniciando nueva navegación...
+
+Primer plan recibido (Nav 1)
+  Puntos: 127
+  Distancia planeada inicial: 3.190 metros
+Plan actualizado (Nav 1): 127 puntos, 3.193 metros
+Plan actualizado (Nav 1): 127 puntos, 3.181 metros
+Plan actualizado (Nav 1): 126 puntos, 3.156 metros
+Plan actualizado (Nav 1): 126 puntos, 3.154 metros
+Plan actualizado (Nav 1): 126 puntos, 3.175 metros
+Plan actualizado (Nav 1): 128 puntos, 3.220 metros
+Plan actualizado (Nav 1): 132 puntos, 3.303 metros
+Plan actualizado (Nav 1): 132 puntos, 3.309 metros
+Plan actualizado (Nav 1): 128 puntos, 3.209 metros
+Plan actualizado (Nav 1): 128 puntos, 3.200 metros
+Plan actualizado (Nav 1): 129 puntos, 3.227 metros
+Plan actualizado (Nav 1): 128 puntos, 3.203 metros
+Plan actualizado (Nav 1): 124 puntos, 3.096 metros
+Plan actualizado (Nav 1): 118 puntos, 2.951 metros
+Plan actualizado (Nav 1): 112 puntos, 2.801 metros
+Plan actualizado (Nav 1): 104 puntos, 2.621 metros
+Plan actualizado (Nav 1): 98 puntos, 2.449 metros
+Plan actualizado (Nav 1): 91 puntos, 2.280 metros
+Plan actualizado (Nav 1): 86 puntos, 2.152 metros
+Plan actualizado (Nav 1): 77 puntos, 1.925 metros
+Plan actualizado (Nav 1): 72 puntos, 1.797 metros
+Plan actualizado (Nav 1): 65 puntos, 1.623 metros
+Plan actualizado (Nav 1): 59 puntos, 1.485 metros
+Plan actualizado (Nav 1): 53 puntos, 1.335 metros
+Plan actualizado (Nav 1): 49 puntos, 1.226 metros
+Plan actualizado (Nav 1): 43 puntos, 1.084 metros
+Plan actualizado (Nav 1): 37 puntos, 0.931 metros
+Plan actualizado (Nav 1): 33 puntos, 0.831 metros
+Plan actualizado (Nav 1): 27 puntos, 0.684 metros
+Plan actualizado (Nav 1): 17 puntos, 0.471 metros
+Plan actualizado (Nav 1): 13 puntos, 0.321 metros
+
+Estado de navegación 1: COMPLETADO
+
+=== Navegación 1 Completada ===
+Goal: [1.816, 1.899]
+Posición final: [1.834, 1.898]
+Error radial: 0.019 metros
+Tiempo de navegación: 32.48 segundos
+Velocidad media: 0.109 m/s
+
+=== Métricas de Trayectoria (Navegación 1) ===
+Error medio de trayectoria: 0.025 metros
+Desviación estándar: 0.017 metros
+Error máximo: 0.088 metros
+Puntos muestreados: 162
+
+Eficiencia de Ruta:
+  Distancia planeada inicial: 3.190 metros
+  Distancia ejecutada: 3.527 metros
+  Eficiencia: 90.44% (100% = óptimo)
+
+
+=== Métricas de Velocidad (Navegación 1) ===
+Tiempo de navegación: 32.48 segundos
+Velocidad media: 0.109 m/s
+Velocidad máxima: 0.308 m/s
+Velocidad mínima: 0.000 m/s
+Desviación estándar: 0.068 m/s
+Muestras de velocidad: 162
+
+Estado de navegación: EJECUTANDO
+Iniciando nueva navegación...
+
+Primer plan recibido (Nav 2)
+  Puntos: 68
+  Distancia planeada inicial: 1.700 metros
+Plan actualizado (Nav 2): 66 puntos, 1.650 metros
+Plan actualizado (Nav 2): 58 puntos, 1.444 metros
+Plan actualizado (Nav 2): 51 puntos, 1.292 metros
+Plan actualizado (Nav 2): 45 puntos, 1.142 metros
+Plan actualizado (Nav 2): 39 puntos, 0.992 metros
+Plan actualizado (Nav 2): 35 puntos, 0.892 metros
+Plan actualizado (Nav 2): 30 puntos, 0.746 metros
+Plan actualizado (Nav 2): 24 puntos, 0.598 metros
+Plan actualizado (Nav 2): 20 puntos, 0.500 metros
+Plan actualizado (Nav 2): 14 puntos, 0.357 metros
+Plan actualizado (Nav 2): 10 puntos, 0.292 metros
+
+Estado de navegación 2: COMPLETADO
+
+=== Navegación 2 Completada ===
+Goal: [0.315, 1.940]
+Posición final: [0.374, 1.928]
+Error radial: 0.061 metros
+Tiempo de navegación: 11.49 segundos
+Velocidad media: 0.128 m/s
+
+=== Métricas de Trayectoria (Navegación 2) ===
+Error medio de trayectoria: 0.019 metros
+Desviación estándar: 0.012 metros
+Error máximo: 0.051 metros
+Puntos muestreados: 57
+
+Eficiencia de Ruta:
+  Distancia planeada inicial: 1.700 metros
+  Distancia ejecutada: 1.454 metros
+  Eficiencia: 116.91% (100% = óptimo)
+
+
+=== Métricas de Velocidad (Navegación 2) ===
+Tiempo de navegación: 11.49 segundos
+Velocidad media: 0.128 m/s
+Velocidad máxima: 0.273 m/s
+Velocidad mínima: 0.000 m/s
+Desviación estándar: 0.045 m/s
+Muestras de velocidad: 57
+
+Estado de navegación: EJECUTANDO
+Iniciando nueva navegación...
+
+Primer plan recibido (Nav 3)
+  Puntos: 91
+  Distancia planeada inicial: 2.340 metros
+Plan actualizado (Nav 3): 93 puntos, 2.325 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 93 puntos, 2.325 metros
+Plan actualizado (Nav 3): 93 puntos, 2.325 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 93 puntos, 2.325 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 93 puntos, 2.325 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 91 puntos, 2.340 metros
+Plan actualizado (Nav 3): 92 puntos, 2.307 metros
+Plan actualizado (Nav 3): 90 puntos, 2.289 metros
+Plan actualizado (Nav 3): 92 puntos, 2.304 metros
+Plan actualizado (Nav 3): 91 puntos, 2.280 metros
+Plan actualizado (Nav 3): 92 puntos, 2.305 metros
+Plan actualizado (Nav 3): 91 puntos, 2.283 metros
+
+Procesando resultados finales...
+
+============================
+=== RESULTADOS FINALES ===
+============================
+
+Total de navegaciones: 2
+
+Estadísticas Globales de Error de Tracking:
+  Error Medio Global: 0.023 metros
+  MSE Global: 0.001 metros²
+  RMSE Global: 0.028 metros
+  Desviación Estándar Global: 0.016 metros
+  Error Máximo Global: 0.088 metros
+  Error Mínimo Global: 0.000 metros
+  Total de muestras: 219
+
+Estadísticas por Navegación:
+  Error Medio Promedio: 0.022 metros
+  MSE Promedio: 0.001 metros²
+  RMSE Promedio: 0.027 metros
+  RMSE Máximo: 0.030 metros
+  RMSE Mínimo: 0.023 metros
+  Error Máximo Global: 0.088 metros
+  Desviación Estándar Promedio: 0.015 metros
+
+Errores Radiales:
+  Promedio: 0.040 metros
+  Desviación estándar: 0.021 metros
+  Máximo: 0.061 metros
+  Mínimo: 0.019 metros
+
+Eficiencia de Ruta:
+  Promedio: 103.67%
+  Desviación estándar: 13.24%
+  Mejor: 90.44%
+  Peor: 116.91%
+
+Estadísticas de Tiempo:
+  Tiempo total de navegación: 43.97 segundos
+  Tiempo medio por navegación: 21.98 segundos
+  Tiempo máximo: 32.48 segundos
+  Tiempo mínimo: 11.49 segundos
+
+Estadísticas de Velocidad:
+  Velocidad media global: 0.118 m/s
+  Velocidad máxima alcanzada: 0.308 m/s
+  Velocidad mínima registrada: 0.000 m/s
+  Desviación estándar media: 0.057 m/s
+
+Datos detallados guardados en: /home/david/tesis/superdev_ws/src/turtlemart/debug_output/nav2_path_metrics_20241218_211352.csv
+
+Cierre completado.
