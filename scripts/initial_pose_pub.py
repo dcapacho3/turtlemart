@@ -39,10 +39,9 @@ def main(args=None):
     publisher = InitialPosePublisher()
 
     # Example values (replace with dynamic values as needed)
-    x = 1.0
+    x = 0.5
     y = -3.0
     theta = 1.58  # In radians (e.g., pi/2 for 90 degrees)
-
     publisher.publish(x, y, theta)
     
     rclpy.spin_once(publisher)  # Only publish once and stop

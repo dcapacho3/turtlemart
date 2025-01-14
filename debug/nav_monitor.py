@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from nav2_msgs.action import NavigateToPose
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
-from nav_msgs.msg import Path
+from nav_msgs.msg import Path, Odometry
 from action_msgs.msg import GoalStatusArray
 from nav2_msgs.action._navigate_to_pose import NavigateToPose_FeedbackMessage
 from rclpy.callback_groups import ReentrantCallbackGroup
@@ -42,8 +42,8 @@ class Nav2MetricsNode(Node):
         
         # Suscriptores
         self.pose_sub = self.create_subscription(
-            PoseWithCovarianceStamped,
-            'amcl_pose',
+            Odometry,
+            'odometry/filtered',
             self.pose_callback,
             10,
             callback_group=self.callback_group

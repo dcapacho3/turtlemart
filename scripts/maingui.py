@@ -40,7 +40,7 @@ class ProductManager:
         # Frame en la parte superior
         top_frame = ctk.CTkFrame(self.root, height=200,fg_color="bisque2")
         top_frame.pack(side=ctk.TOP, fill=ctk.X)
-        title_label = ctk.CTkLabel(top_frame, text="Bienvenido, escoge el producto que desee buscar", font=("Comic Sans", 35, "italic"))
+        title_label = ctk.CTkLabel(top_frame, text="Bienvenido, escoge el producto que desee buscar", font=("Arial", 35, "italic", "bold"))
         title_label.pack(padx=20, pady=10)
 
         # Frame a la izquierda
@@ -55,13 +55,14 @@ class ProductManager:
         label = ctk.CTkLabel(left_frame, image=ctk_image, text="")
         label.pack(padx=30, pady=30)
 
+        self.label_fecha = ctk.CTkLabel(left_frame, font=('ARIAL', 25, 'bold'))
+        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=10)
+
         # Reloj
         self.label_reloj = ctk.CTkLabel(left_frame, font=('ARIAL', 25, 'bold'))
-        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=10)
+        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=70)
 
         # Fecha
-        self.label_fecha = ctk.CTkLabel(left_frame, font=('ARIAL', 25, 'bold'))
-        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=70)
 
         # Actualizar reloj y fecha
         self.actualizar_reloj_y_fecha()
@@ -79,7 +80,7 @@ class ProductManager:
         self.search_entry.pack(side=ctk.TOP, padx=10, pady=5)
 
         # Botón de búsqueda
-        search_button = ctk.CTkButton(search_frame, text="Buscar", command=self.perform_search, fg_color="blanched almond", text_color="black", hover_color="bisque2")
+        search_button = ctk.CTkButton(search_frame, text="Buscar", command=self.perform_search, fg_color="blanched almond", text_color="black", hover_color="bisque2", font=("Arial", 20))
         search_button.pack(side=ctk.TOP, padx=10, pady=5)
 
         # Frame para lista de productos
@@ -117,7 +118,7 @@ class ProductManager:
         self.navigation_mode.set("Simulacion")  # Default value
 
     # Create an option menu
-        option_menu = ctk.CTkOptionMenu(option_frame, values=["Simulacion", "Real"], variable=self.navigation_mode, fg_color="white", button_hover_color="bisque2", button_color="bisque2", text_color="black")
+        option_menu = ctk.CTkOptionMenu(option_frame, values=["Simulacion", "Real"], variable=self.navigation_mode, fg_color="white", button_hover_color="bisque2", button_color="bisque2", text_color="black", font=("Arial", 20))
         option_menu.pack(side=ctk.LEFT, padx=10, pady=5)
 
 

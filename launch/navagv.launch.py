@@ -21,6 +21,9 @@ def generate_launch_description():
     world_file_name = 'turtlemart_world/Supermarket.world'
     #world_file_name = 'turtlemart_world/cafestatic.world'
     world_path = os.path.join(pkg_share, 'worlds', world_file_name)
+    
+    ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+
 
     # Create the launch configuration variables
     slam = LaunchConfiguration('slam')
@@ -80,7 +83,7 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(bringup_dir, 'params', 'nav2_params_real.yaml'),
+        default_value=os.path.join(bringup_dir, 'params', 'nav2_params_sim.yaml'),
         description='Full path to the ROS2 parameters file to use for all launched nodes')
 
     declare_bt_xml_cmd = DeclareLaunchArgument(
@@ -186,7 +189,16 @@ def generate_launch_description():
     initial_pose = Node(
             package='turtlemart',
             executable='initial_pose_pub.py',         )
-    
+            
+            
+    start_robot_localization_cmd = Node(
+      package='robot_localization',
+      executable='ekf_node',
+      name='ekf_filter_node',
+      output='screen',
+      parameters=[ekf_config_path]
+    )
+
     
  
 
@@ -226,8 +238,10 @@ def generate_launch_description():
     ld.add_action(forward_position_controller)
 
 
+
     ld.add_action(agv_control)
     ld.add_action(initial_pose)
+    ld.add_action(start_robot_localization_cmd)
 
 
     return ld

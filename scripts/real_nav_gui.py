@@ -35,6 +35,13 @@ class RealNavWindow(ctk.CTk):
     def __init__(self, product_manager):
         super().__init__()
         #self.master = master
+
+
+        self.STATUS_FONT = ('Arial', 18, 'bold')
+        self.PRODUCT_FONT = ('Arial', 18, 'bold')
+        self.PRODUCT_TITLE_FONT = ('Arial', 18, 'bold')      
+        self.CLOCK_FONT = ('ARIAL', 18, 'bold')  # Para el reloj también
+
         self.after_id = None
         
          # Configuración de la interfaz
@@ -60,6 +67,8 @@ class RealNavWindow(ctk.CTk):
         self.continue_nav_publisher = None
         self.current_pose = None
         self.cashier_reached = False
+
+        self.calibration_complete = False 
         
         self.launch_processes = []
         self.launch_thread = None
@@ -96,18 +105,25 @@ class RealNavWindow(ctk.CTk):
         self.progress_bar.set(0)  # Initialize progress to 0
 
         # Add a label for status messages
-        self.status_label = ctk.CTkLabel(self.top_frame, text="Por favor empiece con el proceso de compra")
-        self.status_label.pack(pady=5)
+        self.status_label = ctk.CTkLabel(
+            self.top_frame, 
+            text="Por favor empiece con el proceso de compra",
+            font=self.STATUS_FONT,
+            wraplength=600
+        )
+        self.status_label.pack(pady=10)
+
 
         # Frame para la información de fecha, hora, etc.
         self.info_frame = ctk.CTkFrame(self, width=200, fg_color="bisque2")
         self.info_frame.pack(side=ctk.LEFT, fill=ctk.Y, padx=10, pady=10)
 
         # Etiquetas de reloj y fecha
-        self.label_reloj = ctk.CTkLabel(self.info_frame, font=('ARIAL', 18, 'bold'))
-        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=10)
-        self.label_fecha = ctk.CTkLabel(self.info_frame, font=('ARIAL', 18, 'bold'))
-        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=70)
+
+        self.label_fecha = ctk.CTkLabel(self.info_frame, font=self.CLOCK_FONT)
+        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=20)
+        self.label_reloj = ctk.CTkLabel(self.info_frame, font=self.CLOCK_FONT)
+        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=70)
         shop_vision_label = ctk.CTkLabel(self.info_frame, text="SARA", font=('Helvetica', 20, 'bold'))
         shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
 
@@ -134,25 +150,17 @@ class RealNavWindow(ctk.CTk):
         self.button_inner_frame = ctk.CTkFrame(self.button_frame, height=100, width=100, fg_color="bisque2")
         self.button_inner_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
    
-        self.start_calibration_button = ctk.CTkButton(
+        self.navigation_button = ctk.CTkButton(
             self.button_inner_frame,
             text="Iniciar Navegacion",
-            command=self.start_calibration, fg_color="blanched almond", text_color="black", hover_color="bisque2"  # Nueva función que realizarás
-            
+            command=self.handle_navigation_button,
+            height=80,  # Mantenemos la altura del botón original
+            fg_color="blanched almond", 
+            text_color="black", 
+            hover_color="bisque2"
         )
-        self.start_calibration_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
+        self.navigation_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
 
-
-        # Botón "Iniciar Navegación" con mayor altura
-        self.start_navigation_button = ctk.CTkButton(
-            self.button_inner_frame,
-            text="Localizar productos",
-            command=self.start_navigation,
-            height=80, fg_color="blanched almond", text_color="black", hover_color="bisque2"
-            
-        )
-        self.start_navigation_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
-        
         self.control_frame = ctk.CTkFrame(self.info_frame, width=150)
         self.control_frame.pack(side=ctk.TOP, padx=10, pady=10)
 
@@ -185,7 +193,7 @@ class RealNavWindow(ctk.CTk):
        self.executor = rclpy.executors.SingleThreadedExecutor()
        self.executor.add_node(self.node)
        self.navigator = BasicNavigator()
-       self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
+       self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'odometry/filtered', self.odom_callback, 10)
        self.is_joy_on_subscriber = self.node.create_subscription(String, 'is_joy_on', self.is_joy_on_callback, 10)
 
        self.continue_nav_publisher = self.node.create_publisher(String, '/continue_nav', 10)
@@ -218,10 +226,28 @@ class RealNavWindow(ctk.CTk):
         self.update_waypoint_status(status, waypoint_name, visited_waypoints)
         self.handle_status(status, waypoint_name)
         
+        # Actualizar el texto del botón según el estado
+        if status == "READY":
+            self.navigation_button.configure(
+                text="Siguiente producto",
+                state="normal"
+            )
+        elif status == "WAITING":
+            self.navigation_button.configure(
+                state="normal"
+            )
+        elif status == "FINISHED":
+            self.navigation_button.configure(
+                text="Ir a caja",
+                state="normal"
+            )
+            self.go_to_cashier = True
+            
         if status == "REACHED" and waypoint_name == "cashier":
             self.cashier_reached = True
             self.status_label.configure(text="Status: REACHED - Waypoint: cashier")
-       
+    
+    
     def update_waypoint_status(self, status, waypoint_name, visited_waypoints):
     # Obtener la ubicación de los waypoints desde la base de datos
         locations = self.get_product_locations()
@@ -266,18 +292,15 @@ class RealNavWindow(ctk.CTk):
     
     def handle_status(self, status, waypoint_name):
         if status == "READY":
-            #self.show_info("Ahora puede empezar a dirigirse a sus productos, por favor dar click a siguiente producto")
             self.status_label.configure(text="Ahora puede empezar a dirigirse a sus productos, por favor dar click a siguiente producto")
-            self.start_navigation_button.configure(state="enabled" , text= "Siguiente producto")
+            self.navigation_button.configure(state="enabled", text="Siguiente producto")
         elif status == "WAITING":
-            #self.show_info("Ha llegado a su destino, cuando este listo dar click a siguiente producto") 
             self.status_label.configure(text="Ha llegado a su destino, cuando este listo dar click a siguiente producto")  
-            self.start_navigation_button.configure(state="enabled")
+            self.navigation_button.configure(state="enabled")
         elif status == "FINISHED":
             self.status_label.configure(text="Ha finalizado su proceso de compra cuando este listo dar click a Ir a caja") 
-            self.start_navigation_button.configure(text= "Ir a caja", state="enabled")
+            self.navigation_button.configure(text="Ir a caja", state="enabled")
             self.go_to_cashier = True
-            
         elif status == "SHOPPING_AGAIN":
             self.destroy()
                  
@@ -311,6 +334,7 @@ class RealNavWindow(ctk.CTk):
         go_to_checkout_button.pack(side="left", padx=20, pady=10)
             
     def go_to_checkout(self):
+        self.navigation_button.configure(state="disabled")  # Añadir esta línea
         self.add_cashier_marker()
         self.publish_cashier()
         self.cashier_reached = False
@@ -323,12 +347,11 @@ class RealNavWindow(ctk.CTk):
             self.after(100, self.wait_for_cashier_reached)
        
     def finish_shopping(self):
-        
         if self.after_id is not None:
             self.after_cancel(self.after_id) 
         
-        self.new_window = ThanksWindow(self)  # Crea una nueva ventana
-        
+        self.navigation_button.configure(state="disabled")  # Añadir esta línea
+        self.new_window = ThanksWindow(self)
         self.withdraw()
         self.new_window.mainloop()
         
@@ -343,8 +366,8 @@ class RealNavWindow(ctk.CTk):
         pixel_x = int((self.fixed_cash_location['x'] - self.origin[0]) / self.resolution)
         pixel_y = int((self.fixed_cash_location['y'] - self.origin[1]) / self.resolution)
 
-        self.cashier_marker, = self.ax.plot(pixel_x, pixel_y, 'g*', markersize=15, label='Cashier')
-        self.ax.legend()
+        self.cashier_marker, = self.ax.plot(pixel_x, pixel_y, 'g*', markersize=15)
+        #self.ax.legend()
         self.canvas.draw()
         
     def stop_ros_processes(self):
@@ -417,6 +440,15 @@ class RealNavWindow(ctk.CTk):
   
     def create_plot(self, frame):
         self.fig, self.ax = plt.subplots(figsize=(6, 4), dpi=100)
+        # Ocultar los ejes y números
+        self.ax.set_xticks([])
+        self.ax.set_yticks([])
+        # Opcional: también puedes ocultar los bordes del gráfico
+        self.ax.spines['top'].set_visible(False)
+        self.ax.spines['right'].set_visible(False)
+        self.ax.spines['bottom'].set_visible(False)
+        self.ax.spines['left'].set_visible(False)
+        
         self.canvas = FigureCanvasTkAgg(self.fig, master=frame)
         self.canvas.get_tk_widget().pack(fill=ctk.BOTH, expand=True)
 
@@ -438,7 +470,8 @@ class RealNavWindow(ctk.CTk):
         # Set the initial position off-screen
         self.robot_imobj.set_transform(mtransforms.Affine2D().translate(-1000, -1000) + self.ax.transData)
 
-        self.ax.legend()
+        
+        #self.ax.legend()
       
 
     def update_map_plot(self):
@@ -453,7 +486,7 @@ class RealNavWindow(ctk.CTk):
         self.plot_product_locations()
         
         #self.robot_position, = self.ax.plot([], [], 'bo', markersize=10, label='Robot')
-        self.ax.legend()
+        #self.ax.legend()
         
     def load_map(self):
         bringup_dir = get_package_share_directory('turtlemart')
@@ -498,22 +531,41 @@ class RealNavWindow(ctk.CTk):
         conn.close()
         return locations
 
-    def start_navigation(self):
-        if not self.navigation_started:
-            print("Iniciando navegación...")
-            print("Iniciando lanzamiento de archivos y navegación...")
-            
-
-            navigation_thread = threading.Thread(target=self.run_navigation)
-            navigation_thread.start()
-            self.navigation_started = True  # Marcar que la navegación ha comenzado
-            self.start_navigation_button.configure(state="disabled")
-        elif self.go_to_cashier:
-            self.start_navigation_button.configure( state="disabled")
-            self.go_to_checkout()
+    def handle_navigation_button(self):
+        if not self.calibration_complete:
+            # Primera fase: iniciar calibración
+            if not self.launch_thread or not self.launch_thread.is_alive():
+                self.launch_thread = threading.Thread(target=self.launch_and_update)
+                self.launch_thread.start()
+                self.navigation_button.configure(state="disabled")
+                print("Launching ROS 2 files in background...")
         else:
-            print("La navegación ya ha comenzado. Ejecutando otra acción...")
-            self.perform_alternate_action()
+            # Segunda fase: navegación
+            if not self.navigation_started:
+                print("Iniciando navegación...")
+                navigation_thread = threading.Thread(target=self.run_navigation)
+                navigation_thread.start()
+                self.navigation_started = True
+                self.navigation_button.configure(state="disabled")
+            elif self.go_to_cashier:
+                self.navigation_button.configure(state="disabled")
+                self.go_to_checkout()
+            else:
+                print("La navegación ya ha comenzado. Ejecutando otra acción...")
+                self.perform_alternate_action()
+
+    def launch_and_update(self):
+        # Lanzar los archivos ROS2
+        self.launch_ros2_files()
+        # Esperar un tiempo prudencial para que todo se inicie
+        time.sleep(10)  # Ajusta este tiempo según sea necesario
+        # Actualizar el botón
+        self.calibration_complete = True
+        self.after(0, lambda: self.navigation_button.configure(
+            text="Localizar productos",
+            state="normal"
+        ))
+
                 
     def launch_ros2_files(self):
         launch_commands = [
@@ -567,27 +619,33 @@ class RealNavWindow(ctk.CTk):
             return False  # Si no se encuentra el proceso, retorna False
 
     def run_navigation(self):
-        # Esta función será ejecutada en un hilo separado
-        navigator = AutonomousNavigator()
-        waypoints_reached = navigator.navigate()
-        print("Navegación completa")
-        # Publicar el mensaje al finalizar la navegación
-        self.publish_continue_nav()   
-        
+        try:
+            navigator = AutonomousNavigator()
+            waypoints_reached = navigator.navigate()
+            print("Navegación completa")
+            self.publish_continue_nav()
+        except Exception as e:
+            print(f"Error en la navegación: {e}")
+            # Restaurar el estado del botón en caso de error
+            self.after(0, lambda: self.navigation_button.configure(state="normal"))
+            
     def __del__(self):
         # Terminate launch file processes when the window is closed
         for process in self.launch_processes:
             process.terminate()
         
+        if self.launch_thread and self.launch_thread.is_alive():
+            self.launch_thread.join(timeout=1)  # Dar tiempo para que termine
+            
         if self.node:
             self.node.destroy_node()
         rclpy.shutdown()
 
     def perform_alternate_action(self):
-            self.start_navigation_button.configure(state="disabled")
-            self.publish_continue_nav()
-            self.continue_nav_published = True  # Marcastartr que el mensaje ha sido publicado
-            self.publish_stop()
+        self.navigation_button.configure(state="disabled")
+        self.publish_continue_nav()
+        self.continue_nav_published = True
+        self.publish_stop()
 
     def publish_continue_nav(self):
         msg = String()
@@ -610,22 +668,21 @@ class RealNavWindow(ctk.CTk):
         self.cashier_publisher.publish(msg)
     
 # Nueva función que manejará la acción del nuevo botón
-    def start_calibration(self):
-        if not self.launch_thread or not self.launch_thread.is_alive():
-            self.launch_thread = threading.Thread(target=self.launch_ros2_files)
-            self.launch_thread.start()
-            self.start_calibration_button.configure(state="disabled")
-            print("Launching ROS 2 files in background...")
-        else:
-            print("ROS 2 launch files are already running.")
 
 
     def view_selected_products(self):
-        self.selected_frame.destroy()  # Destruir el marco anterior
+        self.selected_frame.destroy()
         self.selected_frame = ctk.CTkFrame(self.right_frame, width=150, fg_color="peachpuff")
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
-        # Re-crear la lista de productos seleccionados
+        # Título con fuente constante
+        title_label = ctk.CTkLabel(
+            self.selected_frame, 
+            text="Lista de productos",
+            font=self.PRODUCT_TITLE_FONT
+        )
+        title_label.pack(pady=(10, 15))
+
         conn = sqlite3.connect('src/turtlemart/database/products.db')
         cursor = conn.cursor()
         cursor.execute('SELECT name FROM selected_products')
@@ -634,8 +691,12 @@ class RealNavWindow(ctk.CTk):
 
         for row in rows:
             product_name = row[0]
-            label = ctk.CTkLabel(self.selected_frame, text=product_name)
-            label.pack(pady=5)
+            label = ctk.CTkLabel(
+                self.selected_frame, 
+                text=product_name,
+                font=self.PRODUCT_FONT
+            )
+            label.pack(pady=8)
 
 if __name__ == "__main__":
     app = RealNavWindow()

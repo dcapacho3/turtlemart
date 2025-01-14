@@ -23,7 +23,7 @@ class MySubscriber(Node):
         
         self.odom_filtered_subscription = self.create_subscription(
             Odometry,
-            'robot_pose_ekf/odom_combined',
+            'odometry/filtered',
             self.odom_real_callback,
             10)
         
@@ -80,7 +80,7 @@ class MySubscriber(Node):
         # Accessing specific fields of the Odometry message
         position = msg.pose.pose.position
         orientation = msg.pose.pose.orientation
-        self.get_logger().info(f'Odometry - Position: [{position.x}, {position.y}]')
+       # self.get_logger().info(f'Odometry - Position: [{position.x}, {position.y}]')
         #self.get_logger().info(f'Odometry - Orientation: [{np.rad2deg(orientation.z)}]')
     
 
@@ -88,7 +88,7 @@ class MySubscriber(Node):
         # Accessing specific fields of the Odometry message
         position_filtered = msg.pose.pose.position
         orientation = msg.pose.pose.orientation
-        #self.get_logger().info(f'Odometry Real - Position: [{position_filtered.x}, {position_filtered.y}]')
+        self.get_logger().info(f'Odometry Real - Position: [{position_filtered.x}, {position_filtered.y}]')
         #self.get_logger().info(f'Odometry - Orientation: [{np.rad2deg(orientation.z)}]')
 
 

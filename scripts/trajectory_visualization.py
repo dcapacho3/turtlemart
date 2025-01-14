@@ -16,7 +16,7 @@ class TrajectoryVisualizerNode(Node):
         super().__init__('trajectory_visualizer')
         self.subscription = self.create_subscription(
             Odometry,
-            'odom',
+            'odometry/filtered',
             self.odom_callback,
             10)
         self.marker_publisher = self.create_publisher(MarkerArray, 'trajectory_markers', 10)

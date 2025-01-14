@@ -21,7 +21,7 @@ def generate_launch_description():
     default_model_path = os.path.join(pkg_share, 'models/turtlemart.urdf.xacro')  
     default_rviz_config_path = os.path.join(get_package_share_directory('turtlemart'),
                                    'rviz', 'cartographer_config.rviz')
-    world_file_name = 'turtlemart_world/cafestatic.world'
+    world_file_name = 'turtlemart_world/Supermarket.world'
     world_path = os.path.join(pkg_share, 'worlds', world_file_name)
 
     turtlebot3_cartographer_prefix = get_package_share_directory('turtlemart')

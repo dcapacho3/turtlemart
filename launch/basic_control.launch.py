@@ -21,7 +21,7 @@ def generate_launch_description():
             executable='joy_teleop.py'
          )
     
-    trajectory_node= Node( package='turtlemart',executable='trajectory_visualization.py')
+   # trajectory_node= Node( package='turtlemart',executable='trajectory_visualization.py')
 
 
     return LaunchDescription([

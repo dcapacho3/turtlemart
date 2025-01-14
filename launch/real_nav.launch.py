@@ -7,6 +7,10 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.event_handlers.on_process_start import OnProcessStart
+from launch.actions import EmitEvent, RegisterEventHandler
+from launch_ros.events.lifecycle import ChangeState
+from lifecycle_msgs.msg import Transition
 
 def generate_launch_description():
 
@@ -20,11 +24,15 @@ def generate_launch_description():
   #static_map_path = os.path.join(pkg_share, 'maps', 'labrobsuper_map_mask_keepout.yaml')
   static_map_path = os.path.join(pkg_share, 'maps', 'labrobfinal_mask.yaml')
   #static_map_path = os.path.join(pkg_share, 'maps', 'labmap2_mask.yaml')
- # nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_super.yaml')
-  nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_test.yaml')
+  nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_super.yaml')
+ # nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_test.yaml')
   nav2_bt_path = FindPackageShare(package='nav2_bt_navigator').find('nav2_bt_navigator')
   behavior_tree_xml_path = os.path.join(nav2_bt_path, 'behavior_trees', 'navigate_w_replanning_and_recovery.xml')
   
+
+  ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+
+
   # Launch configuration variables specific to simulations
   autostart = LaunchConfiguration('autostart')
   default_bt_xml_filename = LaunchConfiguration('default_bt_xml_filename')
@@ -164,6 +172,16 @@ def generate_launch_description():
     emulate_tty=True,
     parameters=[params_file])
 
+
+  start_robot_localization_cmd = Node(
+    package='robot_localization',
+    executable='ekf_node',
+    name='ekf_filter_node',
+    output='screen',
+    parameters=[ekf_config_path]
+  )
+
+
   start_costmap_filter_info_server_cmd = Node(
     package='nav2_map_server',
     executable='costmap_filter_info_server',
@@ -214,12 +232,14 @@ def generate_launch_description():
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
   ld.add_action(start_ros2_navigation_cmd)
-  ld.add_action(start_amcl_cmd)
-  ld.add_action(start_lifecycle_manager_cmd)
-  ld.add_action(start_map_server_cmd)
-  #ld.add_action(start_costmap_filter_info_server_cmd)  
-  ld.add_action(trajectory_node)  
-  #ld.add_action(subscriber_node)
   ld.add_action(locker_node)
+  ld.add_action(start_amcl_cmd)
+  #ld.add_action(start_lifecycle_manager_cmd)
+  #ld.add_action(start_map_server_cmd)
+  #ld.add_action(start_costmap_filter_info_server_cmd)  
+  ld.add_action(start_robot_localization_cmd)
+  #ld.add_action(trajectory_node)  
+  #ld.add_action(subscriber_node)
+ 
 
   return ld
