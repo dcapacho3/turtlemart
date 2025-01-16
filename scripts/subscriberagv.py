@@ -80,7 +80,7 @@ class MySubscriber(Node):
         # Accessing specific fields of the Odometry message
         position = msg.pose.pose.position
         orientation = msg.pose.pose.orientation
-       # self.get_logger().info(f'Odometry - Position: [{position.x}, {position.y}]')
+        #self.get_logger().info(f'Odometry - Position: [{position.x}, {position.y}]')
         #self.get_logger().info(f'Odometry - Orientation: [{np.rad2deg(orientation.z)}]')
     
 
