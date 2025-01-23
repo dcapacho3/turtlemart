@@ -17,7 +17,7 @@ from robot_navigator import BasicNavigator, NavigationResult
 
 from ament_index_python.packages import get_package_share_directory
 from real_guiwaypoint import AutonomousNavigator
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 import signal
 import subprocess
 import time
@@ -67,6 +67,10 @@ class RealNavWindow(ctk.CTk):
         self.continue_nav_publisher = None
         self.current_pose = None
         self.cashier_reached = False
+        self.lock_all_active = False  # Agregar esta variable de estado
+        self.should_show_popup = True
+        self.current_popup = None  # Mantener referencia al popup actual
+
 
         self.calibration_complete = False 
         
@@ -193,8 +197,11 @@ class RealNavWindow(ctk.CTk):
        self.executor = rclpy.executors.SingleThreadedExecutor()
        self.executor.add_node(self.node)
        self.navigator = BasicNavigator()
-       self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'odometry/filtered', self.odom_callback, 10)
+       self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
        self.is_joy_on_subscriber = self.node.create_subscription(String, 'is_joy_on', self.is_joy_on_callback, 10)
+
+
+       self.lock_all_subscriber = self.node.create_subscription(Bool, 'lock_all', self.lock_all_callback, 10)
 
        self.continue_nav_publisher = self.node.create_publisher(String, '/continue_nav', 10)
        self.cashier_publisher = self.node.create_publisher(String, '/to_do_next', 10)
@@ -211,15 +218,27 @@ class RealNavWindow(ctk.CTk):
             'orientation': self.get_yaw_from_quaternion(msg.pose.pose.orientation)
         }
 
-
-
     def is_joy_on_callback(self, msg):
         if msg.data == "yes":
             self.control_canvas.itemconfig(self.control_circle, fill="green")
         else:
-            self.control_canvas.itemconfig(self.control_circle, fill="red")       
-   
+            self.control_canvas.itemconfig(self.control_circle, fill="red")   
+
+
+    def lock_all_callback(self, msg):
+        if msg.data and self.should_show_popup:  # Si es True y debemos mostrar el popup
+            self.show_info("Peso máximo de plataforma excedida, por favor retire el último producto ingresado para continuar con el proceso de compra", "¡Atención!")
+            self.should_show_popup = False
+        elif not msg.data:  # Si es False
+            if self.current_popup is not None:
+                self.current_popup.destroy()  # Cerrar el popup si existe
+                self.current_popup = None
+            self.should_show_popup = True  # Permitir que se muestre el próximo True
+        
+        self.lock_all_active = msg.data
+
     def status_callback(self, msg):
+
         status, waypoint_name, completion_percentage, visited_waypoints = msg.data.split('|')
         visited_waypoints = set(visited_waypoints.split(','))
         self.handle_progress_bar(status, waypoint_name, completion_percentage)
@@ -246,8 +265,8 @@ class RealNavWindow(ctk.CTk):
         if status == "REACHED" and waypoint_name == "cashier":
             self.cashier_reached = True
             self.status_label.configure(text="Status: REACHED - Waypoint: cashier")
-    
-    
+
+            
     def update_waypoint_status(self, status, waypoint_name, visited_waypoints):
     # Obtener la ubicación de los waypoints desde la base de datos
         locations = self.get_product_locations()
@@ -396,13 +415,46 @@ class RealNavWindow(ctk.CTk):
         self.launch_processes = []  # Limpiar la lista de procesos
    
     def show_info(self, message, title="Info"):
+        if self.current_popup is not None:
+            self.current_popup.destroy()
+        
         info_window = ctk.CTkToplevel()
         info_window.title(title)
-        info_window.geometry("300x150")
-        label = ctk.CTkLabel(info_window, text=message, padx=20, pady=20)
-        label.pack(expand=True)
-        ok_button = ctk.CTkButton(info_window, text="OK", command=info_window.destroy)
-        ok_button.pack(pady=10)
+        info_window.geometry("500x200")  # Ventana más grande
+        
+        # Centrar la ventana en la pantalla
+        screen_width = info_window.winfo_screenwidth()
+        screen_height = info_window.winfo_screenheight()
+        x = (screen_width - 500) // 2  # 500 es el ancho de la ventana
+        y = (screen_height - 200) // 2  # 200 es el alto de la ventana
+        info_window.geometry(f"500x200+{x}+{y}")
+        
+        # Frame principal para organizar el contenido
+        main_frame = ctk.CTkFrame(info_window)
+        main_frame.pack(expand=True, fill="both", padx=20, pady=20)
+        
+        # Label con texto mejorado
+        label = ctk.CTkLabel(
+            main_frame, 
+            text=message,
+            font=('Arial', 16),  # Fuente más grande
+            wraplength=400,  # Ajuste de texto
+            justify="center"  # Centrar el texto
+        )
+        label.pack(expand=True, padx=20, pady=20)
+        
+        # Botón OK mejorado
+        ok_button = ctk.CTkButton(
+            main_frame,
+            text="OK",
+            command=info_window.destroy,
+            width=100,
+            height=35,
+            font=('Arial', 14)
+        )
+        ok_button.pack(pady=(0, 10))
+        
+        self.current_popup = info_window 
           
     def update_robot_position(self):
         if self.current_pose:

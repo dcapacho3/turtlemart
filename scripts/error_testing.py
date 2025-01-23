@@ -8,6 +8,8 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 from tf_transformations import quaternion_from_euler
+import csv
+from datetime import datetime
 
 class PrecisionNavigator(Node):
     def __init__(self):
@@ -84,54 +86,128 @@ class PrecisionNavigator(Node):
 
     def plot_results(self):
         """Genera la gráfica de resultados"""
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(12, 8))
         
         # Plotear punto objetivo
         plt.plot(self.goal_point['x'], self.goal_point['y'], 'r*', markersize=15, label='Objetivo')
         
-        # Plotear puntos de llegada con números de iteración
-        for i, data in enumerate(self.iterations_data, 1):
-            plt.plot(data['pose']['x'], data['pose']['y'], 'bo')
-            plt.annotate(f'#{i}', 
-                        (data['pose']['x'], data['pose']['y']),
-                        xytext=(5, 5), textcoords='offset points')
+        # Plotear puntos de llegada con números de iteración y el círculo del robot
+        x_coords = [data['pose']['x'] for data in self.iterations_data]
+        y_coords = [data['pose']['y'] for data in self.iterations_data]
+        plt.scatter(x_coords, y_coords, c='blue', marker='o', s=100)
         
-        # Calcular error radial promedio
+        # Añadir círculos que representan el robot en cada punto
+        for x, y in zip(x_coords, y_coords):
+            robot_circle = plt.Circle((x, y), self.robot_radius, 
+                                    fill=False, color='lightblue', 
+                                    linestyle=':', alpha=0.5)
+            plt.gca().add_artist(robot_circle)
+        
+        # Añadir círculo del robot en el objetivo para referencia
+        target_robot_circle = plt.Circle((self.goal_point['x'], self.goal_point['y']), 
+                                    self.robot_radius, 
+                                    fill=False, 
+                                    color='lightcoral', 
+                                    linestyle=':', 
+                                    alpha=0.5,
+                                    label='Radio del robot')
+        plt.gca().add_artist(target_robot_circle)
+        
+        # Añadir números de iteración
+        for i, (x, y) in enumerate(zip(x_coords, y_coords), 1):
+            plt.annotate(f'#{i}', (x, y), xytext=(5, 5), textcoords='offset points')
+        
+        # Calcular estadísticas de error (considerando que ya incluyen el ajuste del radio)
         distances = [data['error'] for data in self.iterations_data]
         avg_error = sum(distances) / len(distances)
-        
-        # Dibujar círculo de error radial
-        circle = plt.Circle((self.goal_point['x'], self.goal_point['y']), avg_error, 
-                          fill=False, linestyle='--', color='gray', label=f'Error radial promedio: {avg_error:.3f}m')
-        plt.gca().add_artist(circle)
-        
-        # Añadir estadísticas al título
         max_error = max(distances)
         min_error = min(distances)
         std_error = np.std(distances)
+        
+        # Dibujar círculo de error radial promedio (ya incluye el ajuste del radio)
+        error_circle = plt.Circle((self.goal_point['x'], self.goal_point['y']), 
+                                avg_error + self.robot_radius,  # Sumamos el radio aquí
+                                fill=False, 
+                                linestyle='--', 
+                                color='gray', 
+                                label=f'Error radial promedio: {avg_error:.3f}m')
+        plt.gca().add_artist(error_circle)
+        
+        # Configurar título y etiquetas
         plt.title(f'Análisis de Precisión de Navegación\n' + 
-                 f'Total de iteraciones: {len(self.iterations_data)}\n' +
-                 f'Error Promedio: {avg_error:.3f}m, Desv. Est: {std_error:.3f}m\n' +
-                 f'Error Mín: {min_error:.3f}m, Error Máx: {max_error:.3f}m')
+                f'Total de iteraciones: {len(self.iterations_data)}\n' +
+                f'Error Promedio: {avg_error:.3f}m, Desv. Est: {std_error:.3f}m\n' +
+                f'Error Mín: {min_error:.3f}m, Error Máx: {max_error:.3f}m\n' +
+                f'Radio del robot: {self.robot_radius:.3f}m')
         
         plt.xlabel('X (metros)')
         plt.ylabel('Y (metros)')
         plt.grid(True)
         plt.legend()
-        # Ajustar los límites de la gráfica basados en el punto objetivo y el error radial
-        margin = max_error * 1.5  # Margen adicional más allá del punto más lejano
         
+        # Ajustar los límites de la gráfica
+        margin = max(max_error * 1.2, 0.3) + self.robot_radius  # Añadimos el radio al margen
         plt.xlim([
-            min(self.goal_point['x'] - margin, min(data['pose']['x'] for data in self.iterations_data)),
-            max(self.goal_point['x'] + margin, max(data['pose']['x'] for data in self.iterations_data))
+            min(min(x_coords + [self.goal_point['x']]) - margin,
+                self.goal_point['x'] - margin),
+            max(max(x_coords + [self.goal_point['x']]) + margin,
+                self.goal_point['x'] + margin)
         ])
         plt.ylim([
-            min(self.goal_point['y'] - margin, min(data['pose']['y'] for data in self.iterations_data)),
-            max(self.goal_point['y'] + margin, max(data['pose']['y'] for data in self.iterations_data))
+            min(min(y_coords + [self.goal_point['y']]) - margin,
+                self.goal_point['y'] - margin),
+            max(max(y_coords + [self.goal_point['y']]) + margin,
+                self.goal_point['y'] + margin)
         ])
         
         plt.axis('equal')
+        plt.tight_layout()
         plt.show()
+
+    def save_to_csv(self):
+        """Guarda los datos de las iteraciones en un archivo CSV"""
+        # Crear nombre de archivo con timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f'precision_test_results_{timestamp}.csv'
+        
+        # Calcular estadísticas
+        distances = [data['error'] for data in self.iterations_data]
+        avg_error = sum(distances) / len(distances)
+        max_error = max(distances)
+        min_error = min(distances)
+        std_error = np.std(distances)
+        
+        try:
+            with open(filename, 'w', newline='') as csvfile:
+                # Escribir metadatos
+                writer = csv.writer(csvfile)
+                writer.writerow(['Metadata'])
+                writer.writerow(['Fecha y hora', datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+                writer.writerow(['Punto objetivo X', self.goal_point['x']])
+                writer.writerow(['Punto objetivo Y', self.goal_point['y']])
+                writer.writerow(['Error promedio (m)', f'{avg_error:.3f}'])
+                writer.writerow(['Desviación estándar (m)', f'{std_error:.3f}'])
+                writer.writerow(['Error mínimo (m)', f'{min_error:.3f}'])
+                writer.writerow(['Error máximo (m)', f'{max_error:.3f}'])
+                writer.writerow([])  # Línea en blanco para separar
+
+                # Escribir datos de iteraciones
+                writer.writerow(['Datos de iteraciones'])
+                writer.writerow(['Iteración', 'Posición X', 'Posición Y', 'Error (m)'])
+                
+                for data in self.iterations_data:
+                    writer.writerow([
+                        data['iteration'],
+                        f"{data['pose']['x']:.3f}",
+                        f"{data['pose']['y']:.3f}",
+                        f"{data['error']:.3f}"
+                    ])
+            
+            print(f"\nDatos exportados exitosamente a: {filename}")
+            return filename
+        except Exception as e:
+            print(f"\nError al exportar datos: {str(e)}")
+            return None
 
     def print_iteration_summary(self):
         """Imprime un resumen de todas las iteraciones"""
@@ -159,9 +235,32 @@ class PrecisionNavigator(Node):
                 if len(self.iterations_data) > 0:
                     print("\nResumen final:")
                     self.print_iteration_summary()
+                    
+                    # Guardar datos en CSV y obtener nombre del archivo
+                    csv_filename = self.save_to_csv()
+                    
+                    # Imprimir resumen global
+                    distances = [data['error'] for data in self.iterations_data]
+                    avg_error = sum(distances) / len(distances)
+                    max_error = max(distances)
+                    min_error = min(distances)
+                    std_error = np.std(distances)
+                    
+                    print("\nResumen Global:")
+                    print("==============")
+                    print(f"Total de iteraciones: {len(self.iterations_data)}")
+                    print(f"Error promedio: {avg_error:.3f} metros")
+                    print(f"Desviación estándar: {std_error:.3f} metros")
+                    print(f"Error mínimo: {min_error:.3f} metros")
+                    print(f"Error máximo: {max_error:.3f} metros")
+                    
+                    if csv_filename:
+                        print(f"Datos guardados en: {csv_filename}")
+                    
                     print("\nGenerando gráfica de resultados...")
                     self.plot_results()
                 return
+                
             elif command != 'c':
                 print("Comando no válido. Use 'c' para continuar o 'z' para terminar")
                 continue

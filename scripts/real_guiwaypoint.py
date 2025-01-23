@@ -54,17 +54,21 @@ class AutonomousNavigator:
 
 
     def nearest_neighbor_with_fixed_end(self, start, locations, end):
+        current = start
         unvisited = locations.copy()
         path = [start]
+        
         while unvisited:
-            if len(unvisited) == 1:
-                nearest = unvisited[0]
-            else:
-                nearest = min(unvisited, key=lambda x: self.calculate_distance(path[-1], x))
+            # Encontrar el punto más cercano al punto actual
+            nearest = min(unvisited, key=lambda x: self.calculate_distance(current, x))
             path.append(nearest)
+            current = nearest
             unvisited.remove(nearest)
+        
+        # Agregar el punto final (caja)
         path.append(end)
         return path
+
 
     def two_opt_swap(self, path, i, j):
         return path[:i] + path[i:j+1][::-1] + path[j+1:]
@@ -83,7 +87,6 @@ class AutonomousNavigator:
                         path = new_path
                         best_distance = new_distance
                         improvement = True
-            break
         return path
         
         

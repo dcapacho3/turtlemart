@@ -6,7 +6,7 @@ from nav2_msgs.srv import ClearEntireCostmap
 import time
 
 # Tiempo entre limpiezas en segundos
-CLEAN_INTERVAL = 1.0
+CLEAN_INTERVAL = 0.8
 
 class CostmapCleaner(Node):
     def __init__(self):
