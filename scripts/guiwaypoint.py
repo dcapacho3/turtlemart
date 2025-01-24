@@ -15,7 +15,7 @@ from ament_index_python.packages import get_package_share_directory
 from tf_transformations import quaternion_from_euler
 
 
-class AutonomousNavigator:smoothnes
+class AutonomousNavigator:
     def __init__(self):
         self.node = rclpy.create_node('navigator_node')
         self.odom_subscriber = OdomSubscriber(self.node)

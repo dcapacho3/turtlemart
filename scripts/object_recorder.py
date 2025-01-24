@@ -13,7 +13,7 @@ import os
 class ObjectRecorder(Node):
     def __init__(self):
         super().__init__('object_recorder')
-        self.subscription = self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        self.subscription = self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
         self.current_position = None
         self.lock = threading.Lock()
 

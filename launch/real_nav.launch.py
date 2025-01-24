@@ -190,7 +190,7 @@ def generate_launch_description():
     emulate_tty=True,
     parameters=[params_file])
 
-  trajectory_node= Node( package='turtlemart',executable='trajectory_visualization.py')
+  costmap_cleaner_node= Node( package='turtlemart',executable='costmap_cleaner.py')
   subscriber_node= Node( package='turtlemart',executable='subscriberagv.py')
   locker_node= Node( package='turtlemart',executable='mux_locker.py')
     
@@ -238,7 +238,7 @@ def generate_launch_description():
   #ld.add_action(start_map_server_cmd)
   #ld.add_action(start_costmap_filter_info_server_cmd)  
   ld.add_action(start_robot_localization_cmd)
-  #ld.add_action(trajectory_node)  
+  ld.add_action(costmap_cleaner_node)  
   #ld.add_action(subscriber_node)
  
 

@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
+import csv
+from datetime import datetime
+import math
+import os
+import numpy as np
+from itertools import permutations
+
+# Importaciones de ROS
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from std_msgs.msg import String
-import sqlite3
-import numpy as np
+
+# Importaciones para visualización y procesamiento
 import matplotlib.pyplot as plt
-from itertools import permutations
-import math
-from tf_transformations import euler_from_quaternion
+from scipy.signal import savgol_filter
 import yaml
 from PIL import Image
-import os
+from tf_transformations import euler_from_quaternion
 from ament_index_python.packages import get_package_share_directory
-from scipy.signal import savgol_filter
+import sqlite3
 
 class RouteAnalysisNode(Node):
     def __init__(self):
@@ -108,6 +114,97 @@ class RouteAnalysisNode(Node):
         
         self.update_timer = self.create_timer(1.0, self.update_plot)
 
+    def save_route_path(self, timestamp):
+        """Guardar puntos de la ruta actual"""
+        filename = f'route_path_{timestamp}.csv'
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['X', 'Y'])
+            for point in self.current_path:
+                writer.writerow([f"{point['x']:.4f}", f"{point['y']:.4f}"])
+
+    def save_locations(self, timestamp):
+        """Guardar ubicaciones de productos y caja"""
+        filename = f'locations_{timestamp}.csv'
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['Name', 'X', 'Y', 'Type'])
+            locations = self.get_product_locations()
+            for loc in locations:
+                writer.writerow([
+                    loc['name'],
+                    f"{loc['x']:.4f}",
+                    f"{loc['y']:.4f}",
+                    'Cashier' if loc['name'] == 'cashier' else 'Product'
+                ])
+
+    def save_route_data(self):
+        """Guardar todos los datos en un único CSV"""
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'route_analysis_{timestamp}.csv'
+        
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            
+            # Sección 1: Métricas finales
+            writer.writerow(['=== MÉTRICAS FINALES ==='])
+            initial_gap = self.calculate_distance(self.start_pose, self.current_path[0])
+            final_distance = self.calculate_route_distance(self.current_path) + (initial_gap if initial_gap > 0.1 else 0)
+            optimal_distance = self.all_possible_routes[0]['distance']
+            efficiency = (optimal_distance / final_distance) * 100 if final_distance > 0 else 0
+            
+            writer.writerow(['Distancia recorrida (m)', 'Distancia óptima (m)', 'Diferencia (m)', 'Eficiencia (%)', 'Compensación inicial (m)'])
+            writer.writerow([f"{final_distance:.2f}", f"{optimal_distance:.2f}", 
+                           f"{final_distance - optimal_distance:.2f}", f"{efficiency:.2f}", f"{initial_gap:.2f}"])
+            
+            # Sección 2: Todas las rutas posibles
+            writer.writerow([])
+            writer.writerow(['=== RUTAS POSIBLES ==='])
+            writer.writerow(['Número de Ruta', 'Waypoints', 'Distancia (m)', 'Es Óptima'])
+            for i, route in enumerate(self.all_possible_routes):
+                writer.writerow([
+                    i + 1,
+                    ' -> '.join(route['waypoints']),
+                    f"{route['distance']:.2f}",
+                    'Sí' if i == 0 else 'No'
+                ])
+            
+            # Sección 3: Ubicaciones
+            writer.writerow([])
+            writer.writerow(['=== UBICACIONES ==='])
+            writer.writerow(['Nombre', 'X', 'Y', 'Tipo'])
+            locations = self.get_product_locations()
+            for loc in locations:
+                writer.writerow([
+                    loc['name'],
+                    f"{loc['x']:.4f}",
+                    f"{loc['y']:.4f}",
+                    'Caja' if loc['name'] == 'cashier' else 'Producto'
+                ])
+            
+            # Sección 4: Puntos de la ruta seguida
+            writer.writerow([])
+            writer.writerow(['=== RUTA SEGUIDA ==='])
+            writer.writerow(['X', 'Y'])
+            for point in self.current_path:
+                writer.writerow([f"{point['x']:.4f}", f"{point['y']:.4f}"])
+
+        print(f"\nDatos guardados en: {filename}")
+
+    def save_route_metrics(self, timestamp):
+        """Guardar métricas de todas las rutas posibles"""
+        filename = f'route_metrics_{timestamp}.csv'
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['Route_Number', 'Waypoints', 'Distance', 'Is_Optimal'])
+            for i, route in enumerate(self.all_possible_routes):
+                writer.writerow([
+                    i + 1,
+                    ' -> '.join(route['waypoints']),
+                    f"{route['distance']:.2f}",
+                    'Yes' if i == 0 else 'No'
+                ])
+                
     def smooth_path(self, path, window=5):
         """Suavizar la ruta usando Savitzky-Golay filter"""
         if len(path) < window:
@@ -293,6 +390,8 @@ class RouteAnalysisNode(Node):
                 print(f"Distancia óptima: {optimal_distance:.2f} metros")
                 print(f"Diferencia: {final_distance - optimal_distance:.2f} metros")
                 print(f"Eficiencia: {efficiency:.2f}%")
+
+                self.save_route_data()
 
     def odom_callback(self, msg):
         """Callback para datos de odometría"""

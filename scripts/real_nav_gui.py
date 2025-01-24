@@ -189,27 +189,27 @@ class RealNavWindow(ctk.CTk):
         self.after(1000, self.view_selected_products)
 
     def init_ros(self):
-       rclpy.init(args=None)
-       self.node = rclpy.create_node('navigate_node')
+        rclpy.init(args=None)
+        self.node = rclpy.create_node('navigate_node')
 
-       time.sleep(2.0)
+        time.sleep(2.0)
 
-       self.executor = rclpy.executors.SingleThreadedExecutor()
-       self.executor.add_node(self.node)
-       self.navigator = BasicNavigator()
-       self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
-       self.is_joy_on_subscriber = self.node.create_subscription(String, 'is_joy_on', self.is_joy_on_callback, 10)
+        self.executor = rclpy.executors.SingleThreadedExecutor()
+        self.executor.add_node(self.node)
+        self.navigator = BasicNavigator()
+        self.odom_subscriber = self.node.create_subscription(PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
+        self.is_joy_on_subscriber = self.node.create_subscription(String, 'is_joy_on', self.is_joy_on_callback, 10)
 
 
-       self.lock_all_subscriber = self.node.create_subscription(Bool, 'lock_all', self.lock_all_callback, 10)
+        self.lock_all_subscriber = self.node.create_subscription(Bool, 'lock_all', self.lock_all_callback, 10)
 
-       self.continue_nav_publisher = self.node.create_publisher(String, '/continue_nav', 10)
-       self.cashier_publisher = self.node.create_publisher(String, '/to_do_next', 10)
-       self.status_subscriber = self.node.create_subscription(String, '/navigation_status', self.status_callback, 10)
+        self.continue_nav_publisher = self.node.create_publisher(String, '/continue_nav', 10)
+        self.cashier_publisher = self.node.create_publisher(String, '/to_do_next', 10)
+        self.status_subscriber = self.node.create_subscription(String, '/navigation_status', self.status_callback, 10)
     
     # Spin the executor in a loop
-       while rclpy.ok():
-          self.executor.spin_once(timeout_sec=0.1)
+        while rclpy.ok():
+            self.executor.spin_once(timeout_sec=0.1)
 
     def odom_callback(self, msg):
         self.current_pose = {

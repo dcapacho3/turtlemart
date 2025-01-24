@@ -42,7 +42,7 @@ def generate_launch_description():
     
     speed_limit_node= Node( package='turtlemart',executable='speed_limit.py')
     teleop_node= Node( package='turtlemart',executable='joy_teleop.py')
-
+    avoidance_node= Node( package='turtlemart',executable='naive_obstacle_avoidance.py')
     
 
     return LaunchDescription([
@@ -54,6 +54,7 @@ def generate_launch_description():
         joy_node,
         speed_limit_node,
         teleop_node,
+        avoidance_node,
 
         # twist_stamper       
     ])
