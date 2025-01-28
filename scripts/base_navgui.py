@@ -38,10 +38,10 @@ class UnifiedNavigationWindow(ctk.CTk):
         #self.master = master
 
 
-        self.STATUS_FONT = ('Arial', 18, 'bold')
-        self.PRODUCT_FONT = ('Arial', 18, 'bold')
-        self.PRODUCT_TITLE_FONT = ('Arial', 18, 'bold')      
-        self.CLOCK_FONT = ('ARIAL', 18, 'bold')  # Para el reloj también
+        self.STATUS_FONT = ('Arial', 25, 'bold')
+        self.PRODUCT_FONT = ('Arial', 20, 'bold')
+        self.PRODUCT_TITLE_FONT = ('Arial', 25, 'bold')      
+        self.CLOCK_FONT = ('ARIAL', 25, 'bold')  # Para el reloj también
 
         self.after_id = None
         
@@ -57,6 +57,10 @@ class UnifiedNavigationWindow(ctk.CTk):
        
         self.title("Smart Autonomous Retail Assistant")
         self.geometry("%dx%d+0+0" % (self.winfo_screenwidth(), self.winfo_screenheight()))
+
+       # self.attributes('-fullscreen', True)  # Enable true fullscreen
+       # self.overrideredirect(True)  
+
         self.resizable(width=1, height=1)
 
         # Inicializar la lista de productos seleccionados
@@ -110,22 +114,24 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.top_frame = ctk.CTkFrame(self, height=50, fg_color="bisque2")
         self.top_frame.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=10)
 
-        # Ejemplo de etiqueta en el frame superior
-    #    self.label_superior = ctk.CTkLabel(self.top_frame, text="Información Adicional en la parte superior")
-     #   self.label_superior.pack(pady=5)
+        clock_frame = ctk.CTkFrame(self.top_frame, fg_color="bisque2")
+        clock_frame.pack(side=ctk.RIGHT, padx=20)
 
-        self.progress_bar = ctk.CTkProgressBar(self.top_frame, width=400)
-        self.progress_bar.pack(pady=5)
-        self.progress_bar.set(0)  # Initialize progress to 0
-
-        # Add a label for status messages
+        status_center_frame = ctk.CTkFrame(self.top_frame, fg_color="bisque2")
+        status_center_frame.pack(side=ctk.LEFT, expand=True, fill=ctk.BOTH, padx=20)
+        
         self.status_label = ctk.CTkLabel(
-            self.top_frame, 
+            status_center_frame, 
             text="Por favor empiece con el proceso de compra",
             font=self.STATUS_FONT,
             wraplength=600
         )
-        self.status_label.pack(pady=10)
+        self.status_label.pack(pady=(10, 5))
+
+        self.progress_bar = ctk.CTkProgressBar(status_center_frame, width=600)
+        self.progress_bar.pack(pady=(5, 10))
+        self.progress_bar.set(0)
+
 
 
         # Frame para la información de fecha, hora, etc.
@@ -133,11 +139,20 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.info_frame.pack(side=ctk.LEFT, fill=ctk.Y, padx=10, pady=10)
 
         # Etiquetas de reloj y fecha
+        self.label_fecha = ctk.CTkLabel(
+            clock_frame, 
+            text="",  # Se actualizará con actualizar_reloj_y_fecha
+            font=self.CLOCK_FONT
+        )
+        self.label_fecha.pack(side=ctk.TOP, pady=5)
 
-        self.label_fecha = ctk.CTkLabel(self.info_frame, font=self.CLOCK_FONT)
-        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=20)
-        self.label_reloj = ctk.CTkLabel(self.info_frame, font=self.CLOCK_FONT)
-        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=70)
+        self.label_reloj = ctk.CTkLabel(
+            clock_frame, 
+            text="",
+            font=self.CLOCK_FONT
+        )
+        self.label_reloj.pack(side=ctk.TOP, pady=5)
+
         shop_vision_label = ctk.CTkLabel(self.info_frame, text="SARA", font=('Helvetica', 20, 'bold'))
         shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
 
@@ -149,13 +164,14 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.map_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
         # Frame para el gráfico y la lista de productos
-        self.right_frame = ctk.CTkFrame(self, width=300,  fg_color="bisque2")
+        self.right_frame = ctk.CTkFrame(self, width=450,  fg_color="bisque2")
         self.right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=10, pady=10, expand=False)
+        self.right_frame.pack_propagate(False) 
 
         # Frame para la lista de productos seleccionados
-        self.selected_frame = ctk.CTkFrame(self.right_frame, width=150)
+        self.selected_frame = ctk.CTkFrame(self.right_frame, width=350)
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
-
+ # Prevent frame from shrinking
         # Frame para el botón
         self.button_frame = ctk.CTkFrame(self.right_frame, width=120, fg_color="bisque2")
         self.button_frame.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
@@ -166,30 +182,57 @@ class UnifiedNavigationWindow(ctk.CTk):
    
         self.navigation_button = ctk.CTkButton(
             self.button_inner_frame,
-            text="Iniciar Navegacion",
+            text="Iniciar",
             command=self.handle_navigation_button,
-            height=80,  # Mantenemos la altura del botón original
+            height=90,  # Mantenemos la altura del botón original
             fg_color="blanched almond", 
             text_color="black", 
-            hover_color="bisque2"
+            hover_color="bisque2",
+            font=self.PRODUCT_FONT
         )
         self.navigation_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
 
-        self.control_frame = ctk.CTkFrame(self.info_frame, width=150)
-        self.control_frame.pack(side=ctk.TOP, padx=10, pady=10)
+        self.control_frame = ctk.CTkFrame(self.info_frame, width=200, height=150, fg_color="transparent")
+        self.control_frame.pack(side=ctk.TOP, padx=10, pady=20, expand=True)
+        self.control_frame.pack_propagate(False)
+        container = ctk.CTkFrame(self.control_frame, fg_color="transparent")
+        container.place(relx=0.5, rely=0.5, anchor="center")
+
+
 
         # Create a label for the control status text
-        self.control_label = ctk.CTkLabel(self.control_frame, text="Estado de control")
-        self.control_label.pack(side=ctk.LEFT, padx=5)
+        self.control_label = ctk.CTkLabel(
+            container, 
+            text="Estado de Control Remoto",
+            font=self.PRODUCT_FONT,
+            fg_color="transparent",
+            wraplength=200
+        )
+        self.control_label.pack(pady=(0, 10))
+
 
         # Create a canvas for the circle
-        self.control_canvas = ctk.CTkCanvas(self.control_frame, width=20, height=20)
-        self.control_canvas.pack(side=ctk.LEFT, padx=5)
+        self.control_canvas = ctk.CTkCanvas(
+            container, 
+            width=40, 
+            height=40, 
+            highlightthickness=0,
+            bg='bisque2' 
+        )
+        self.control_canvas.pack(pady=(5, 0))
 
         # Create a circle on the canvas
-        self.control_circle = self.control_canvas.create_rectangle(0, 0, 20, 20, fill="red")
 
-
+        # Create the circle with padding
+        padding = 5
+        self.control_circle = self.control_canvas.create_oval(
+            padding, 
+            padding, 
+            40 - padding, 
+            40 - padding, 
+            fill="red", 
+            outline=""
+        )
         self.show_info(self.nav_mode)
 
         # Crear y mostrar el gráfico
@@ -252,11 +295,23 @@ class UnifiedNavigationWindow(ctk.CTk):
         }
 
     def is_joy_on_callback(self, msg):
-        if msg.data == "yes":
-            self.control_canvas.itemconfig(self.control_circle, fill="green")
-        else:
-            self.control_canvas.itemconfig(self.control_circle, fill="red")   
-
+        try:
+            if msg.data == "yes":
+                self.control_canvas.itemconfig(
+                    self.control_circle, 
+                    fill="green", 
+                    outline=""
+                )
+            else:
+                self.control_canvas.itemconfig(
+                    self.control_circle, 
+                    fill="red", 
+                    outline=""
+                )
+            # Force a redraw of the canvas to ensure immediate update
+            self.control_canvas.update_idletasks()
+        except Exception as e:
+            print(f"Error updating control circle color: {e}")
 
     def lock_all_callback(self, msg):
         if msg.data and self.should_show_popup:  # Si es True y debemos mostrar el popup
@@ -678,7 +733,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Actualizar el botón
         self.calibration_complete = True
         self.after(0, lambda: self.navigation_button.configure(
-            text="Localizar productos",
+            text="Buscar productos",
             state="normal"
         ))
 
@@ -854,7 +909,7 @@ class UnifiedNavigationWindow(ctk.CTk):
 
     def view_selected_products(self):
         self.selected_frame.destroy()
-        self.selected_frame = ctk.CTkFrame(self.right_frame, width=150, fg_color="peachpuff")
+        self.selected_frame = ctk.CTkFrame(self.right_frame, width=250, fg_color="peachpuff")
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
         # Título con fuente constante

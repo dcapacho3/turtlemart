@@ -19,6 +19,8 @@ class ProductManager:
         self.after_id = None
         self.navigation_window = None
 
+
+
         # Configuración de la interfaz
         self.setup_ui()
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -26,106 +28,184 @@ class ProductManager:
         # Configurar el cierre de ventana con la "X"
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-
     def setup_ui(self):
-        ctk.set_appearance_mode("light")
-        #ctk.set_default_color_theme("blue")
-        self.root.configure(fg_color="blanched almond")
+            ctk.set_appearance_mode("light")
+            self.root.configure(fg_color="blanched almond")
+            self.root.title("Smart Autonomous Retail Assistant")
+
+         #   self.root.attributes('-fullscreen', True)  # Enable true fullscreen
+         #  self.root.overrideredirect(True)  
+            self.root.geometry("%dx%d+0+0" % (self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
+            self.root.resizable(width=1, height=1)
 
 
-        self.root.title("Smart Autonomous Retail Assistant")
-        self.root.geometry("%dx%d+0+0" % (self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
-        self.root.resizable(width=1, height=1)
 
-        # Frame en la parte superior
-        top_frame = ctk.CTkFrame(self.root, height=200,fg_color="bisque2")
-        top_frame.pack(side=ctk.TOP, fill=ctk.X)
-        title_label = ctk.CTkLabel(top_frame, text="Bienvenido, escoge el producto que desee buscar", font=("Arial", 35, "italic", "bold"))
-        title_label.pack(padx=20, pady=10)
+            # Frame izquierdo para imagen y controles
+            left_frame = ctk.CTkFrame(self.root, width=250, fg_color="bisque2")
+            left_frame.pack(side=ctk.LEFT, fill=ctk.Y)
+            left_frame.pack_propagate(False)
 
-        # Frame a la izquierda
-        left_frame = ctk.CTkFrame(self.root, width=200, fg_color="bisque2")
-        left_frame.pack(side=ctk.LEFT, fill=ctk.Y)
-        
-        pkg_dir = get_package_share_directory('turtlemart')
-        image_path = os.path.join(pkg_dir, 'images/Usuario.png')
-        img = Image.open(image_path)
-        img = img.resize((120, 150))
-        ctk_image = ctk.CTkImage(light_image=img, size=(120, 150))
-        label = ctk.CTkLabel(left_frame, image=ctk_image, text="")
-        label.pack(padx=30, pady=30)
+            # Frame derecho contenedor
+            right_container = ctk.CTkFrame(self.root, fg_color="blanched almond")
+            right_container.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
 
-        self.label_fecha = ctk.CTkLabel(left_frame, font=('ARIAL', 25, 'bold'))
-        self.label_fecha.pack(side=ctk.TOP, padx=10, pady=10)
+            # Frame superior con reloj/fecha
+            top_frame = ctk.CTkFrame(right_container, height=100, fg_color="bisque2")
+            top_frame.pack(fill=ctk.X, padx=10, pady=10)
 
-        # Reloj
-        self.label_reloj = ctk.CTkLabel(left_frame, font=('ARIAL', 25, 'bold'))
-        self.label_reloj.pack(side=ctk.TOP, padx=10, pady=70)
+            # Frame para reloj y fecha (lado derecho)
+            clock_frame = ctk.CTkFrame(top_frame, fg_color="bisque2")
+            clock_frame.pack(side=ctk.RIGHT, padx=20)
+            
+            now = datetime.datetime.now()
 
-        # Fecha
+            self.label_fecha = ctk.CTkLabel(
+                clock_frame, 
+                text=now.strftime("%Y-%m-%d"),
+                font=('ARIAL', 25, 'bold')
+            )
+            self.label_fecha.pack(side=ctk.TOP, pady=5)
+            
+            self.label_reloj = ctk.CTkLabel(
+                clock_frame, 
+                text=now.strftime("%H:%M:%S"),
+                font=('ARIAL', 25, 'bold')
+            )
+            self.label_reloj.pack(side=ctk.TOP, pady=5)
 
-        # Actualizar reloj y fecha
-        self.actualizar_reloj_y_fecha()
+            # Imagen de usuario
+            pkg_dir = get_package_share_directory('turtlemart')
+            image_path = os.path.join(pkg_dir, 'images/Usuario.png')
+            img = Image.open(image_path)
+            img = img.resize((200, 200))
+            ctk_image = ctk.CTkImage(light_image=img, size=(200, 200))
+            label = ctk.CTkLabel(left_frame, image=ctk_image, text="")
+            label.pack(padx=30, pady=30)
 
-        # Texto SARA
-        shop_vision_label = ctk.CTkLabel(left_frame, text="SARA", font=('Helvetica', 35, 'bold'))
-        shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
+            # Configuración del selector de modo 
+            option_frame = ctk.CTkFrame(left_frame, fg_color="bisque2")
+            option_frame.pack(expand=True, fill=ctk.BOTH, padx=10, pady=5)
 
-        # Frame de búsqueda dentro del frame izquierdo
-        search_frame = ctk.CTkFrame(left_frame, fg_color="bisque2")
-        search_frame.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=10)
+            option_center_frame = ctk.CTkFrame(option_frame, fg_color="bisque2")
+            option_center_frame.pack(expand=True)
 
-        # Campo de entrada para búsqueda
-        self.search_entry = ctk.CTkEntry(search_frame, font=("Arial", 30))
-        self.search_entry.pack(side=ctk.TOP, padx=10, pady=5)
+            welcome_label = ctk.CTkLabel(option_center_frame, 
+                                    text="¡Bienvenido!", 
+                                    font=("Arial", 24, "italic", "bold"),
+                                    justify="center")
+            welcome_label.pack(pady=(0, 20))
 
-        # Botón de búsqueda
-        search_button = ctk.CTkButton(search_frame, text="Buscar", command=self.perform_search, fg_color="blanched almond", text_color="black", hover_color="bisque2", font=("Arial", 20))
-        search_button.pack(side=ctk.TOP, padx=10, pady=5)
+            mode_label = ctk.CTkLabel(option_center_frame, 
+                                text="Que modo desea usar?", 
+                                font=("Arial", 20, "bold"),
+                                wraplength=200,
+                                justify="center")
+            mode_label.pack(pady=(0, 10))
 
-        # Frame para lista de productos
-        frame1 = ctk.CTkFrame(self.root, width=350, fg_color="peachpuff")
-        frame1.pack(side=ctk.LEFT, fill=ctk.BOTH, padx=20, pady=20, expand=True)
+            self.navigation_mode = ctk.StringVar()
+            self.navigation_mode.set("Simulacion")
 
-        # Frame para productos seleccionados
-        frame2 = ctk.CTkFrame(self.root, width=350, fg_color="peachpuff")
-        frame2.pack(side=ctk.RIGHT, fill=ctk.BOTH, padx=20, pady=20, expand=True)
+            option_menu = ctk.CTkOptionMenu(option_center_frame, 
+                                        values=["Simulacion", "Real"], 
+                                        variable=self.navigation_mode, 
+                                        fg_color="white", 
+                                        button_hover_color="bisque2", 
+                                        button_color="bisque2", 
+                                        text_color="black", 
+                                        font=("Arial", 20))
+            option_menu.pack()
 
-        # Título para la lista de productos
-        products_label = ctk.CTkLabel(frame1, text="Productos", font=("Helvetica", 24, "bold"))
-        products_label.pack(pady=10)
+            # Texto SARA
+            shop_vision_label = ctk.CTkLabel(left_frame, text="SARA", font=('Helvetica', 35, 'bold'))
+            shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
 
-        # Scrollable Frame para la lista de productos
-        self.treeview_frame = ctk.CTkScrollableFrame(frame1, width=300, height=400, fg_color="Ivory")
-        self.treeview_frame.pack(fill=ctk.BOTH, expand=True, pady=10)
+            # Frame principal de contenido
+            main_content = ctk.CTkFrame(right_container, fg_color="blanched almond")
+            main_content.pack(fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
-        select_button = ctk.CTkButton(frame1, text="Seleccionar productos", command=self.select_products, width=200, height=50, font=("Helvetica", 16), fg_color="blanched almond", text_color="black", hover_color="bisque2")
-        select_button.pack(pady=10)
+            # Frame superior para la búsqueda
+            top_search_frame = ctk.CTkFrame(main_content, fg_color="blanched almond", height=40)
+            top_search_frame.pack(fill=ctk.X, padx=20, pady=(0, 10))
+            top_search_frame.pack_propagate(False)
 
-        # Título para productos seleccionados
-        selected_label = ctk.CTkLabel(frame2, text="Productos Seleccionados", font=("Helvetica", 24, "bold"))
-        selected_label.pack(pady=10)
+            # Frame de búsqueda (centrado)
+            search_container = ctk.CTkFrame(top_search_frame, fg_color="blanched almond")
+            search_container.pack(expand=True)
 
-        self.selected_frame = ctk.CTkScrollableFrame(frame2, width=300, height=400, fg_color="Ivory")
-        self.selected_frame.pack(fill=ctk.BOTH, expand=True, pady=10)
+            self.search_frame = ctk.CTkFrame(search_container, fg_color="blanched almond")
+            self.search_frame.pack()
 
-    # Frame for option menu
-        option_frame = ctk.CTkFrame(left_frame, fg_color="bisque2" )
-        option_frame.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=5)
+            # Entry de búsqueda y botón buscar (siempre visibles)
+            self.search_entry = ctk.CTkEntry(self.search_frame, 
+                                        font=("Arial", 20),
+                                        width=550,
+                                        height=40)
+            self.search_entry.pack(side=ctk.LEFT, padx=(0, 10))
 
-    # Create a variable to store the selected option
-        self.navigation_mode = ctk.StringVar()
-        self.navigation_mode.set("Simulacion")  # Default value
+            self.search_button = ctk.CTkButton(
+                self.search_frame,
+                text="Buscar",
+                command=self.perform_search,
+                fg_color="bisque2",
+                text_color="black",
+                hover_color="peachpuff",
+                font=("Arial", 20, "bold"),
+                width=200,
+                height=40
+            )
+            self.search_button.pack(side=ctk.LEFT)
 
-    # Create an option menu
-        option_menu = ctk.CTkOptionMenu(option_frame, values=["Simulacion", "Real"], variable=self.navigation_mode, fg_color="white", button_hover_color="bisque2", button_color="bisque2", text_color="black", font=("Arial", 20))
-        option_menu.pack(side=ctk.LEFT, padx=10, pady=5)
+            # Bindear evento Enter para buscar
+            self.search_entry.bind('<Return>', lambda e: self.perform_search())
+            self.search_frame.bind('<Button-1>', lambda e: 'break')
 
+            # Frame para lista de productos (arriba)
+            frame1 = ctk.CTkFrame(main_content, fg_color="peachpuff")
+            frame1.pack(fill=ctk.BOTH, padx=20, pady=(0, 10), expand=True)
 
-        go_to_products_button = ctk.CTkButton(frame2, text="Dirigirse a productos", command=self.open_navigation_window, width=200, height=50, font=("Helvetica", 16), fg_color="blanched almond", text_color='black', hover_color="bisque2")
-        go_to_products_button.pack(pady=10)
+            products_label = ctk.CTkLabel(frame1, text="Productos disponibles", font=("Helvetica", 24, "bold"))
+            products_label.pack(pady=10)
 
-        self.refresh_treeview()
+            self.treeview_frame = ctk.CTkScrollableFrame(frame1, width=300, height=200, fg_color="Ivory")
+            self.treeview_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
+
+            select_button = ctk.CTkButton(frame1, 
+                                        text="Seleccionar productos", 
+                                        command=self.select_products, 
+                                        width=200, 
+                                        height=50, 
+                                        font=("Helvetica", 16), 
+                                        fg_color="blanched almond", 
+                                        text_color="black", 
+                                        hover_color="bisque2")
+            select_button.pack(pady=10)
+
+            # Frame para productos seleccionados (abajo)
+            frame2 = ctk.CTkFrame(main_content, fg_color="peachpuff")
+            frame2.pack(fill=ctk.BOTH, padx=20, pady=(10, 20), expand=True)
+
+            selected_label = ctk.CTkLabel(frame2, text="Productos Seleccionados", font=("Helvetica", 24, "bold"))
+            selected_label.pack(pady=10)
+
+            self.selected_frame = ctk.CTkScrollableFrame(frame2, width=300, height=200, fg_color="Ivory")
+            self.selected_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
+
+            go_to_products_button = ctk.CTkButton(frame2, 
+                                                text="Dirigirse a productos", 
+                                                command=self.open_navigation_window, 
+                                                width=200, 
+                                                height=50, 
+                                                font=("Helvetica", 16), 
+                                                fg_color="blanched almond", 
+                                                text_color='black', 
+                                                hover_color="bisque2")
+            go_to_products_button.pack(pady=10)
+
+            # Iniciar la actualización del reloj
+            self.actualizar_reloj_y_fecha()
+            
+            self.refresh_treeview()
+
 
     def show_info(self, message, title="Info"):
         info_window = ctk.CTkToplevel()
@@ -135,6 +215,9 @@ class ProductManager:
         label.pack(expand=True)
         ok_button = ctk.CTkButton(info_window, text="OK", command=info_window.destroy, fg_color="bisque2", text_color='black')
         ok_button.pack(pady=10)
+
+
+
 
     def refresh_treeview(self, search_term=""):
         # Limpiar el frame de productos
@@ -181,7 +264,7 @@ class ProductManager:
             
             connection.commit()
             connection.close()
-            self.show_info("Products selected successfully.")
+            #self.show_info("Products selected successfully.")
             self.view_selected_products()
         else:
             self.show_info("No items selected.", title="Error")
@@ -199,8 +282,10 @@ class ProductManager:
         connection.close()
 
     def perform_search(self):
+        """Realiza la búsqueda basada en el texto ingresado"""
         search_term = self.search_entry.get()
         self.refresh_treeview(search_term)
+
 
     def actualizar_reloj_y_fecha(self):
         now = datetime.datetime.now()
