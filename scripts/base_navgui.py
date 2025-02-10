@@ -37,12 +37,43 @@ class UnifiedNavigationWindow(ctk.CTk):
         super().__init__()
         #self.master = master
 
+        self.product_colors = {}
+        self.product_labels = {}
+
 
         self.STATUS_FONT = ('Arial', 25, 'bold')
         self.PRODUCT_FONT = ('Arial', 20, 'bold')
-        self.PRODUCT_TITLE_FONT = ('Arial', 25, 'bold')      
+        self.PRODUCT_TITLE_FONT = ('Arial', 30, 'bold')      
         self.CLOCK_FONT = ('ARIAL', 25, 'bold')  # Para el reloj también
 
+
+        self.colors = {
+        # Fondos
+        'primary_bg': "#FEF2F2",  # Rojo claro suave
+        'secondary_bg': "#FEE2E2",  # Rosa coral vibrante
+        'accent_bg': "#FFFFFF",  
+        'list_bg': "#F8FAFC",  
+        'frame_bg': "#FEE2E2",  
+        'scrollable_frame_bg': "#FFFFFF",  
+        # Texto
+        'text_primary': "#7F1D1D",  # Rojo vino
+        'text_secondary': "#DC2626",  # Rojo fuego
+        'label_text': "#B91C1C",  # Rojo intenso
+        # Elementos interactivos
+        'button_bg': "#DC2626",  # Rojo llamativo
+        'button_hover': "#991B1B",  # Rojo oscuro
+        'button_text': "#FFFFFF",  
+        'entry_bg': "#F8FAFC",  
+        'checkbox_bg': "#DC2626",  
+        'checkbox_hover': "#991B1B",  
+        # Menú
+        'optionmenu_bg': "#F8FAFC",  
+        'optionmenu_button': "#DC2626",  
+        'optionmenu_hover': "#991B1B",  
+        'optionmenu_text': "#7F1D1D", 
+        }
+
+        self.configure(fg_color=self.colors['primary_bg'])
         self.after_id = None
         
         self.is_closing = False
@@ -58,8 +89,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.title("Smart Autonomous Retail Assistant")
         self.geometry("%dx%d+0+0" % (self.winfo_screenwidth(), self.winfo_screenheight()))
 
-       # self.attributes('-fullscreen', True)  # Enable true fullscreen
-       # self.overrideredirect(True)  
+        #self.attributes('-fullscreen', True) 
+        #self.overrideredirect(True)  
 
         self.resizable(width=1, height=1)
 
@@ -111,83 +142,88 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.continue_nav_published = False  # Nueva variable para controlar la publicación
 
         # Frame superior
-        self.top_frame = ctk.CTkFrame(self, height=50, fg_color="bisque2")
+        self.top_frame = ctk.CTkFrame(self, height=100, fg_color=self.colors['secondary_bg'])
         self.top_frame.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=10)
+        self.top_frame.pack_propagate(False)
 
-        clock_frame = ctk.CTkFrame(self.top_frame, fg_color="bisque2")
+        clock_frame = ctk.CTkFrame(self.top_frame, fg_color=self.colors['secondary_bg'])
         clock_frame.pack(side=ctk.RIGHT, padx=20)
 
-        status_center_frame = ctk.CTkFrame(self.top_frame, fg_color="bisque2")
+        status_center_frame = ctk.CTkFrame(self.top_frame, fg_color=self.colors['secondary_bg'])
         status_center_frame.pack(side=ctk.LEFT, expand=True, fill=ctk.BOTH, padx=20)
+        status_center_frame.pack_propagate(False) 
         
         self.status_label = ctk.CTkLabel(
             status_center_frame, 
             text="Por favor empiece con el proceso de compra",
             font=self.STATUS_FONT,
-            wraplength=600
+            text_color=self.colors['text_primary'],
+            wraplength=1400
         )
         self.status_label.pack(pady=(10, 5))
 
-        self.progress_bar = ctk.CTkProgressBar(status_center_frame, width=600)
-        self.progress_bar.pack(pady=(5, 10))
+        self.progress_bar = ctk.CTkProgressBar(status_center_frame, width=700, progress_color=self.colors['button_bg'], fg_color=self.colors['secondary_bg'])
+        self.progress_bar.pack(pady=(10, 20))
         self.progress_bar.set(0)
 
 
 
         # Frame para la información de fecha, hora, etc.
-        self.info_frame = ctk.CTkFrame(self, width=200, fg_color="bisque2")
+        self.info_frame = ctk.CTkFrame(self, width=200, fg_color=self.colors['secondary_bg'])
         self.info_frame.pack(side=ctk.LEFT, fill=ctk.Y, padx=10, pady=10)
 
         # Etiquetas de reloj y fecha
         self.label_fecha = ctk.CTkLabel(
             clock_frame, 
             text="",  # Se actualizará con actualizar_reloj_y_fecha
-            font=self.CLOCK_FONT
+            font=self.CLOCK_FONT,
+            text_color=self.colors['text_primary'],
         )
         self.label_fecha.pack(side=ctk.TOP, pady=5)
 
         self.label_reloj = ctk.CTkLabel(
             clock_frame, 
             text="",
-            font=self.CLOCK_FONT
+            font=self.CLOCK_FONT,
+            text_color=self.colors['text_primary']
         )
         self.label_reloj.pack(side=ctk.TOP, pady=5)
 
-        shop_vision_label = ctk.CTkLabel(self.info_frame, text="SARA", font=('Helvetica', 20, 'bold'))
+        shop_vision_label = ctk.CTkLabel(self.info_frame, text="SARA", font=('Helvetica', 35, 'bold'), text_color=self.colors['text_primary'],)
         shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
 
         # Iniciar la actualización del reloj y la fecha
         self.actualizar_reloj_y_fecha()
 
         # Frame para el mapa
-        self.map_frame = ctk.CTkFrame(self, width=800, height=600)
+        self.map_frame = ctk.CTkFrame(self, width=800, height=600, fg_color=self.colors['primary_bg'])
         self.map_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
         # Frame para el gráfico y la lista de productos
-        self.right_frame = ctk.CTkFrame(self, width=450,  fg_color="bisque2")
+        self.right_frame = ctk.CTkFrame(self, width=450,  fg_color=self.colors['secondary_bg'])
         self.right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=10, pady=10, expand=False)
         self.right_frame.pack_propagate(False) 
 
         # Frame para la lista de productos seleccionados
-        self.selected_frame = ctk.CTkFrame(self.right_frame, width=350)
+        self.selected_frame = ctk.CTkFrame(self.right_frame, width=350, fg_color=self.colors['list_bg'])
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
  # Prevent frame from shrinking
         # Frame para el botón
-        self.button_frame = ctk.CTkFrame(self.right_frame, width=120, fg_color="bisque2")
+        self.button_frame = ctk.CTkFrame(self.right_frame, width=120, fg_color=self.colors['secondary_bg'])
         self.button_frame.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
 
         # Crear un marco interno para el botón con más altura
-        self.button_inner_frame = ctk.CTkFrame(self.button_frame, height=100, width=100, fg_color="bisque2")
+        self.button_inner_frame = ctk.CTkFrame(self.button_frame, height=100, width=100, fg_color=self.colors['secondary_bg'])
         self.button_inner_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
    
         self.navigation_button = ctk.CTkButton(
             self.button_inner_frame,
             text="Iniciar",
-            command=self.handle_navigation_button,
+            command=self.handle_navigation_button,        
             height=90,  # Mantenemos la altura del botón original
-            fg_color="blanched almond", 
-            text_color="black", 
-            hover_color="bisque2",
+            fg_color=self.colors['button_bg'],
+            text_color=self.colors['button_text'],
+            hover_color=self.colors['button_hover'],
             font=self.PRODUCT_FONT
         )
         self.navigation_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
@@ -205,6 +241,7 @@ class UnifiedNavigationWindow(ctk.CTk):
             container, 
             text="Estado de Control Remoto",
             font=self.PRODUCT_FONT,
+            text_color=self.colors['text_primary'],
             fg_color="transparent",
             wraplength=200
         )
@@ -217,7 +254,7 @@ class UnifiedNavigationWindow(ctk.CTk):
             width=40, 
             height=40, 
             highlightthickness=0,
-            bg='bisque2' 
+            bg=self.colors['secondary_bg']
         )
         self.control_canvas.pack(pady=(5, 0))
 
@@ -233,7 +270,15 @@ class UnifiedNavigationWindow(ctk.CTk):
             fill="red", 
             outline=""
         )
-        self.show_info(self.nav_mode)
+        self.control_status_label = ctk.CTkLabel(
+            container,
+            text="Deshabilitado",  # Texto inicial
+            font=self.PRODUCT_FONT,
+            text_color=self.colors['text_primary'],
+            fg_color="transparent"
+        )
+        self.control_status_label.pack(pady=(5, 0))
+
 
         # Crear y mostrar el gráfico
         self.create_plot(self.map_frame)
@@ -302,12 +347,14 @@ class UnifiedNavigationWindow(ctk.CTk):
                     fill="green", 
                     outline=""
                 )
+                self.control_status_label.configure(text="Habilitado")
             else:
                 self.control_canvas.itemconfig(
                     self.control_circle, 
                     fill="red", 
                     outline=""
                 )
+                self.control_status_label.configure(text="Deshabilitado")
             # Force a redraw of the canvas to ensure immediate update
             self.control_canvas.update_idletasks()
         except Exception as e:
@@ -315,7 +362,7 @@ class UnifiedNavigationWindow(ctk.CTk):
 
     def lock_all_callback(self, msg):
         if msg.data and self.should_show_popup:  # Si es True y debemos mostrar el popup
-            self.show_info("Peso máximo de plataforma excedida, por favor retire el último producto ingresado para continuar con el proceso de compra", "¡Atención!")
+            self.show_info("Peso máximo de plataforma excedida, por favor retire el último producto agregado", "¡Atención!")
             self.should_show_popup = False
         elif not msg.data:  # Si es False
             if self.current_popup is not None:
@@ -356,22 +403,26 @@ class UnifiedNavigationWindow(ctk.CTk):
 
             
     def update_waypoint_status(self, status, waypoint_name, visited_waypoints):
-    # Obtener la ubicación de los waypoints desde la base de datos
         locations = self.get_product_locations()
-
+        
         for loc in locations:
             if loc['name'] == waypoint_name:
                 pixel_x = int((loc['x'] - self.origin[0]) / self.resolution)
                 pixel_y = int((loc['y'] - self.origin[1]) / self.resolution)
-
+                
                 if status == "REACHED":
-                    # El waypoint ya ha sido visitado, cambiar a verde
                     self.update_marker_color(pixel_x, pixel_y, 'green')
-                    self.update_text_color(waypoint_name, 'green')
+                    self.update_product_color(waypoint_name, "#00FF00")  # Verde brillante
                 elif status == "NAVIGATING":
-                    # El waypoint está en navegación, cambiar a amarillo
                     self.update_marker_color(pixel_x, pixel_y, 'yellow')
-                    self.update_text_color(waypoint_name, 'yellow')
+                    self.update_product_color(waypoint_name, "#FFD700")  # Amarillo
+
+    def update_product_color(self, product_name, color):
+        """Actualiza el color de un producto específico sin recrear la lista"""
+        self.product_colors[product_name] = color
+        if product_name in self.product_labels:
+            label = self.product_labels[product_name]
+            label.configure(text_color=color)
 
     def update_marker_color(self, x, y, color):
     # Actualizar el color del marcador en el gráfico
@@ -381,10 +432,23 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.canvas.draw()
 
     def update_text_color(self, name, color):
+
+        self.product_colors[name] = color
         # Actualizar el color del texto en el panel de productos
+        scrollable_frame = None
         for widget in self.selected_frame.winfo_children():
-            if isinstance(widget, ctk.CTkLabel) and widget.cget("text") == name:
-                widget.configure(text_color=color)
+            if isinstance(widget, ctk.CTkScrollableFrame):
+                scrollable_frame = widget
+                break
+        if scrollable_frame:
+            # Buscar en los contenedores de productos dentro del ScrollableFrame
+            for product_container in scrollable_frame.winfo_children():
+                if isinstance(product_container, ctk.CTkFrame):
+                    # Buscar la etiqueta dentro del contenedor del producto
+                    for label in product_container.winfo_children():
+                        if isinstance(label, ctk.CTkLabel) and label.cget("text") == name:
+                            label.configure(text_color=color)
+                            return
       
     def get_yaw_from_quaternion(self, quaternion):
         # Convert quaternion to Euler angles
@@ -430,6 +494,7 @@ class UnifiedNavigationWindow(ctk.CTk):
 
     def show_popup(self):
         popup_window = ctk.CTkToplevel()
+        popup_window.configure(fg_color=self.colors['primary_bg'])
         popup_window.title("Acciones")
         popup_window.geometry("300x150")
         
@@ -437,7 +502,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         label.pack(expand=True)
         
         # Botón para ir a caja
-        go_to_checkout_button = ctk.CTkButton(popup_window, text="Ir a Caja", command=self.go_to_checkout)
+        go_to_checkout_button = ctk.CTkButton(popup_window, text="Ir a Caja", command=self.go_to_checkout, fg_color=self.colors['button_bg'], text_color=self.colors['button_text'], hover_color=self.colors['button_hover'],)
         go_to_checkout_button.pack(side="left", padx=20, pady=10)
             
     def go_to_checkout(self):
@@ -525,6 +590,7 @@ class UnifiedNavigationWindow(ctk.CTk):
             self.current_popup.destroy()
         
         info_window = ctk.CTkToplevel()
+        info_window.configure(fg_color=self.colors['primary_bg'])
         info_window.title(title)
         info_window.geometry("500x200")  # Ventana más grande
         
@@ -536,7 +602,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         info_window.geometry(f"500x200+{x}+{y}")
         
         # Frame principal para organizar el contenido
-        main_frame = ctk.CTkFrame(info_window)
+        main_frame = ctk.CTkFrame(info_window, fg_color=self.colors['secondary_bg'])
         main_frame.pack(expand=True, fill="both", padx=20, pady=20)
         
         # Label con texto mejorado
@@ -556,7 +622,10 @@ class UnifiedNavigationWindow(ctk.CTk):
             command=info_window.destroy,
             width=100,
             height=35,
-            font=('Arial', 14)
+            font=('Arial', 14),
+            fg_color=self.colors['button_bg'],
+            text_color=self.colors['button_text'],
+            hover_color=self.colors['button_hover']
         )
         ok_button.pack(pady=(0, 10))
         
@@ -909,13 +978,14 @@ class UnifiedNavigationWindow(ctk.CTk):
 
     def view_selected_products(self):
         self.selected_frame.destroy()
-        self.selected_frame = ctk.CTkFrame(self.right_frame, width=250, fg_color="peachpuff")
+        self.selected_frame = ctk.CTkFrame(self.right_frame, width=250, fg_color=self.colors['list_bg'])
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
         # Título con fuente constante
         title_label = ctk.CTkLabel(
             self.selected_frame, 
             text="Lista de productos",
+            text_color=self.colors['text_primary'],
             font=self.PRODUCT_TITLE_FONT
         )
         title_label.pack(pady=(10, 15))
@@ -926,14 +996,38 @@ class UnifiedNavigationWindow(ctk.CTk):
         rows = cursor.fetchall()
         conn.close()
 
+        products_container = ctk.CTkScrollableFrame(
+            self.selected_frame,
+            fg_color="transparent",
+            height=400
+        )
+        products_container.pack(fill=ctk.BOTH, expand=True, padx=5, pady=5)
+
+        # Limpiar el diccionario de labels antiguos
+        self.product_labels.clear()
+
         for row in rows:
             product_name = row[0]
+            product_container = ctk.CTkFrame(products_container, fg_color=self.colors['list_bg'], height=50)
+            product_container.pack(fill=ctk.X, pady=10, padx=15)
+            product_container.pack_propagate(False)
+
+            # Usar el color guardado en el diccionario si existe, si no usar el color por defecto
+            text_color = self.product_colors.get(product_name, self.colors['text_primary'])
+            
             label = ctk.CTkLabel(
-                self.selected_frame, 
+                product_container, 
                 text=product_name,
+                text_color=text_color,
                 font=self.PRODUCT_FONT
             )
-            label.pack(pady=8)
+            label.pack(expand=True)
+            self.product_labels[product_name] = label
+
+
+    def refresh_product_list(self):
+        # Llamar a view_selected_products para actualizar la lista completa
+        self.view_selected_products()
 
 if __name__ == "__main__":
     app = RealNavWindow()
