@@ -53,8 +53,6 @@ def generate_launch_description():
         mux_node,
         joy_node,
         speed_limit_node,
-        teleop_node,
-        avoidance_node,
-
-        # twist_stamper       
+    #   teleop_node,
+    #  avoidance_node,    
     ])

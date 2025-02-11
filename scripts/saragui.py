@@ -13,7 +13,8 @@ from ament_index_python.packages import get_package_share_directory
 
 class ProductManager:
     def __init__(self, root):
-        self.show_mode_selector = False
+        self.show_mode_selector = True 
+        #self.show_mode_selector = False 
         self.root = root
         self.checkbox_vars = {}
         self.after_id = None
