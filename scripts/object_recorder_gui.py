@@ -27,6 +27,150 @@ def get_source_db_path(package_name, db_filename):
     db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
     return db_path
 
+def show_virtual_keyboard(entry_widget, parent, colors):
+    keyboard = CTkVirtualKeyboard(parent, entry_widget, colors)
+    parent.wait_window(keyboard)
+
+class CTkVirtualKeyboard(ctk.CTkToplevel):
+    def __init__(self, parent, entry_widget, colors):
+        super().__init__(parent)
+        
+        self.entry_widget = entry_widget
+        self.colors = colors
+        
+        # Configuración de la ventana
+        self.title("Teclado Virtual")
+        self.configure(fg_color=colors['secondary_bg'])
+        
+        # Centrar la ventana
+        window_width = 800
+        window_height = 380
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        
+        # Frame principal con padding
+        self.main_frame = ctk.CTkFrame(self, fg_color=colors['secondary_bg'])
+        self.main_frame.pack(expand=True, fill='both', padx=20, pady=20)
+        
+        # Mostrar el texto actual
+        self.create_display()
+        
+        # Crear el teclado
+        self.create_keyboard()
+        
+        # Hacer la ventana modal
+        self.transient(parent)
+        self.grab_set()
+        
+    def create_display(self):
+        # Frame para el display
+        display_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['primary_bg'])
+        display_frame.pack(fill='x', pady=(0, 10))
+        
+        # Entry para mostrar el texto
+        self.display = ctk.CTkEntry(
+            display_frame,
+            fg_color=self.colors['entry_bg'],
+            text_color=self.colors['text_primary'],
+            height=40,
+            font=("Helvetica", 18)
+        )
+        self.display.pack(fill='x', padx=10, pady=10)
+        self.display.insert(0, self.entry_widget.get())
+        
+    def create_keyboard(self):
+        # Layout del teclado
+        layouts = {
+            'default': [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ'],
+                ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '.', '-', '_']
+            ],
+            'symbols': [
+                ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')'],
+                ['+', '=', '{', '}', '[', ']', '|', '\\', ':', ';'],
+                ['<', '>', '?', '/', '"', "'", ',', '.', '~', '`'],
+                ['¡', '¿', '°', '¬', '€', '£', '¥', '§', '¶', '©']
+            ]
+        }
+        
+        self.current_layout = 'default'
+        
+        # Frame para el teclado
+        keyboard_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['secondary_bg'])
+        keyboard_frame.pack(expand=True, fill='both')
+        
+        # Crear filas para el teclado
+        for row in layouts['default']:
+            row_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+            row_frame.pack(expand=True, fill='x', pady=2)
+            
+            for char in row:
+                btn = ctk.CTkButton(
+                    row_frame,
+                    text=char,
+                    command=lambda c=char: self.add_character(c),
+                    width=60,
+                    height=45,
+                    fg_color=self.colors['button_bg'],
+                    text_color=self.colors['button_text'],
+                    hover_color=self.colors['button_hover'],
+                    font=("Helvetica", 16)
+                )
+                btn.pack(side='left', padx=2, expand=True)
+        
+        # Frame para botones especiales
+        special_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+        special_frame.pack(expand=True, fill='x', pady=2)
+        
+        # Botones especiales
+        special_buttons = [
+            ("⌫ Borrar", self.backspace, 120),
+            ("Espacio", lambda: self.add_character(' '), 300),
+            ("123/#!", self.toggle_layout, 120),
+            ("✓ Aceptar", self.accept, 120)
+        ]
+        
+        for text, command, width in special_buttons:
+            btn = ctk.CTkButton(
+                special_frame,
+                text=text,
+                command=command,
+                width=width,
+                height=45,
+                fg_color=self.colors['button_bg'],
+                text_color=self.colors['button_text'],
+                hover_color=self.colors['button_hover'],
+                font=("Helvetica", 16)
+            )
+            btn.pack(side='left', padx=2, expand=True if text == "Espacio" else False)
+            
+    def add_character(self, char):
+        current_pos = self.display.index(ctk.INSERT)
+        self.display.insert(current_pos, char)
+        
+    def backspace(self):
+        current_pos = self.display.index(ctk.INSERT)
+        if current_pos > 0:
+            self.display.delete(current_pos - 1)
+            
+    def toggle_layout(self):
+        # Implementar el cambio entre layouts si se desea
+        pass
+        
+    def accept(self):
+        text = self.display.get()
+        self.entry_widget.delete(0, 'end')
+        self.entry_widget.insert(0, text)
+        self.destroy()
+        
+    def cancel(self):
+        self.destroy()
+
 class SecondWindow(ctk.CTkToplevel):
     def __init__(self, parent, mode, colors):
         super().__init__(parent)
@@ -52,6 +196,7 @@ class SecondWindow(ctk.CTkToplevel):
         
         # Iniciar el reloj
         self.actualizar_reloj_y_fecha()
+        self.colors = colors
         
         # Protocolo de cierre
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -264,13 +409,30 @@ class SecondWindow(ctk.CTkToplevel):
         )
         name_label.pack(pady=(10, 5))
         
+        # Crear un frame para el campo de entrada y el botón del teclado
+        entry_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        entry_frame.pack(pady=(0, 15))
+        
         self.product_entry = ctk.CTkEntry(
-            form_frame,
+            entry_frame,
             font=('Arial', 16),
             fg_color=self.colors['entry_bg'],
             width=200
         )
-        self.product_entry.pack(pady=(0, 15))
+        self.product_entry.pack(side='left', padx=(0, 5))
+        
+        # Añadir botón de teclado
+        keyboard_btn = ctk.CTkButton(
+            entry_frame,
+            text="⌨",
+            command=lambda: show_virtual_keyboard(self.product_entry, self, self.colors),
+            width=40,
+            height=32,
+            fg_color=self.colors['button_bg'],
+            text_color=self.colors['button_text'],
+            hover_color=self.colors['button_hover']
+        )
+        keyboard_btn.pack(side='left')
         
         self.register_button = ctk.CTkButton(
             form_frame,

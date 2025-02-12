@@ -11,11 +11,159 @@ from PIL import Image
 from ament_index_python.packages import get_package_share_directory
 from object_recorder_gui import SecondWindow  
 
+
+
 def get_source_db_path(package_name, db_filename):
     share_dir = get_package_share_directory(package_name)
     workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
     db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
     return db_path
+
+def show_virtual_keyboard(entry_widget, parent, colors):
+    keyboard = CTkVirtualKeyboard(parent, entry_widget, colors)
+    parent.wait_window(keyboard)
+
+class CTkVirtualKeyboard(ctk.CTkToplevel):
+    def __init__(self, parent, entry_widget, colors):
+        super().__init__(parent)
+        
+        self.entry_widget = entry_widget
+        self.colors = colors
+        
+        # Configuración de la ventana
+        self.title("Teclado Virtual")
+        self.configure(fg_color=colors['secondary_bg'])
+        
+        # Centrar la ventana
+        window_width = 800
+        window_height = 380
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        
+        # Frame principal con padding
+        self.main_frame = ctk.CTkFrame(self, fg_color=colors['secondary_bg'])
+        self.main_frame.pack(expand=True, fill='both', padx=20, pady=20)
+        
+        # Mostrar el texto actual
+        self.create_display()
+        
+        # Crear el teclado
+        self.create_keyboard()
+        
+        # Hacer la ventana modal
+        self.transient(parent)
+        self.grab_set()
+        
+    def create_display(self):
+        # Frame para el display
+        display_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['primary_bg'])
+        display_frame.pack(fill='x', pady=(0, 10))
+        
+        # Entry para mostrar el texto
+        self.display = ctk.CTkEntry(
+            display_frame,
+            fg_color=self.colors['entry_bg'],
+            text_color=self.colors['text_primary'],
+            height=40,
+            font=("Helvetica", 18)
+        )
+        self.display.pack(fill='x', padx=10, pady=10)
+        self.display.insert(0, self.entry_widget.get())
+        
+    def create_keyboard(self):
+        # Layout del teclado
+        layouts = {
+            'default': [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ'],
+                ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '.', '-', '_']
+            ],
+            'symbols': [
+                ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')'],
+                ['+', '=', '{', '}', '[', ']', '|', '\\', ':', ';'],
+                ['<', '>', '?', '/', '"', "'", ',', '.', '~', '`'],
+                ['¡', '¿', '°', '¬', '€', '£', '¥', '§', '¶', '©']
+            ]
+        }
+        
+        self.current_layout = 'default'
+        
+        # Frame para el teclado
+        keyboard_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['secondary_bg'])
+        keyboard_frame.pack(expand=True, fill='both')
+        
+        # Crear filas para el teclado
+        for row in layouts['default']:
+            row_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+            row_frame.pack(expand=True, fill='x', pady=2)
+            
+            for char in row:
+                btn = ctk.CTkButton(
+                    row_frame,
+                    text=char,
+                    command=lambda c=char: self.add_character(c),
+                    width=60,
+                    height=45,
+                    fg_color=self.colors['button_bg'],
+                    text_color=self.colors['button_text'],
+                    hover_color=self.colors['button_hover'],
+                    font=("Helvetica", 16)
+                )
+                btn.pack(side='left', padx=2, expand=True)
+        
+        # Frame para botones especiales
+        special_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+        special_frame.pack(expand=True, fill='x', pady=2)
+        
+        # Botones especiales
+        special_buttons = [
+            ("⌫ Borrar", self.backspace, 120),
+            ("Espacio", lambda: self.add_character(' '), 300),
+            ("123/#!", self.toggle_layout, 120),
+            ("✓ Aceptar", self.accept, 120)
+        ]
+        
+        for text, command, width in special_buttons:
+            btn = ctk.CTkButton(
+                special_frame,
+                text=text,
+                command=command,
+                width=width,
+                height=45,
+                fg_color=self.colors['button_bg'],
+                text_color=self.colors['button_text'],
+                hover_color=self.colors['button_hover'],
+                font=("Helvetica", 16)
+            )
+            btn.pack(side='left', padx=2, expand=True if text == "Espacio" else False)
+            
+    def add_character(self, char):
+        current_pos = self.display.index(ctk.INSERT)
+        self.display.insert(current_pos, char)
+        
+    def backspace(self):
+        current_pos = self.display.index(ctk.INSERT)
+        if current_pos > 0:
+            self.display.delete(current_pos - 1)
+            
+    def toggle_layout(self):
+        # Implementar el cambio entre layouts si se desea
+        pass
+        
+    def accept(self):
+        text = self.display.get()
+        self.entry_widget.delete(0, 'end')
+        self.entry_widget.insert(0, text)
+        self.destroy()
+        
+    def cancel(self):
+        self.destroy()
+
+
 
 class ProductInputDialog(ctk.CTkToplevel):
     def __init__(self, parent, title, colors, product_data=None):
@@ -52,8 +200,37 @@ class ProductInputDialog(ctk.CTkToplevel):
         self.wait_visibility()
         self.grab_set()
         
-
     
+    def create_entry_with_keyboard(self, parent, placeholder="", width=200):
+        """Helper function to create an entry with a keyboard button"""
+        frame = ctk.CTkFrame(parent, fg_color="transparent")
+        frame.pack(pady=(0, 15))
+        
+        entry = ctk.CTkEntry(
+            frame,
+            font=("Helvetica", 16),
+            width=width,
+            fg_color=self.colors['entry_bg'],
+            placeholder_text=placeholder
+        )
+        entry.pack(side='left', padx=(0, 5))
+        
+        keyboard_btn = ctk.CTkButton(
+            frame,
+            text="⌨",
+            command=lambda: show_virtual_keyboard(entry, self, self.colors),
+            width=40,
+            height=32,
+            fg_color=self.colors['button_bg'],
+            text_color=self.colors['button_text'],
+            hover_color=self.colors['button_hover']
+        )
+        keyboard_btn.pack(side='left')
+        
+        return entry
+
+
+        
     def create_widgets(self):
         # Product name entry
         name_label = ctk.CTkLabel(
@@ -64,13 +241,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         )
         name_label.pack(pady=(20, 5))
         
-        self.name_entry = ctk.CTkEntry(
-            self,
-            font=("Helvetica", 16),
-            width=200,
-            fg_color=self.colors['entry_bg']
-        )
-        self.name_entry.pack(pady=(0, 15))
+        self.name_entry = self.create_entry_with_keyboard(self, "Ingrese el nombre del producto")
         
         # X coordinate entry
         x_label = ctk.CTkLabel(
@@ -81,13 +252,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         )
         x_label.pack(pady=(5, 5))
         
-        self.x_entry = ctk.CTkEntry(
-            self,
-            font=("Helvetica", 16),
-            width=200,
-            fg_color=self.colors['entry_bg']
-        )
-        self.x_entry.pack(pady=(0, 15))
+        self.x_entry = self.create_entry_with_keyboard(self, "Ingrese la coordenada X")
         
         # Y coordinate entry
         y_label = ctk.CTkLabel(
@@ -98,13 +263,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         )
         y_label.pack(pady=(5, 5))
         
-        self.y_entry = ctk.CTkEntry(
-            self,
-            font=("Helvetica", 16),
-            width=200,
-            fg_color=self.colors['entry_bg']
-        )
-        self.y_entry.pack(pady=(0, 15))
+        self.y_entry = self.create_entry_with_keyboard(self, "Ingrese la coordenada Y")
         
         # Buttons frame
         button_frame = ctk.CTkFrame(self, fg_color=self.colors['secondary_bg'])
@@ -133,6 +292,7 @@ class ProductInputDialog(ctk.CTkToplevel):
             width=100
         )
         cancel_button.pack(side=ctk.LEFT, padx=10)
+
         
     def accept(self):
         try:
@@ -240,6 +400,8 @@ class ModernProductManager:
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.second_window = None
         
+        self.search_var = ctk.StringVar()
+        self.search_var.trace('w', self.on_search_change)
         # Variable para controlar la visibilidad del selector de modo
         self.show_mode_selector = True
         
@@ -490,23 +652,36 @@ class ModernProductManager:
         # Create a frame for search and refresh
         search_frame = ctk.CTkFrame(products_frame, fg_color=self.colors['frame_bg'])
         search_frame.pack(fill=ctk.X, padx=20, pady=(10, 0))
-
-        # Search box
-        self.search_var = ctk.StringVar()
-        self.search_var.trace('w', self.on_search_change)
-        # Configure grid weights to make search box expandable
-        search_frame.grid_columnconfigure(0, weight=1)  # Search entry expands
-        search_frame.grid_columnconfigure(1, weight=0)  # Refresh button stays fixed
-
+        
+        # Configure grid weights
+        search_frame.grid_columnconfigure(0, weight=1)
+        search_frame.grid_columnconfigure((1, 2), weight=0)
+        
+        # Search box with keyboard button
+        search_container = ctk.CTkFrame(search_frame, fg_color="transparent")
+        search_container.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+        
         search_entry = ctk.CTkEntry(
-            search_frame,
+            search_container,
             placeholder_text="Buscar productos...",
             font=("Helvetica", 16),
             fg_color=self.colors['entry_bg'],
             textvariable=self.search_var
         )
-        search_entry.grid(row=0, column=0, sticky="ew", padx=(10, 10), pady=10)
-
+        search_entry.pack(side='left', fill='x', expand=True, padx=(0, 5))
+        
+        keyboard_button = ctk.CTkButton(
+            search_container,
+            text="⌨",
+            command=lambda: show_virtual_keyboard(search_entry, self.root, self.colors),
+            width=40,
+            height=32,
+            fg_color=self.colors['button_bg'],
+            text_color=self.colors['button_text'],
+            hover_color=self.colors['button_hover']
+        )
+        keyboard_button.pack(side='left')
+        
         # Refresh button
         refresh_button = ctk.CTkButton(
             search_frame,
@@ -519,7 +694,8 @@ class ModernProductManager:
             width=120,
             height=32
         )
-        refresh_button.grid(row=0, column=1, padx=10, pady=10)
+        refresh_button.grid(row=0, column=2, padx=10, pady=10)
+
     def on_search_change(self, *args):
         self.refresh_products()
 
