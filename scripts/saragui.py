@@ -11,6 +11,24 @@ from base_navgui import UnifiedNavigationWindow
 from PIL import Image
 from ament_index_python.packages import get_package_share_directory
 
+def get_source_db_path(package_name, db_filename):
+    """
+    Obtiene la ruta a la base de datos en el directorio src del paquete
+    """
+    # Obtener el directorio share del paquete
+    share_dir = get_package_share_directory(package_name)
+    
+    # Navegar hasta la raíz del workspace (subir 4 niveles: share/package/install/workspace)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
+    
+    # Construir la ruta a la base de datos en src
+    db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
+    
+    #print(f"Trying to access database at: {db_path}")
+    
+    return db_path
+        
+
 class ProductManager:
     def __init__(self, root):
         self.show_mode_selector = True 
@@ -52,6 +70,7 @@ class ProductManager:
         self.setup_ui()
         signal.signal(signal.SIGINT, self.signal_handler)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
 
     def setup_ui(self):
         ctk.set_appearance_mode("light")
@@ -301,6 +320,9 @@ class ProductManager:
             hover_color=self.colors['button_hover']
         )
         ok_button.pack(pady=10)
+    
+
+
 
     def refresh_treeview(self, search_term=""):
         # Limpiar la vista actual
@@ -308,7 +330,7 @@ class ProductManager:
             widget.destroy()
 
         try:
-            db_dir = os.path.join('src/turtlemart/database/products.db')
+            db_dir = get_source_db_path('turtlemart', 'products.db')
             connection = sqlite3.connect(db_dir)
             cursor = connection.cursor()
 
@@ -377,7 +399,7 @@ class ProductManager:
     def select_products(self):
         selected_items = [key for key, var in self.checkbox_vars.items() if var.get()]
         if selected_items:
-            db_dir = os.path.join('src/turtlemart/database/products.db')
+            db_dir = get_source_db_path('turtlemart', 'products.db')
             connection = sqlite3.connect(db_dir)
             cursor = connection.cursor()
             
@@ -399,7 +421,7 @@ class ProductManager:
         for widget in self.selected_frame.winfo_children():
             widget.destroy()
 
-        db_dir = os.path.join('src/turtlemart/database/products.db')
+        db_dir = get_source_db_path('turtlemart', 'products.db')
         connection = sqlite3.connect(db_dir)
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM selected_products")

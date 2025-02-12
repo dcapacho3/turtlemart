@@ -17,7 +17,7 @@ find_package(geometry_msgs REQUIRED)
 
  
 install(
-  DIRECTORY config launch maps meshes models params rviz worlds scripts database frames images debug debug_output
+  DIRECTORY config launch maps meshes models params rviz worlds scripts database images
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -40,5 +40,5 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
-#test
+
 

@@ -4,13 +4,32 @@ import sqlite3
 from ament_index_python.packages import get_package_share_directory
 import os
 
+
+def get_source_db_path(package_name, db_filename):
+    """
+    Obtiene la ruta a la base de datos en el directorio src del paquete
+    """
+    # Obtener el directorio share del paquete
+    share_dir = get_package_share_directory(package_name)
+    
+    # Navegar hasta la raíz del workspace (subir 4 niveles: share/package/install/workspace)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
+    
+    # Construir la ruta a la base de datos en src
+    db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
+    
+    #print(f"Trying to access database at: {db_path}")
+    
+    return db_path
+
+
 def create_database():
     # Obtener la ruta del directorio actual del script
     
     # Construir la ruta relativa a la carpeta database
 
     bringup_dir = get_package_share_directory('turtlemart')
-    db_dir = os.path.join(bringup_dir, 'database/products.db')
+    db_dir = get_source_db_path('turtlemart', 'products.db')
     
     connection = sqlite3.connect(db_dir)
     cursor = connection.cursor()

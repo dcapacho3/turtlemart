@@ -32,6 +32,8 @@ import matplotlib.transforms as mtransforms
 
 from finishgui import ThanksWindow
 
+
+
 class UnifiedNavigationWindow(ctk.CTk):
     def __init__(self, product_manager,navigation_mode):
         super().__init__()
@@ -764,8 +766,10 @@ class UnifiedNavigationWindow(ctk.CTk):
 
         self.canvas.draw()
 
+
+
     def get_product_locations(self):
-        db_dir = os.path.join('src/turtlemart/database/products.db')
+        db_dir = get_source_db_path('turtlemart', 'products.db')
         conn = sqlite3.connect(db_dir)
         cursor = conn.cursor()
         cursor.execute('SELECT name, x, y FROM selected_products')
@@ -989,8 +993,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             font=self.PRODUCT_TITLE_FONT
         )
         title_label.pack(pady=(10, 15))
-
-        conn = sqlite3.connect('src/turtlemart/database/products.db')
+        db_dir = get_source_db_path('turtlemart', 'products.db')
+        conn = sqlite3.connect(db_dir)
         cursor = conn.cursor()
         cursor.execute('SELECT name FROM selected_products')
         rows = cursor.fetchall()
@@ -1028,6 +1032,23 @@ class UnifiedNavigationWindow(ctk.CTk):
     def refresh_product_list(self):
         # Llamar a view_selected_products para actualizar la lista completa
         self.view_selected_products()
+
+def get_source_db_path(package_name, db_filename):
+    """
+    Obtiene la ruta a la base de datos en el directorio src del paquete
+    """
+    # Obtener el directorio share del paquete
+    share_dir = get_package_share_directory(package_name)
+    
+    # Navegar hasta la raíz del workspace (subir 4 niveles: share/package/install/workspace)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
+    
+    # Construir la ruta a la base de datos en src
+    db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
+    
+    #print(f"Trying to access database at: {db_path}")
+    
+    return db_path
 
 if __name__ == "__main__":
     app = RealNavWindow()

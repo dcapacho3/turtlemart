@@ -14,6 +14,22 @@ from itertools import permutations
 from ament_index_python.packages import get_package_share_directory
 from tf_transformations import quaternion_from_euler
 
+def get_source_db_path(package_name, db_filename):
+    """
+    Obtiene la ruta a la base de datos en el directorio src del paquete
+    """
+    # Obtener el directorio share del paquete
+    share_dir = get_package_share_directory(package_name)
+    
+    # Navegar hasta la raíz del workspace (subir 4 niveles: share/package/install/workspace)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
+    
+    # Construir la ruta a la base de datos en src
+    db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
+    
+    #print(f"Trying to access database at: {db_path}")
+    
+    return db_path
 
 class AutonomousNavigator:
     def __init__(self):
@@ -38,7 +54,7 @@ class AutonomousNavigator:
 
 
     def get_product_locations(self):
-        db_dir = os.path.join('src/turtlemart/database/products.db')
+        db_dir = get_source_db_path('turtlemart', 'products.db')
         conn = sqlite3.connect(db_dir)
         cursor = conn.cursor()
         cursor.execute('SELECT name, x, y FROM selected_products')

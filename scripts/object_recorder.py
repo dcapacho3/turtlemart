@@ -9,6 +9,22 @@ import queue
 from ament_index_python.packages import get_package_share_directory
 import os
 
+def get_source_db_path(package_name, db_filename):
+    """
+    Obtiene la ruta a la base de datos en el directorio src del paquete
+    """
+    # Obtener el directorio share del paquete
+    share_dir = get_package_share_directory(package_name)
+    
+    # Navegar hasta la raíz del workspace (subir 4 niveles: share/package/install/workspace)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
+    
+    # Construir la ruta a la base de datos en src
+    db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
+    
+    #print(f"Trying to access database at: {db_path}")
+    
+    return db_path
 
 class ObjectRecorder(Node):
     def __init__(self):
@@ -20,11 +36,12 @@ class ObjectRecorder(Node):
         # Conectar a la base de datos existente
           
         bringup_dir = get_package_share_directory('turtlemart')
-        db_dir = os.path.join( 'src/turtlemart/database/products.db')
+        db_dir = get_source_db_path('turtlemart', 'products.db')
         self.database_connection = sqlite3.connect(db_dir)
         self.cursor = self.database_connection.cursor()
 
         self.get_logger().info('Object Recorder Node Initialized.')
+
 
     def odom_callback(self, msg):
         # Actualiza la posición actual del robot cada vez que llega un mensaje de odometría
