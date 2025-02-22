@@ -179,6 +179,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         self.result = None
         self.product_data = product_data
         
+        
         window_width = 400
         window_height = 350
         screen_width = self.winfo_screenwidth()

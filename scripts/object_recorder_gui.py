@@ -318,9 +318,16 @@ class SecondWindow(ctk.CTkToplevel):
         )
         ok_button.pack(pady=10)
         
-        # Hacer el diálogo modal
+        # Asegurarse de que el diálogo esté completamente creado antes de hacerlo modal
         dialog.transient(self)
+        
+        # Esperar a que la ventana sea visible
+        self.wait_visibility(dialog)
+        
+        # Ahora es seguro hacer el diálogo modal
         dialog.grab_set()
+        
+        # Esperar a que se cierre el diálogo
         self.wait_window(dialog)
 
     def setup_left_frame(self):
@@ -1005,7 +1012,7 @@ class SecondWindow(ctk.CTkToplevel):
                 "gazebo",
                 "gzclient",
                 "gzserver",
-                "ros2",
+                #"ros2",
                # "python3"  # Ten cuidado con este, solo matará los procesos python relacionados con ROS
             ]
             

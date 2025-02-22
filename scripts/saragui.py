@@ -27,6 +27,144 @@ def get_source_db_path(package_name, db_filename):
     #print(f"Trying to access database at: {db_path}")
     
     return db_path
+
+class CTkVirtualKeyboard(ctk.CTkToplevel):
+    def __init__(self, parent, entry_widget, colors):
+        super().__init__(parent)
+        
+        self.entry_widget = entry_widget
+        self.colors = colors
+        
+        # Configuración de la ventana
+        self.title("Teclado Virtual")
+        self.configure(fg_color=colors['secondary_bg'])
+        
+        # Centrar la ventana
+        window_width = 800
+        window_height = 380
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        
+        # Frame principal con padding
+        self.main_frame = ctk.CTkFrame(self, fg_color=colors['secondary_bg'])
+        self.main_frame.pack(expand=True, fill='both', padx=20, pady=20)
+        
+        # Mostrar el texto actual
+        self.create_display()
+        
+        # Crear el teclado
+        self.create_keyboard()
+        
+        # Hacer la ventana modal
+        self.transient(parent)
+        self.grab_set()
+        
+    def create_display(self):
+        # Frame para el display
+        display_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['primary_bg'])
+        display_frame.pack(fill='x', pady=(0, 10))
+        
+        # Entry para mostrar el texto
+        self.display = ctk.CTkEntry(
+            display_frame,
+            fg_color=self.colors['entry_bg'],
+            text_color=self.colors['text_primary'],
+            height=40,
+            font=("Helvetica", 18)
+        )
+        self.display.pack(fill='x', padx=10, pady=10)
+        self.display.insert(0, self.entry_widget.get())
+        
+    def create_keyboard(self):
+        # Layout del teclado
+        layouts = {
+            'default': [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ'],
+                ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '.', '-', '_']
+            ]
+        }
+        
+        self.current_layout = 'default'
+        
+        # Frame para el teclado
+        keyboard_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['secondary_bg'])
+        keyboard_frame.pack(expand=True, fill='both')
+        
+        # Crear filas para el teclado
+        for row in layouts['default']:
+            row_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+            row_frame.pack(expand=True, fill='x', pady=2)
+            
+            for char in row:
+                btn = ctk.CTkButton(
+                    row_frame,
+                    text=char,
+                    command=lambda c=char: self.add_character(c),
+                    width=60,
+                    height=45,
+                    fg_color=self.colors['button_bg'],
+                    text_color=self.colors['button_text'],
+                    hover_color=self.colors['button_hover'],
+                    font=("Helvetica", 16)
+                )
+                btn.pack(side='left', padx=2, expand=True)
+        
+        # Frame para botones especiales
+        special_frame = ctk.CTkFrame(keyboard_frame, fg_color=self.colors['secondary_bg'])
+        special_frame.pack(expand=True, fill='x', pady=2)
+        
+        # Botones especiales
+        special_buttons = [
+            ("⌫ Borrar", self.backspace, 120),
+            ("Espacio", lambda: self.add_character(' '), 300),
+            ("123/#!", self.toggle_layout, 120),
+            ("✓ Aceptar", self.accept, 120)
+        ]
+        
+        for text, command, width in special_buttons:
+            btn = ctk.CTkButton(
+                special_frame,
+                text=text,
+                command=command,
+                width=width,
+                height=45,
+                fg_color=self.colors['button_bg'],
+                text_color=self.colors['button_text'],
+                hover_color=self.colors['button_hover'],
+                font=("Helvetica", 16)
+            )
+            btn.pack(side='left', padx=2, expand=True if text == "Espacio" else False)
+            
+    def add_character(self, char):
+        current_pos = self.display.index(ctk.INSERT)
+        self.display.insert(current_pos, char)
+        
+    def backspace(self):
+        current_pos = self.display.index(ctk.INSERT)
+        if current_pos > 0:
+            self.display.delete(current_pos - 1)
+            
+    def toggle_layout(self):
+        pass
+        
+    def accept(self):
+        text = self.display.get()
+        self.entry_widget.delete(0, 'end')
+        self.entry_widget.insert(0, text)
+        self.destroy()
+        
+    def cancel(self):
+        self.destroy()
+
+# Función auxiliar para mostrar el teclado virtual
+def show_virtual_keyboard(entry_widget, parent, colors):
+    keyboard = CTkVirtualKeyboard(parent, entry_widget, colors)
+    parent.wait_window(keyboard)
         
 
 class ProductManager:
@@ -37,7 +175,8 @@ class ProductManager:
         self.checkbox_vars = {}
         self.after_id = None
         self.navigation_window = None
-        
+        self.is_closing = False
+        self.db_connection = None
 
         # Definición de la paleta de colores
         self.colors = {
@@ -69,8 +208,8 @@ class ProductManager:
         # Configuración de la interfaz
         self.setup_ui()
         signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)  # Agregar esta línea
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-
 
     def setup_ui(self):
         ctk.set_appearance_mode("light")
@@ -201,28 +340,34 @@ class ProductManager:
         self.search_frame = ctk.CTkFrame(search_container, fg_color=self.colors['primary_bg'])
         self.search_frame.pack()
 
-        # Entry de búsqueda y botón buscar
+            # Entry de búsqueda y botón buscar
+        self.search_var = ctk.StringVar()
+        self.search_var.trace('w', lambda *args: self.perform_search())
+
+        search_container = ctk.CTkFrame(self.search_frame, fg_color="transparent")
+        search_container.pack()
+
         self.search_entry = ctk.CTkEntry(
-            self.search_frame, 
+            search_container,
             font=("Arial", 20),
             width=550,
             height=40,
-            fg_color=self.colors['entry_bg']
+            fg_color=self.colors['entry_bg'],
+            textvariable=self.search_var
         )
         self.search_entry.pack(side=ctk.LEFT, padx=(0, 10))
 
-        self.search_button = ctk.CTkButton(
-            self.search_frame,
-            text="Buscar",
-            command=self.perform_search,
+        keyboard_button = ctk.CTkButton(
+            search_container,
+            text="⌨",
+            command=lambda: show_virtual_keyboard(self.search_entry, self.root, self.colors),
+            width=40,
+            height=40,
             fg_color=self.colors['button_bg'],
             text_color=self.colors['button_text'],
-            hover_color=self.colors['button_hover'],
-            font=("Arial", 20, "bold"),
-            width=200,
-            height=40
+            hover_color=self.colors['button_hover']
         )
-        self.search_button.pack(side=ctk.LEFT)
+        keyboard_button.pack(side=ctk.LEFT)
 
         # Bindear evento Enter para buscar
         self.search_entry.bind('<Return>', lambda e: self.perform_search())
@@ -331,8 +476,8 @@ class ProductManager:
 
         try:
             db_dir = get_source_db_path('turtlemart', 'products.db')
-            connection = sqlite3.connect(db_dir)
-            cursor = connection.cursor()
+            self.db_connection = sqlite3.connect(db_dir)
+            cursor = self.db_connection.cursor()
 
             # Añadir logging para debug
             print(f"Searching for: '{search_term}'")
@@ -392,8 +537,9 @@ class ProductManager:
             )
             error_label.pack(pady=20)
         finally:
-            if 'connection' in locals():
-                connection.close()
+            if self.db_connection:
+                self.db_connection.close()
+                self.db_connection = None
 
 
     def select_products(self):
@@ -436,9 +582,8 @@ class ProductManager:
         connection.close()
 
     def perform_search(self):
-        """Realiza la búsqueda basada en el texto ingresado"""
-        search_term = self.search_entry.get().strip()  # Eliminar espacios en blanco
-        print(f"Performing search with term: '{search_term}'")  # Debug log
+        search_term = self.search_var.get().strip()
+        print(f"Performing search with term: '{search_term}'")
         self.refresh_treeview(search_term)
 
     def actualizar_reloj_y_fecha(self):
@@ -455,21 +600,66 @@ class ProductManager:
             self.navigation_window.mainloop()
 
     def signal_handler(self, sig, frame):
-        print("Ctrl+C detectado, cerrando la aplicación...")
+        print("\nSeñal recibida: {sig}")
         self.on_closing()
 
     def on_closing(self):
-        """Método para manejar el cierre controlado de la ventana."""
-        print("Cerrando la ventana correctamente...")
-        if self.after_id is not None:
-            self.root.after_cancel(self.after_id)
-        if self.navigation_window:
-            self.navigation_window.destroy()
-        self.root.quit()
-        self.root.destroy()
+        if self.is_closing:
+            return
+            
+        try:
+            print("\nIniciando proceso de cierre...")
+            
+            # Limpiar recursos
+            self.cleanup_resources()
+            
+            # Destruir la ventana principal
+            if self.root:
+                self.root.quit()
+                self.root.destroy()
+                print("Ventana principal cerrada correctamente")
+                
+        except Exception as e:
+            print(f"Error durante el cierre: {e}")
+        finally:
+            print("Proceso de cierre completado")
         
     def deiconify(self):
         self.root.deiconify()
+        
+    def cleanup_resources(self):
+        """Limpia todos los recursos antes de cerrar"""
+        if self.is_closing:
+            return
+            
+        self.is_closing = True
+        print("Iniciando limpieza de recursos...")
+        
+        # Cancelar el temporizador del reloj
+        if self.after_id is not None:
+            try:
+                self.root.after_cancel(self.after_id)
+                print("Temporizador del reloj cancelado")
+            except Exception as e:
+                print(f"Error al cancelar temporizador: {e}")
+
+        # Cerrar conexión a la base de datos si está abierta
+        if self.db_connection:
+            try:
+                self.db_connection.close()
+                print("Conexión a la base de datos cerrada")
+            except Exception as e:
+                print(f"Error al cerrar la base de datos: {e}")
+
+        # Cerrar ventana de navegación si está abierta
+        if self.navigation_window:
+            try:
+                self.navigation_window.destroy()
+                print("Ventana de navegación cerrada")
+            except Exception as e:
+                print(f"Error al cerrar ventana de navegación: {e}")
+
+        print("Limpieza de recursos completada")
 
 if __name__ == '__main__':
     root = ctk.CTk()
