@@ -1,3 +1,12 @@
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Archivo de lanzamiento principal para el sistema de navegación Nav2 del robot SARA
+# Implementa la configuración de lanzamiento integrada para el stack de navegación
+# autónoma Nav2, coordinando los componentes de SLAM, localización y navegación.
+# Este archivo gestiona el arranque coordinado de todos los subsistemas necesarios
+# para la navegación autónoma del robot SARA, tanto en modo de mapeo (SLAM)
+# como en modo de navegación sobre mapas existentes.
+
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -12,11 +21,13 @@ from launch_ros.actions import PushRosNamespace
 
 
 def generate_launch_description():
-    # Get the launch directory
+    # Obtención del directorio de lanzamiento
+    # Localiza los archivos de configuración y lanzamiento del paquete Nav2
     bringup_dir = get_package_share_directory('nav2_bringup')
     launch_dir = os.path.join(bringup_dir, 'launch')
 
-    # Create the launch configuration variables
+    # Creación de variables de configuración del lanzamiento
+    # Parámetros fundamentales para el comportamiento del sistema de navegación
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
     slam = LaunchConfiguration('slam')
@@ -26,9 +37,13 @@ def generate_launch_description():
     default_bt_xml_filename = LaunchConfiguration('default_bt_xml_filename')
     autostart = LaunchConfiguration('autostart')
 
+    # Configuración del buffer de línea para salida estándar
+    # Mejora la visualización de logs en tiempo real
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
 
+    # Declaración de argumentos de lanzamiento
+    # Define los parámetros configurables y sus valores por defecto
     declare_namespace_cmd = DeclareLaunchArgument(
         'namespace',
         default_value='',
@@ -69,12 +84,16 @@ def generate_launch_description():
         'autostart', default_value='true',
         description='Automatically startup the nav2 stack')
 
-    # Specify the actions
+    # Especificación de las acciones de lanzamiento
+    # Configura y agrupa los componentes principales del sistema Nav2
     bringup_cmd_group = GroupAction([
+        # Configuración del espacio de nombres
+        # Facilita la ejecución de múltiples instancias del robot SARA
         PushRosNamespace(
             condition=IfCondition(use_namespace),
             namespace=namespace),
 
+        # Permite al robot SARA mapear y localizarse simultáneamente en entornos desconocidos
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'slam_launch.py')),
             condition=IfCondition(slam),
@@ -83,6 +102,7 @@ def generate_launch_description():
                               'autostart': autostart,
                               'params_file': params_file}.items()),
 
+        # Permite al robot SARA determinar su posición en un mapa conocido
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir,
                                                        'localization_launch.py')),
@@ -94,6 +114,8 @@ def generate_launch_description():
                               'params_file': params_file,
                               'use_lifecycle_mgr': 'false'}.items()),
 
+        # Lanzamiento del sistema de navegación
+        # Gestiona la planificación de rutas y control de movimiento del robot SARA
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'navigation_launch.py')),
             launch_arguments={'namespace': namespace,
@@ -105,13 +127,14 @@ def generate_launch_description():
                               'map_subscribe_transient_local': 'true'}.items()),
     ])
 
-    # Create the launch description and populate
+    # Creación de la descripción de lanzamiento y población
     ld = LaunchDescription()
 
-    # Set environment variables
+    # Configuración de variables de entorno
+    # Establece el comportamiento del sistema de logs
     ld.add_action(stdout_linebuf_envvar)
 
-    # Declare the launch options
+    # Declaración de las opciones de lanzamiento
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_namespace_cmd)
     ld.add_action(declare_slam_cmd)
@@ -121,7 +144,7 @@ def generate_launch_description():
     ld.add_action(declare_autostart_cmd)
     ld.add_action(declare_bt_xml_cmd)
 
-    # Add the actions to launch all of the navigation nodes
+    # Adición de acciones para lanzar todos los nodos de navegación
     ld.add_action(bringup_cmd_group)
 
     return ld

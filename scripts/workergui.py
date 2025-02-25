@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Gestor de Base de Datos de Productos para SARA
+# Implementa una interfaz gráfica para manipular la base de datos de productos
+# permitiendo añadir, actualizar, eliminar y buscar productos, así como iniciar
+# el proceso de localización de productos con el robot.
 
 import sqlite3
 import customtkinter as ctk
@@ -11,20 +17,27 @@ from PIL import Image
 from ament_index_python.packages import get_package_share_directory
 from object_recorder_gui import SecondWindow  
 
-
-
 def get_source_db_path(package_name, db_filename):
+    # Función para obtener la ruta de la base de datos en el directorio src del paquete
+    # Navega desde el directorio share hasta la ubicación de la base de datos
+    # siguiendo la estructura estándar de un workspace ROS2
     share_dir = get_package_share_directory(package_name)
     workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
     db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
     return db_path
 
 def show_virtual_keyboard(entry_widget, parent, colors):
+    # Función auxiliar para mostrar el teclado virtual
+    # Crea una instancia del teclado y espera hasta que se cierre
     keyboard = CTkVirtualKeyboard(parent, entry_widget, colors)
     parent.wait_window(keyboard)
 
 class CTkVirtualKeyboard(ctk.CTkToplevel):
+    # Clase que implementa un teclado virtual para la entrada de texto
+    # Facilita la interacción con la interfaz en dispositivos sin teclado físico
     def __init__(self, parent, entry_widget, colors):
+        # Inicialización del teclado virtual
+        # Configura la ventana emergente y sus controles
         super().__init__(parent)
         
         self.entry_widget = entry_widget
@@ -58,6 +71,8 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
         self.grab_set()
         
     def create_display(self):
+        # Método para crear el área de visualización del texto
+        # Muestra el texto que se está escribiendo actualmente
         # Frame para el display
         display_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['primary_bg'])
         display_frame.pack(fill='x', pady=(0, 10))
@@ -74,6 +89,8 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
         self.display.insert(0, self.entry_widget.get())
         
     def create_keyboard(self):
+        # Método para crear la disposición de teclas del teclado
+        # Define el layout y crea los botones interactivos
         # Layout del teclado
         layouts = {
             'default': [
@@ -142,35 +159,45 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
             btn.pack(side='left', padx=2, expand=True if text == "Espacio" else False)
             
     def add_character(self, char):
+        # Método para añadir un carácter al campo de texto
+        # Inserta el carácter en la posición actual del cursor
         current_pos = self.display.index(ctk.INSERT)
         self.display.insert(current_pos, char)
         
     def backspace(self):
+        # Método para borrar el carácter anterior al cursor
+        # Implementa la funcionalidad de retroceso
         current_pos = self.display.index(ctk.INSERT)
         if current_pos > 0:
             self.display.delete(current_pos - 1)
             
     def toggle_layout(self):
-        # Implementar el cambio entre layouts si se desea
+        # Método para alternar entre diferentes disposiciones del teclado
+        # No implementado completamente, para futura expansión
         pass
         
     def accept(self):
+        # Método para confirmar el texto ingresado
+        # Transfiere el texto al campo de entrada original y cierra el teclado
         text = self.display.get()
         self.entry_widget.delete(0, 'end')
         self.entry_widget.insert(0, text)
         self.destroy()
         
     def cancel(self):
+        # Método para cancelar la entrada de texto
+        # Cierra el teclado sin transferir ningún texto
         self.destroy()
 
-
-
 class ProductInputDialog(ctk.CTkToplevel):
+    # Clase que implementa un diálogo para añadir o editar productos
+    # Permite introducir el nombre y coordenadas de un producto
     def __init__(self, parent, title, colors, product_data=None):
+        # Inicialización del diálogo de entrada de producto
+        # Configura la ventana y sus controles según sea para añadir o editar
         self.is_closing = False
         self.root = root
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-
 
         self.second_window = None
         super().__init__(parent)
@@ -179,7 +206,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         self.result = None
         self.product_data = product_data
         
-        
+        # Configuración de tamaño y posición
         window_width = 400
         window_height = 350
         screen_width = self.winfo_screenwidth()
@@ -193,6 +220,7 @@ class ProductInputDialog(ctk.CTkToplevel):
         
         self.create_widgets()
         
+        # Si es para editar, rellenar los campos con los datos existentes
         if self.product_data:
             self.name_entry.insert(0, self.product_data[1])
             self.x_entry.insert(0, str(self.product_data[2]))
@@ -200,9 +228,10 @@ class ProductInputDialog(ctk.CTkToplevel):
             
         self.wait_visibility()
         self.grab_set()
-        
     
     def create_entry_with_keyboard(self, parent, placeholder="", width=200):
+        # Método auxiliar para crear un campo de entrada con botón de teclado
+        # Facilita la creación consistente de campos con acceso al teclado virtual
         """Helper function to create an entry with a keyboard button"""
         frame = ctk.CTkFrame(parent, fg_color="transparent")
         frame.pack(pady=(0, 15))
@@ -229,10 +258,10 @@ class ProductInputDialog(ctk.CTkToplevel):
         keyboard_btn.pack(side='left')
         
         return entry
-
-
         
     def create_widgets(self):
+        # Método para crear los widgets del diálogo
+        # Construye la interfaz para introducir los datos del producto
         # Product name entry
         name_label = ctk.CTkLabel(
             self,
@@ -293,9 +322,10 @@ class ProductInputDialog(ctk.CTkToplevel):
             width=100
         )
         cancel_button.pack(side=ctk.LEFT, padx=10)
-
         
     def accept(self):
+        # Método para aceptar los datos introducidos
+        # Valida los datos y los guarda si son correctos
         try:
             name = self.name_entry.get().strip()
             x = float(self.x_entry.get())
@@ -310,14 +340,23 @@ class ProductInputDialog(ctk.CTkToplevel):
             messagebox.showerror("Error", str(e))
             
     def on_closing(self):
+        # Método para manejar el cierre de la ventana con la X
+        # Cancela la operación y cierra el diálogo
         """Maneja el cierre de la ventana con la X"""
         self.cancel()
+        
     def cancel(self):
+        # Método para cancelar la operación
+        # Cierra el diálogo sin guardar cambios
         self.result = None
         self.destroy()
 
 class ModernDialog(ctk.CTkToplevel):
+    # Clase que implementa diálogos modernos para mensajes y confirmaciones
+    # Proporciona una interfaz consistente para diferentes tipos de diálogos
     def __init__(self, parent, title, message, type_="info", colors=None):
+        # Inicialización del diálogo moderno
+        # Configura la ventana según el tipo de diálogo
         super().__init__(parent)
         self.colors = colors
         self.result = False
@@ -348,6 +387,7 @@ class ModernDialog(ctk.CTkToplevel):
         button_frame = ctk.CTkFrame(self, fg_color=self.colors['secondary_bg'])
         button_frame.pack(pady=20)
         
+        # Crear botones según el tipo de diálogo
         if type_ == "confirm":
             accept_button = ctk.CTkButton(
                 button_frame,
@@ -387,15 +427,23 @@ class ModernDialog(ctk.CTkToplevel):
         self.focus_set()
     
     def on_accept(self):
+        # Método para aceptar el diálogo
+        # Establece el resultado como verdadero y cierra el diálogo
         self.result = True
         self.destroy()
     
     def on_cancel(self):
+        # Método para cancelar el diálogo
+        # Establece el resultado como falso y cierra el diálogo
         self.result = False
         self.destroy()
 
 class ModernProductManager:
+    # Clase principal que implementa el gestor de productos
+    # Proporciona una interfaz completa para gestionar la base de datos de productos
     def __init__(self, root):
+        # Inicialización del gestor de productos moderno
+        # Configura la ventana principal y establece los manejadores de eventos
         self.root = root
         self.is_closing = False
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -416,7 +464,8 @@ class ModernProductManager:
         # Configurar llamada periódica para procesar señales
         self.root.after(200, self.check_signal)
 
-        # Color scheme
+        # Paleta de colores para la interfaz
+        # Define los colores para todos los elementos visuales
         self.colors = {
             'primary_bg': "#FEF2F2",
             'secondary_bg': "#FEE2E2",
@@ -442,18 +491,23 @@ class ModernProductManager:
         self.setup_ui()
 
     def check_signal(self):
+        # Método para procesar señales periódicamente
+        # Permite que la aplicación responda a señales del sistema
         """Método para procesar señales periódicamente"""
         if not self.is_closing:
             self.root.after(200, self.check_signal)
 
     def signal_handler(self, signum, frame):
+        # Manejador de señales para interrupciones del sistema
+        # Responde a las señales SIGINT y SIGTERM para cerrar ordenadamente
         """Manejador de señales para SIGINT y SIGTERM"""
         if not self.is_closing:
             print("\nRecibida señal de terminación. Cerrando aplicación...")
             self.cleanup_and_close()
 
-
     def cleanup_and_close(self):
+        # Método para limpiar recursos y cerrar la aplicación
+        # Cierra ventanas y conexiones de base de datos antes de terminar
         """Realiza la limpieza y cierre de la aplicación"""
         try:
             self.is_closing = True
@@ -476,20 +530,21 @@ class ModernProductManager:
         except Exception as e:
             print(f"Error durante el cierre: {e}")
             sys.exit(1)
-
         
     def setup_ui(self):
+        # Método para configurar la interfaz de usuario
+        # Crea y dispone todos los elementos visuales de la interfaz
         ctk.set_appearance_mode("light")
         self.root.configure(fg_color=self.colors['primary_bg'])
         self.root.title("Gestor de Base de Datos de Productos")
         self.root.geometry("%dx%d+0+0" % (self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
         
-        # Left frame with logo and title
+        # Frame izquierdo con logo y título
         left_frame = ctk.CTkFrame(self.root, width=400, fg_color=self.colors['secondary_bg'])
         left_frame.pack(side=ctk.LEFT, fill=ctk.Y)
         left_frame.pack_propagate(False)
 
-        # Logo setup
+        # Configuración del logo
         pkg_dir = get_package_share_directory('turtlemart')
         image_path = os.path.join(pkg_dir, 'images/userlogo.png')
         if os.path.exists(image_path):
@@ -523,7 +578,7 @@ class ModernProductManager:
             )
             mode_menu.pack(pady=(0, 20))
 
-        # Title
+        # Título principal
         title_label = ctk.CTkLabel(
             left_frame,
             text="Donatellos Manager",
@@ -533,11 +588,11 @@ class ModernProductManager:
         )
         title_label.pack(side=ctk.BOTTOM, pady=20)
 
-        # Right container
+        # Contenedor derecho
         right_container = ctk.CTkFrame(self.root, fg_color=self.colors['primary_bg'])
         right_container.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
 
-        # Products section
+        # Sección de productos
         products_frame = ctk.CTkFrame(right_container, fg_color=self.colors['frame_bg'])
         products_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
 
@@ -549,24 +604,24 @@ class ModernProductManager:
         )
         products_label.pack(pady=10)
 
-        # Add search and refresh functionality
+        # Añadir funcionalidad de búsqueda y refresco
         self.setup_search_and_refresh(products_frame)
 
-        # Products scrollable frame
+        # Frame scrollable para productos
         self.products_scroll = ctk.CTkScrollableFrame(
             products_frame,
             fg_color=self.colors['scrollable_frame_bg']
         )
         self.products_scroll.pack(fill=ctk.BOTH, expand=True, padx=20, pady=10)
 
-        # Buttons frame with better spacing
+        # Frame para botones con mejor espaciado
         buttons_frame = ctk.CTkFrame(products_frame, fg_color=self.colors['frame_bg'])
         buttons_frame.pack(fill=ctk.X, padx=20, pady=20)
 
-        # Grid layout for buttons
+        # Layout de cuadrícula para botones
         buttons_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
-        # Action buttons
+        # Botones de acción
         actions = [
             ("Añadir Producto", self.add_product),
             ("Actualizar Producto", self.update_product),
@@ -590,10 +645,13 @@ class ModernProductManager:
 
         self.refresh_products()
         
+        # Guardar referencia al botón de localizar para poder desactivarlo después
         if text == "Localizar Producto con Robot":
             self.second_window_button = btn
 
     def on_closing(self):
+        # Método para manejar el cierre desde la interfaz gráfica
+        # Muestra un diálogo de confirmación antes de cerrar
         """Maneja el cierre desde la interfaz gráfica"""
         if not self.is_closing:
             dialog = ModernDialog(
@@ -606,7 +664,10 @@ class ModernProductManager:
             self.root.wait_window(dialog)
             if dialog.result:
                 self.cleanup_and_close()
+                
     def refresh_products(self):
+        # Método para actualizar la lista de productos
+        # Limpia y vuelve a cargar todos los productos desde la base de datos
         for widget in self.products_scroll.winfo_children():
             widget.destroy()
 
@@ -650,6 +711,8 @@ class ModernProductManager:
                 connection.close()
 
     def setup_search_and_refresh(self, products_frame):
+        # Método para configurar la barra de búsqueda y botón de refresco
+        # Crea y dispone los controles para buscar y actualizar la lista de productos
         # Create a frame for search and refresh
         search_frame = ctk.CTkFrame(products_frame, fg_color=self.colors['frame_bg'])
         search_frame.pack(fill=ctk.X, padx=20, pady=(10, 0))
@@ -698,9 +761,13 @@ class ModernProductManager:
         refresh_button.grid(row=0, column=2, padx=10, pady=10)
 
     def on_search_change(self, *args):
+        # Método para manejar cambios en el campo de búsqueda
+        # Actualiza la lista de productos al cambiar el texto de búsqueda
         self.refresh_products()
 
     def refresh_products(self):
+        # Método para actualizar la lista de productos
+        # Consulta la base de datos y muestra los productos que coinciden con la búsqueda
         # Clear existing products
         for widget in self.products_scroll.winfo_children():
             widget.destroy()
@@ -757,6 +824,8 @@ class ModernProductManager:
                 connection.close()
 
     def add_product(self):
+        # Método para añadir un nuevo producto
+        # Muestra un diálogo para introducir datos y los guarda en la base de datos
         dialog = ProductInputDialog(self.root, "Añadir Producto", self.colors)
         self.root.wait_window(dialog)
         
@@ -777,6 +846,8 @@ class ModernProductManager:
                     connection.close()
 
     def update_product(self):
+        # Método para actualizar un producto existente
+        # Permite modificar los datos de un producto seleccionado
         selected = [k for k, v in self.checkbox_vars.items() if v.get()]
         if not selected:
             self.show_error("Seleccione un producto para actualizar")
@@ -810,6 +881,8 @@ class ModernProductManager:
                 connection.close()
 
     def delete_product(self):
+        # Método para eliminar productos seleccionados
+        # Elimina uno o más productos de la base de datos tras confirmación
         selected = [k for k, v in self.checkbox_vars.items() if v.get()]
         if not selected:
             self.show_error("Seleccione al menos un producto para eliminar")
@@ -845,6 +918,8 @@ class ModernProductManager:
                 connection.close()
 
     def open_second_window(self):
+        # Método para abrir la ventana de localización de productos
+        # Inicia la interfaz para localizar productos con el robot
         if self.second_window is None or not self.second_window.winfo_exists():
             mode = self.navigation_mode.get() if self.show_mode_selector else "Real"
             self.second_window = SecondWindow(self.root, mode, self.colors)
@@ -858,16 +933,22 @@ class ModernProductManager:
             )
 
     def show_error(self, message):
+        # Método para mostrar mensajes de error
+        # Crea y muestra un diálogo de error con estilo moderno
         """Muestra un mensaje de error con el estilo moderno"""
         dialog = ModernDialog(self.root, "Error", message, type_="error", colors=self.colors)
         self.root.wait_window(dialog)
 
     def show_info(self, message):
+        # Método para mostrar mensajes informativos
+        # Crea y muestra un diálogo informativo con estilo moderno
         """Muestra un mensaje informativo con el estilo moderno"""
         dialog = ModernDialog(self.root, "Información", message, type_="info", colors=self.colors)
         self.root.wait_window(dialog)
         
     def on_closing(self):
+        # Método para manejar el cierre desde la interfaz gráfica
+        # Muestra un diálogo de confirmación antes de cerrar la aplicación
         """Maneja el cierre desde la interfaz gráfica"""
         if not self.is_closing:
             dialog = ModernDialog(
@@ -882,6 +963,8 @@ class ModernProductManager:
                 self.cleanup_and_close()
 
 if __name__ == '__main__':
+    # Punto de entrada principal del programa
+    # Inicializa la aplicación y maneja excepciones de nivel superior
     try:
         root = ctk.CTk()
         app = ModernProductManager(root)

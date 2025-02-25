@@ -1,3 +1,11 @@
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Archivo de lanzamiento para visualización del robot SARA en simulación
+# Implementa la configuración de lanzamiento para la visualización básica del robot SARA
+# en un entorno Gazebo simulado, permitiendo la observación de los marcos de coordenadas
+# (TF) y el modelo URDF. Este lanzador proporciona una plataforma para demostrar
+# el movimiento básico del robot y verificar la correcta configuración cinemática
+# sin los sistemas completos de navegación o SLAM.
 
 import os
 from launch import LaunchDescription
@@ -10,7 +18,8 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-  # Set the path to different files and folders.
+  # Configuración de rutas a archivos y carpetas
+  # Define las ubicaciones de los recursos para la simulación
   pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
   pkg_share = FindPackageShare(package='turtlemart').find('turtlemart')
   default_model_path = os.path.join(pkg_share, 'models/turtlemart.urdf.xacro')  
@@ -18,7 +27,8 @@ def generate_launch_description():
   world_file_name = 'turtlemart_world/Supermarket.world'
   world_path = os.path.join(pkg_share, 'worlds', world_file_name)
   
-  # Launch configuration variables specific to simulation
+  # Variables de configuración específicas para la simulación
+  # Controlan aspectos visuales y funcionales del entorno simulado
   headless = LaunchConfiguration('headless')
   model = LaunchConfiguration('model')
   rviz_config_file = LaunchConfiguration('rviz_config_file')
@@ -28,7 +38,8 @@ def generate_launch_description():
   use_simulator = LaunchConfiguration('use_simulator')
   world = LaunchConfiguration('world')
 
-  # Declare the launch arguments  
+  # Declaración de los argumentos de lanzamiento
+  # Permite la configuración dinámica del comportamiento de la visualización
   declare_model_path_cmd = DeclareLaunchArgument(
     name='model', 
     default_value=default_model_path, 
@@ -69,30 +80,25 @@ def generate_launch_description():
     default_value=world_path,
     description='Full path to the world model file to load')
    
-  # Specify the actions
+  # Especificación de las acciones para el lanzamiento
+  # Define los componentes que se iniciarán y su configuración
 
-  # Start Gazebo server
+  # Iniciar el servidor de Gazebo
+  # Gestiona la simulación física del entorno y el robot SARA
   start_gazebo_server_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')),
     condition=IfCondition(use_simulator),
     launch_arguments={'world': world}.items())
 
-  # Start Gazebo client    
+  # Iniciar el cliente de Gazebo
+  # Proporciona la interfaz visual para la simulación    
   start_gazebo_client_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),
     condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])))
     
-      # Start robot localization using an Extended Kalman filter
-  #start_robot_localization_cmd = Node(
-   # package='robot_localization',
-   # executable='ekf_node',
-   # name='ekf_filter_node',
-   # output='screen',
-   # parameters=[robot_localization_file_path, 
-   # {'use_sim_time': use_sim_time}])
 
-
-  # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
+  # Publicador del estado del robot SARA
+  # Publica las transformaciones (TF) entre los diferentes eslabones del robot
   start_robot_state_publisher_cmd = Node(
     condition=IfCondition(use_robot_state_pub),
     package='robot_state_publisher',
@@ -101,7 +107,8 @@ def generate_launch_description():
     'robot_description': Command(['xacro ', model])}],
     arguments=[default_model_path])
 
-  # Launch RViz
+  # Lanzamiento de RViz para visualización
+  # Permite observar el modelo 3D del robot SARA y sus transformaciones
   start_rviz_cmd = Node(
     condition=IfCondition(use_rviz),
     package='rviz2',
@@ -110,10 +117,11 @@ def generate_launch_description():
     output='screen',
     arguments=['-d', rviz_config_file])
   
-  # Create the launch description and populate
+  # Creación de la descripción de lanzamiento y población
   ld = LaunchDescription()
 
-  # Declare the launch options
+  # Declaración de las opciones de lanzamiento
+  # Añade todos los argumentos configurables
   ld.add_action(declare_model_path_cmd)
   ld.add_action(declare_rviz_config_file_cmd)
   ld.add_action(declare_simulator_cmd)
@@ -123,10 +131,10 @@ def generate_launch_description():
   ld.add_action(declare_use_simulator_cmd)
   ld.add_action(declare_world_cmd)
 
-  # Add any actions
+  # Adición de las acciones a ejecutar
+  # Configura el orden de inicio de los componentes para la visualización
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
-  #ld.add_action(start_robot_localization_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
 

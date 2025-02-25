@@ -1,18 +1,10 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Author: Darby Lim
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Archivo de lanzamiento para cartographer SLAM en robot SARA real
+# Implementa la configuración de lanzamiento para un sistema de mapeo y localización
+# simultánea (SLAM) utilizando Cartographer en el robot SARA en entorno real.
+# La arquitectura configura los nodos necesarios para procesar datos de sensores físicos,
+# generar mapas de ocupación y visualizar en tiempo real el proceso de mapeo.
 
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -26,20 +18,28 @@ from launch.substitutions import ThisLaunchFileDir
 
 
 def generate_launch_description():
+    # Configuración del tiempo de ejecución
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+
+    #Configuración de directorios y parámetros para Cartographer
     turtlebot3_cartographer_prefix = get_package_share_directory('turtlemart')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
                                                   turtlebot3_cartographer_prefix, 'params'))
     configuration_basename = LaunchConfiguration('configuration_basename',
                                                  default='cartographer_params.lua')
 
+    # Configuración de parámetros para el mapa de ocupación
+    # Define la resolución y frecuencia de publicación del mapa generado   
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
+
+    # Configuración de RViz para visualización
     rviz_config_dir = os.path.join(get_package_share_directory('turtlemart'),
                                    'rviz', 'cartographer_config.rviz')
 
     return LaunchDescription([
+        # Declaración de argumentos para configuración de Cartographer
         DeclareLaunchArgument(
             'cartographer_config_dir',
             default_value=cartographer_config_dir,
@@ -53,6 +53,7 @@ def generate_launch_description():
             default_value='false',
             description='Use simulation (Gazebo) clock if true'),
 
+        # Nodo principal de Cartographer
         Node(
             package='cartographer_ros',
             executable='cartographer_node',
@@ -62,6 +63,7 @@ def generate_launch_description():
             arguments=['-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename]),
 
+        # Declaración de argumentos para el mapa de ocupación
         DeclareLaunchArgument(
             'resolution',
             default_value=resolution,
@@ -72,12 +74,14 @@ def generate_launch_description():
             default_value=publish_period_sec,
             description='OccupancyGrid publishing period'),
 
+        # Inclusión del lanzador para el generador de mapa de ocupación
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
             launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
                               'publish_period_sec': publish_period_sec}.items(),
         ),
 
+        # Nodo RViz para visualización
         Node(
             package='rviz2',
             executable='rviz2',

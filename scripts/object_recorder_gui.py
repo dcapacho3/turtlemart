@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Sistema de localización y registro de productos para SARA
+# Implementa una interfaz que permite registrar productos en la base de datos
+# utilizando la posición actual del robot, mostrando su ubicación en tiempo real
+# en un mapa y permitiendo el control remoto para el posicionamiento.
 
 import customtkinter as ctk
 from PIL import Image
@@ -22,17 +28,26 @@ import time
 import matplotlib.patches as patches
 
 def get_source_db_path(package_name, db_filename):
+    # Función para obtener la ruta de la base de datos en el directorio src del paquete
+    # Navega desde el directorio share hasta la ubicación de la base de datos
+    # siguiendo la estructura estándar de un workspace ROS2
     share_dir = get_package_share_directory(package_name)
     workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_dir))))
     db_path = os.path.join(workspace_root, 'src', package_name, 'database', db_filename)
     return db_path
 
 def show_virtual_keyboard(entry_widget, parent, colors):
+    # Función auxiliar para mostrar el teclado virtual
+    # Crea una instancia del teclado y espera hasta que se cierre
     keyboard = CTkVirtualKeyboard(parent, entry_widget, colors)
     parent.wait_window(keyboard)
 
 class CTkVirtualKeyboard(ctk.CTkToplevel):
+    # Clase que implementa un teclado virtual para la entrada de texto
+    # Facilita la interacción con la interfaz en dispositivos sin teclado físico
     def __init__(self, parent, entry_widget, colors):
+        # Inicialización del teclado virtual
+        # Configura la ventana emergente y sus controles
         super().__init__(parent)
         
         self.entry_widget = entry_widget
@@ -66,6 +81,8 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
         self.grab_set()
         
     def create_display(self):
+        # Método para crear el área de visualización del texto
+        # Muestra el texto que se está escribiendo actualmente
         # Frame para el display
         display_frame = ctk.CTkFrame(self.main_frame, fg_color=self.colors['primary_bg'])
         display_frame.pack(fill='x', pady=(0, 10))
@@ -82,6 +99,8 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
         self.display.insert(0, self.entry_widget.get())
         
     def create_keyboard(self):
+        # Método para crear la disposición de teclas del teclado
+        # Define el layout y crea los botones interactivos
         # Layout del teclado
         layouts = {
             'default': [
@@ -150,29 +169,42 @@ class CTkVirtualKeyboard(ctk.CTkToplevel):
             btn.pack(side='left', padx=2, expand=True if text == "Espacio" else False)
             
     def add_character(self, char):
+        # Método para añadir un carácter al campo de texto
+        # Inserta el carácter en la posición actual del cursor
         current_pos = self.display.index(ctk.INSERT)
         self.display.insert(current_pos, char)
         
     def backspace(self):
+        # Método para borrar el carácter anterior al cursor
+        # Implementa la funcionalidad de retroceso
         current_pos = self.display.index(ctk.INSERT)
         if current_pos > 0:
             self.display.delete(current_pos - 1)
             
     def toggle_layout(self):
-        # Implementar el cambio entre layouts si se desea
+        # Método para alternar entre diferentes disposiciones del teclado
+        # No implementado completamente, para futura expansión
         pass
         
     def accept(self):
+        # Método para confirmar el texto ingresado
+        # Transfiere el texto al campo de entrada original y cierra el teclado
         text = self.display.get()
         self.entry_widget.delete(0, 'end')
         self.entry_widget.insert(0, text)
         self.destroy()
         
     def cancel(self):
+        # Método para cancelar la entrada de texto
+        # Cierra el teclado sin transferir ningún texto
         self.destroy()
 
 class SecondWindow(ctk.CTkToplevel):
+    # Clase principal que implementa la ventana de localización de productos
+    # Permite registrar productos utilizando la posición actual del robot
     def __init__(self, parent, mode, colors):
+        # Inicialización de la ventana de localización
+        # Configura la interfaz y establece la conexión con ROS
         super().__init__(parent)
         self.colors = colors
         self.mode = mode
@@ -202,11 +234,15 @@ class SecondWindow(ctk.CTkToplevel):
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def setup_window(self):
+        # Método para configurar los parámetros de la ventana
+        # Establece el título, tamaño y aspecto general
         self.title("Registro de Productos - SARA")
         self.geometry("%dx%d+0+0" % (self.winfo_screenwidth(), self.winfo_screenheight()))
         self.configure(fg_color=self.colors['primary_bg'])
 
     def setup_ui(self):
+        # Método para configurar toda la interfaz de usuario
+        # Crea y dispone los diferentes frames y widgets
         # Frame superior con reloj y fecha
         self.setup_top_frame()
         
@@ -220,6 +256,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.setup_right_frame()
 
     def setup_top_frame(self):
+        # Método para configurar el frame superior
+        # Contiene botón de retorno, mensajes de estado y reloj/fecha
         self.top_frame = ctk.CTkFrame(self, height=100, fg_color=self.colors['secondary_bg'])
         self.top_frame.pack(fill=ctk.X, padx=10, pady=10)
         
@@ -270,6 +308,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.label_reloj.pack(side=ctk.TOP, pady=5)
 
     def return_to_main(self):
+        # Método para volver a la ventana principal
+        # Muestra un diálogo de confirmación y cierra recursos antes de volver
         """Maneja el retorno a la ventana principal"""
         # Crear un diálogo personalizado
         dialog = ctk.CTkToplevel(self)
@@ -331,6 +371,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.wait_window(dialog)
 
     def setup_left_frame(self):
+        # Método para configurar el frame izquierdo
+        # Contiene logo, indicador de control y formulario de producto
         left_frame = ctk.CTkFrame(self, width=400, fg_color=self.colors['secondary_bg'])
         left_frame.pack(side=ctk.LEFT, fill=ctk.Y)
         left_frame.pack_propagate(False)
@@ -354,6 +396,8 @@ class SecondWindow(ctk.CTkToplevel):
         title_label.pack(side=ctk.BOTTOM, pady=20)
 
     def setup_logo(self, parent_frame):
+        # Método para configurar y mostrar el logo
+        # Carga y muestra la imagen del logo en el frame proporcionado
         try:
             pkg_dir = get_package_share_directory('turtlemart')
             image_path = os.path.join(pkg_dir, 'images/userlogo.png')
@@ -368,6 +412,8 @@ class SecondWindow(ctk.CTkToplevel):
             print(f"Error loading logo: {e}")
 
     def setup_control_status(self, parent):
+        # Método para configurar el indicador de estado del control
+        # Muestra visualmente si el control remoto está habilitado
         control_frame = ctk.CTkFrame(parent, fg_color="transparent")
         control_frame.pack(pady=20)
         
@@ -405,6 +451,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.control_status_label.pack(pady=5)
 
     def setup_product_form(self, parent):
+        # Método para configurar el formulario de registro de productos
+        # Crea los controles para ingresar nombre de producto y registrarlo
         form_frame = ctk.CTkFrame(parent, fg_color=self.colors['secondary_bg'])
         form_frame.pack(pady=20, padx=20, fill=ctk.X)
         
@@ -456,6 +504,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.register_button.pack(pady=10)
 
     def setup_map_frame(self):
+        # Método para configurar el frame del mapa
+        # Crea y configura el gráfico matplotlib para mostrar el mapa
         self.map_frame = ctk.CTkFrame(self, fg_color=self.colors['primary_bg'])
         self.map_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
         
@@ -468,6 +518,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.update_map()
 
     def setup_right_frame(self):
+        # Método para configurar el frame derecho
+        # Muestra la lista de productos registrados en la sesión actual
         self.right_frame = ctk.CTkFrame(self, width=350, fg_color=self.colors['secondary_bg'])
         self.right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=10, pady=10)
         
@@ -487,6 +539,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.products_frame.pack(fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
     def initialization_sequence(self):
+        # Método que implementa la secuencia de inicialización
+        # Coordina el inicio de ROS, carga de mapas y preparación del sistema
         """Maneja la secuencia completa de inicialización"""
         try:
             # Mostrar mensaje inicial
@@ -505,7 +559,6 @@ class SecondWindow(ctk.CTkToplevel):
             self.ros_thread.start()
             
             time.sleep(3)  # Dar tiempo a que ROS se inicialice
-            
             # Marcar como completado y actualizar estado
             self.calibration_complete = True
             self.show_status_message("Sistema listo para registrar productos", is_final=True)
@@ -517,6 +570,8 @@ class SecondWindow(ctk.CTkToplevel):
             self.show_error(f"Error en la inicialización: {str(e)}")
 
     def init_ros(self):
+        # Método para inicializar ROS
+        # Configura los nodos, suscripciones y ejecutor de ROS
         try:
             rclpy.init(args=None)
             self.ros_initialized = True
@@ -529,8 +584,10 @@ class SecondWindow(ctk.CTkToplevel):
             
             # Configurar suscripciones
             if self.mode == "Real":
+                #self.odom_subscriber = self.node.create_subscription(
+                #    PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
                 self.odom_subscriber = self.node.create_subscription(
-                    PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
+                    Odometry, 'odometry/filtered', self.odom_callback, 10)
             else:
                 self.odom_subscriber = self.node.create_subscription(
                     Odometry, 'odom', self.odom_callback, 10)
@@ -556,6 +613,8 @@ class SecondWindow(ctk.CTkToplevel):
                 self.cleanup_ros()
                 
     def cleanup_ros(self):
+        # Método para limpiar recursos de ROS
+        # Cierra nodos y detiene ROS cuando se cierra la aplicación
         if self.ros_initialized:
             if self.executor:
                 self.executor.shutdown()
@@ -564,9 +623,9 @@ class SecondWindow(ctk.CTkToplevel):
             if rclpy.ok():
                 rclpy.shutdown()
 
-    
-
     def launch_ros2_files(self):
+        # Método para lanzar los archivos necesarios de ROS2
+        # Inicia mux, navegación y control básico en secuencia
         """Lanza los archivos ROS2 necesarios para la localización"""
         print("Iniciando secuencia de lanzamiento...")
         
@@ -597,6 +656,8 @@ class SecondWindow(ctk.CTkToplevel):
         basic_control_thread.start()
 
     def launch_mux(self):
+        # Método para lanzar el multiplexor de control
+        # Inicia el nodo de mux para el control del robot
         cmd = "ros2 launch turtlemart mux.launch.py"
         process = subprocess.Popen(
             cmd,
@@ -615,6 +676,8 @@ class SecondWindow(ctk.CTkToplevel):
         print("Mux launch file completed.")
 
     def launch_basic_control(self):
+        # Método para lanzar el control básico
+        # Inicia el nodo de control remoto del robot
         cmd = "ros2 launch turtlemart basic_control.launch.py"
         process = subprocess.Popen(
             cmd,
@@ -633,6 +696,8 @@ class SecondWindow(ctk.CTkToplevel):
         print("Basic Control launch file completed.")
 
     def setup_ros(self):
+        # Método para configurar ROS
+        # Inicializa ROS y configura suscripciones según el modo
         try:
             if not rclpy.ok():
                 rclpy.init(args=None)
@@ -660,6 +725,8 @@ class SecondWindow(ctk.CTkToplevel):
             print(f"Error initializing ROS: {e}")
 
     def ros_spin(self):
+        # Método para mantener activo el bucle de ROS
+        # Procesa los mensajes de ROS mientras la aplicación está en ejecución
         while rclpy.ok() and not self.is_closing:
             try:
                 self.executor.spin_once(timeout_sec=0.1)
@@ -669,12 +736,16 @@ class SecondWindow(ctk.CTkToplevel):
                     break
 
     def show_status_message(self, message, is_final=False):
+        # Método para mostrar mensajes de estado
+        # Actualiza la etiqueta de estado con el mensaje proporcionado
         if not self.is_closing:
             self.after(0, lambda: self.status_label.configure(text=message))
             if is_final:
                 self.after(2000, self.show_ready_message)
 
     def show_ready_message(self):
+        # Método para mostrar un mensaje de sistema listo
+        # Crea una ventana emergente informando que el sistema está listo para usar
         info_window = ctk.CTkToplevel(self)
         info_window.title("Sistema Listo")
         info_window.geometry("500x250")
@@ -715,11 +786,15 @@ class SecondWindow(ctk.CTkToplevel):
         button.pack(pady=10)
 
     def enable_product_registration(self):
+        # Método para habilitar el registro de productos
+        # Activa el botón de registro una vez que el sistema está listo
         """Habilita el registro de productos"""
         if hasattr(self, 'register_button'):
             self.register_button.configure(state="normal")
 
     def register_product(self):
+        # Método para registrar un nuevo producto
+        # Guarda el producto en la base de datos usando la posición actual del robot
         product_name = self.product_entry.get().strip()
         if not product_name:
             self.show_error("El nombre del producto no puede estar vacío")
@@ -766,6 +841,8 @@ class SecondWindow(ctk.CTkToplevel):
                 connection.close()
 
     def update_products_list(self):
+        # Método para actualizar la lista de productos
+        # Muestra los productos agregados en la sesión actual
         # Limpiar la lista actual
         for widget in self.products_frame.winfo_children():
             widget.destroy()
@@ -787,6 +864,8 @@ class SecondWindow(ctk.CTkToplevel):
             label.pack(side=ctk.LEFT, padx=10, pady=5)
 
     def update_map(self):
+        # Método para actualizar el mapa
+        # Redibuja el mapa con la posición actual del robot y los productos
         self.ax.clear()
         map_array, resolution, origin = self.load_map()
         self.resolution = resolution
@@ -834,6 +913,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.canvas.draw()
 
     def load_map(self):
+        # Método para cargar el mapa desde el archivo
+        # Lee el archivo YAML del mapa y la imagen correspondiente
         bringup_dir = get_package_share_directory('turtlemart')
         if self.mode == "Real":
             map_yaml_path = os.path.join(bringup_dir, 'maps/labrobfinal_mask.yaml')
@@ -856,6 +937,8 @@ class SecondWindow(ctk.CTkToplevel):
         return map_array, resolution, origin
 
     def odom_callback(self, msg):
+        # Callback para procesar mensajes de odometría
+        # Actualiza la posición actual del robot y redibuja el mapa
         if self.mode == "Real":
             self.current_pose = {
                 'x': msg.pose.pose.position.x,
@@ -871,6 +954,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.update_map()
 
     def is_joy_on_callback(self, msg):
+        # Callback para procesar mensajes de estado del joystick
+        # Actualiza el indicador visual según si el control está habilitado
         try:
             if msg.data == "yes":
                 self.control_canvas.itemconfig(
@@ -891,6 +976,8 @@ class SecondWindow(ctk.CTkToplevel):
             print(f"Error updating control circle color: {e}")
 
     def get_yaw_from_quaternion(self, quaternion):
+        # Método para extraer el ángulo de giro (yaw) de un cuaternión
+        # Convierte la representación de orientación en cuaternión a ángulo de guiñada
         x, y, z, w = quaternion.x, quaternion.y, quaternion.z, quaternion.w
         t3 = 2.0 * (w * z + x * y)
         t4 = 1.0 - 2.0 * (y * y + z * z)
@@ -898,6 +985,8 @@ class SecondWindow(ctk.CTkToplevel):
         return yaw
 
     def actualizar_reloj_y_fecha(self):
+        # Método para actualizar el reloj y la fecha
+        # Actualiza las etiquetas con la hora y fecha actuales cada segundo
         if not self.is_closing:
             now = datetime.datetime.now()
             self.label_reloj.configure(text=now.strftime("%H:%M:%S"))
@@ -905,6 +994,8 @@ class SecondWindow(ctk.CTkToplevel):
             self.after_id = self.after(1000, self.actualizar_reloj_y_fecha)
 
     def show_error(self, message):
+        # Método para mostrar mensajes de error
+        # Crea y muestra una ventana emergente con el mensaje de error
         error_window = ctk.CTkToplevel(self)
         error_window.title("Error")
         error_window.geometry("400x200")
@@ -933,6 +1024,8 @@ class SecondWindow(ctk.CTkToplevel):
         button.pack(pady=10)
 
     def show_info(self, message):
+        # Método para mostrar mensajes informativos
+        # Crea y muestra una ventana emergente con el mensaje informativo
         info_window = ctk.CTkToplevel(self)
         info_window.title("Información")
         info_window.geometry("400x200")
@@ -961,6 +1054,8 @@ class SecondWindow(ctk.CTkToplevel):
         button.pack(pady=10)
 
     def start_thread(self, target, *args, **kwargs):
+        # Método auxiliar para iniciar y rastrear hilos
+        # Crea un hilo daemon y lo almacena para gestión posterior
         """Helper method to start and track threads"""
         thread = threading.Thread(target=target, args=args, kwargs=kwargs)
         thread.daemon = True
@@ -969,6 +1064,8 @@ class SecondWindow(ctk.CTkToplevel):
         return thread
 
     def cleanup(self):
+        # Método para limpiar todos los procesos y recursos
+        # Realiza una limpieza exhaustiva antes de cerrar la aplicación
         """Método mejorado para limpiar todos los procesos"""
         try:
             # Marcar como cerrando para detener loops
@@ -1038,6 +1135,8 @@ class SecondWindow(ctk.CTkToplevel):
             print(f"Error in cleanup: {e}")
 
     def on_closing(self):
+        # Método para manejar el cierre de la ventana
+        # Inicia el proceso de limpieza y cierre ordenado
         if hasattr(self, 'is_closing') and self.is_closing:
             return
             
@@ -1050,6 +1149,8 @@ class SecondWindow(ctk.CTkToplevel):
         self.destroy()
 
 if __name__ == "__main__":
+    # Punto de entrada principal cuando se ejecuta directamente
+    # Crea la ventana de localización con el modo "Real"
     root = ctk.CTk()
     colors = {
         'primary_bg': "#FEF2F2",

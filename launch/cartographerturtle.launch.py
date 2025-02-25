@@ -1,3 +1,12 @@
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Archivo de lanzamiento para SLAM utilizando cartographer en el robot SARA simulado
+# Implementa la configuración de lanzamiento para un sistema de mapeo y localización
+# simultánea (SLAM) utilizando Cartographer en el robot SARA simulado en Gazebo.
+# La arquitectura permite la integración de sensores, visualización en RViz,
+# generación de mapas de ocupación y simulación del entorno en un supermercado virtual.
+
+
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -15,7 +24,8 @@ def generate_launch_description():
 
 
     
-    # Set the path to different files and folders.
+    # Configuración de rutas a archivos y carpetas necesarios para la simulación
+    # Define las ubicaciones de los modelos, configuraciones y mundos virtuales
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
     pkg_share = FindPackageShare(package='turtlemart').find('turtlemart')
     default_model_path = os.path.join(pkg_share, 'models/turtlemart.urdf.xacro')  
@@ -24,17 +34,21 @@ def generate_launch_description():
     world_file_name = 'turtlemart_world/Supermarket.world'
     world_path = os.path.join(pkg_share, 'worlds', world_file_name)
 
+    # Configuración específica para Cartographer
+    # Define los directorios y parámetros para el algoritmo SLAM
     turtlebot3_cartographer_prefix = get_package_share_directory('turtlemart')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
                                                   turtlebot3_cartographer_prefix, 'params'))
     configuration_basename = LaunchConfiguration('configuration_basename',
                                                  default='cartographer_params.lua')
 
+    # Configuración de parámetros para el mapa de ocupación
+    # Define la resolución y frecuencia de publicación del mapa generado
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
     
-    # Launch configuration variables specific to simulation
+    # Variables de configuración específicas para la simulación
     headless = LaunchConfiguration('headless')
     model = LaunchConfiguration('model')
     rviz_config_file = LaunchConfiguration('rviz_config_file')
@@ -45,7 +59,8 @@ def generate_launch_description():
     world = LaunchConfiguration('world')
 
 
-    # Declare the launch arguments
+
+    # Declaración de argumentos de lanzamiento
     declare_model_path_cmd = DeclareLaunchArgument(
         name='model',
         default_value=default_model_path,
@@ -109,21 +124,20 @@ def generate_launch_description():
     
 
 
-    # Specify the actions
-
-    # Start Gazebo server
+    # Especificación de acciones para el lanzamiento
+    # Iniciar el servidor de Gazebo
     start_gazebo_server_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')),
         condition=IfCondition(use_simulator),
         launch_arguments={'world': world}.items())
 
-    # Start Gazebo client
+    # Iniciar el cliente de Gazebo
     start_gazebo_client_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),
         condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])))
 
 
-    # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
+    # Se suscribe a los estados de las articulaciones y publica la pose 3D de cada eslabón
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
         package='robot_state_publisher',
@@ -132,7 +146,7 @@ def generate_launch_description():
         'robot_description': Command(['xacro ', model])}],
         arguments=[default_model_path])
 
-    # Launch RViz
+    # Lanzamiento de RViz
     start_rviz_cmd = Node(
         condition=IfCondition(use_rviz),
         package='rviz2',
@@ -141,7 +155,7 @@ def generate_launch_description():
         output='screen',
         arguments=['-d', rviz_config_file])
 
-    # Launch SLAM Toolbox
+    # Lanzamiento del nodo Cartographer para SLAM
     start_cartographer_cmd = Node(
         package='cartographer_ros',
         executable='cartographer_node',
@@ -151,6 +165,7 @@ def generate_launch_description():
         arguments=['-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename])
     
+    # Lanzamiento del generador de mapas de ocupación
     start_ocupancy = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_share, 'launch', 'occupancy_grid.launch.py')
@@ -162,10 +177,10 @@ def generate_launch_description():
         }.items(),
     )
 
-    # Create the launch description and populate
+    # Creación de la descripción de lanzamiento y población de acciones
     ld = LaunchDescription()
 
-    # Declare the launch options
+    # Declaración de las opciones de lanzamiento
     ld.add_action(declare_model_path_cmd)
     ld.add_action(declare_rviz_config_file_cmd)
     ld.add_action(declare_simulator_cmd)
@@ -179,10 +194,9 @@ def generate_launch_description():
     ld.add_action(declare_resolution)
     ld.add_action(decalare_publish_period)
 
-    # Add any actions
+    # Adición de las acciones a ejecutar
     ld.add_action(start_gazebo_server_cmd)
     ld.add_action(start_gazebo_client_cmd)
-    #ld.add_action(start_robot_localization_cmd)
     ld.add_action(start_robot_state_publisher_cmd)
     ld.add_action(start_rviz_cmd)
     ld.add_action(start_cartographer_cmd)

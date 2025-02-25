@@ -1,3 +1,10 @@
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Archivo de lanzamiento para navegación Nav2 del robot SARA en entorno real
+# Implementa la configuración de lanzamiento para un sistema de navegación autónoma
+# utilizando Nav2 en el robot SARA real (hardware). La arquitectura integra localización
+# mediante AMCL, carga de mapas previamente generados con enmascaramiento para áreas
+# prohibidas, visualización, y filtros de costo para una navegación segura y eficiente.
 
 import os
 from launch import LaunchDescription
@@ -14,26 +21,24 @@ from lifecycle_msgs.msg import Transition
 
 def generate_launch_description():
 
-  # Set the path to different files and folders.
+  # Configuración de rutas a archivos y carpetas
+  # Define las ubicaciones de modelos, configuraciones y mapas para la navegación
   pkg_share = FindPackageShare(package='turtlemart').find('turtlemart')
   default_model_path = os.path.join(pkg_share, 'models/turtlemart.urdf.xacro')  
 
   default_rviz_config_path = os.path.join(pkg_share, 'rviz/nav2_config_v2.rviz')
   nav2_dir = FindPackageShare(package='nav2_bringup').find('nav2_bringup') 
   nav2_launch_dir = os.path.join(nav2_dir, 'launch') 
-  #static_map_path = os.path.join(pkg_share, 'maps', 'labrobsuper_map_mask_keepout.yaml')
   static_map_path = os.path.join(pkg_share, 'maps', 'labrobfinal_mask.yaml')
-  #static_map_path = os.path.join(pkg_share, 'maps', 'labmap2_mask.yaml')
   nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_super.yaml')
- # nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_test.yaml')
   nav2_bt_path = FindPackageShare(package='nav2_bt_navigator').find('nav2_bt_navigator')
   behavior_tree_xml_path = os.path.join(nav2_bt_path, 'behavior_trees', 'navigate_w_replanning_and_recovery.xml')
   
-
+  # Configuración para el filtro de Kalman Extendido (EKF)
   ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
 
-
-  # Launch configuration variables specific to simulations
+  # Variables de configuración del lanzamiento
+  # Parámetros configurables para la navegación en entorno real
   autostart = LaunchConfiguration('autostart')
   default_bt_xml_filename = LaunchConfiguration('default_bt_xml_filename')
   headless = LaunchConfiguration('headless')
@@ -47,16 +52,14 @@ def generate_launch_description():
   use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
-  # Map fully qualified names to relative ones so the node's namespace can be prepended.
-  # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
-  # https://github.com/ros/geometry2/issues/32
-  # https://github.com/ros/robot_state_publisher/pull/30
-  # TODO(orduno) Substitute with `PushNodeRemapping`
-  #              https://github.com/ros2/launch_ros/issues/56
+  
+  # Configuración de remapeos para transformaciones
+  # Asegura la correcta comunicación entre los nodos del sistema
   remappings = [('/tf', 'tf'),
                 ('/tf_static', 'tf_static')]
   
-  # Declare the launch arguments  
+  # Declaración de los argumentos de lanzamiento
+  # Permite configurar el comportamiento del sistema en tiempo de ejecución
   declare_namespace_cmd = DeclareLaunchArgument(
     name='namespace',
     default_value='',
@@ -122,10 +125,7 @@ def generate_launch_description():
     default_value='True',
     description='Whether to start RVIZ')
     
-
-
-
-  # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
+  # Publicador del estado del robot
   start_robot_state_publisher_cmd = Node(
     condition=IfCondition(use_robot_state_pub),
     package='robot_state_publisher',
@@ -136,7 +136,7 @@ def generate_launch_description():
     remappings=remappings,
     arguments=[default_model_path])
 
-  # Launch RViz
+  # Lanzamiento de RViz para visualización
   start_rviz_cmd = Node(
     condition=IfCondition(use_rviz),
     package='rviz2',
@@ -145,34 +145,20 @@ def generate_launch_description():
     output='screen',
     arguments=['-d', rviz_config_file])    
     
+  # Nodo AMCL para localización
+  # Implementa la localización Monte Carlo adaptativa para posicionamiento
   start_amcl_cmd = Node(
   	package='nav2_amcl',
- 	 executable='amcl',
+ 	  executable='amcl',
   	name='amcl',
   	output='screen',
   	parameters=[nav2_params_path],
   	remappings=[('/scan', 'scan')]
 	)
 
-  start_lifecycle_manager_cmd = Node(
-    package='nav2_lifecycle_manager',
-    executable='lifecycle_manager',
-    name='lifecycle_manager_costmap_filters',
-    output='screen',
-    emulate_tty=True,
-    parameters=[{'use_sim_time': use_sim_time},
-                {'autostart': True},
-                {'node_names': ['filter_mask_server', 'costmap_filter_info_server']}])
 
-  start_map_server_cmd = Node(
-    package='nav2_map_server',
-    executable='map_server',
-    name='filter_mask_server',
-    output='screen',
-    emulate_tty=True,
-    parameters=[params_file])
-
-
+  # Nodo de localización mediante EKF
+  # Fusiona datos de odometría y amcl para estimación precisa y fluida de pose
   start_robot_localization_cmd = Node(
     package='robot_localization',
     executable='ekf_node',
@@ -181,21 +167,15 @@ def generate_launch_description():
     parameters=[ekf_config_path]
   )
 
+  # Nodo limpiador de mapas de costo
+  # Mejora la calidad de los mapas de navegación eliminando ruido
+  costmap_cleaner_node = Node(package='turtlemart', executable='costmap_cleaner.py')
 
-  start_costmap_filter_info_server_cmd = Node(
-    package='nav2_map_server',
-    executable='costmap_filter_info_server',
-    name='costmap_filter_info_server',
-    output='screen',
-    emulate_tty=True,
-    parameters=[params_file])
-
-  costmap_cleaner_node= Node( package='turtlemart',executable='costmap_cleaner.py')
-  subscriber_node= Node( package='turtlemart',executable='subscriberagv.py')
-  locker_node= Node( package='turtlemart',executable='mux_locker.py')
+  # Nodo bloqueador de multiplexor por medio de balanza integrada
+  locker_node = Node(package='turtlemart', executable='mux_locker.py')
     
-
-# Launch the ROS 2 Navigation Stack
+  # Lanzamiento de la pila de navegación ROS 2
+  # Configura e inicia todos los componentes principales del sistema Nav2
   start_ros2_navigation_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'bringup_launch.py')),
     launch_arguments = {'namespace': namespace,
@@ -207,10 +187,11 @@ def generate_launch_description():
                         'default_bt_xml_filename': default_bt_xml_filename,
                         'autostart': autostart}.items())
 
-  # Create the launch description and populate
+  # Creación de la descripción de lanzamiento y población
   ld = LaunchDescription()
 
-  # Declare the launch options
+  # Declaración de las opciones de lanzamiento
+  # Añade todos los argumentos definidos anteriormente
   ld.add_action(declare_namespace_cmd)
   ld.add_action(declare_use_namespace_cmd)
   ld.add_action(declare_autostart_cmd)
@@ -225,21 +206,14 @@ def generate_launch_description():
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
 
- 
-
-  # Add any actions
-
+  # Adición de las acciones a ejecutar
+  # Configura la secuencia de lanzamiento para el robot SARA real
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
   ld.add_action(start_ros2_navigation_cmd)
   ld.add_action(locker_node)
   ld.add_action(start_amcl_cmd)
-  #ld.add_action(start_lifecycle_manager_cmd)
-  #ld.add_action(start_map_server_cmd)
-  #ld.add_action(start_costmap_filter_info_server_cmd)  
   ld.add_action(start_robot_localization_cmd)
   ld.add_action(costmap_cleaner_node)  
-  #ld.add_action(subscriber_node)
  
-
   return ld

@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Interfaz de navegación del sistema Smart Autonomous Retail Assistant (SARA)
+# Implementa una ventana unificada que gestiona la navegación del robot tanto en modo
+# real como en simulación, mostrando la posición del robot en un mapa y permitiendo
+# al usuario interactuar con el sistema durante el proceso de compra.
 
 import os
 import sqlite3
@@ -35,7 +41,12 @@ from finishgui import ThanksWindow
 
 
 class UnifiedNavigationWindow(ctk.CTk):
+    # Clase principal que implementa la interfaz de navegación unificada
+    # Gestiona la interacción entre el usuario y el sistema de navegación del robot
+    # proporcionando visualización en tiempo real y control del proceso de compra
     def __init__(self, product_manager,navigation_mode):
+        # Inicialización de la ventana de navegación unificada
+        # Configura la interfaz gráfica y establece la conexión con ROS2
         super().__init__()
         #self.master = master
 
@@ -44,13 +55,14 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.setup_signal_handlers()
         self.navigation_started = False  
 
-
+        # Definición de fuentes para mantener consistencia en la interfaz
         self.STATUS_FONT = ('Arial', 25, 'bold')
         self.PRODUCT_FONT = ('Arial', 20, 'bold')
         self.PRODUCT_TITLE_FONT = ('Arial', 30, 'bold')      
         self.CLOCK_FONT = ('ARIAL', 25, 'bold')  # Para el reloj también
 
-
+        # Paleta de colores para la interfaz
+        # Define los colores usados en todos los elementos visuales
         self.colors = {
         # Fondos
         'primary_bg': "#FEF2F2",  # Rojo claro suave
@@ -89,7 +101,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.product_manager = product_manager
         self.nav_mode = navigation_mode 
          
-       
+        # Configuración de la ventana principal
         self.title("Smart Autonomous Retail Assistant")
         self.geometry("%dx%d+0+0" % (self.winfo_screenwidth(), self.winfo_screenheight()))
 
@@ -101,10 +113,12 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Inicializar la lista de productos seleccionados
         self.selected_products = []
 
+        # Variables para el seguimiento de la posición del robot
         self.initial_pose = None  # To store the starting x, y, and yaw
         self.current_pose = None  # To store the relative x, y, and yaw (yaw remains absolute)
         self.pose_message_printed = False  # Solo agregar esta variable
 
+        # Variables para la comunicación con ROS
         self.node = None
         self.executor = None
         self.navigator = None
@@ -117,20 +131,21 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.should_show_popup = True
         self.current_popup = None  # Mantener referencia al popup actual
 
-
+        # Deshabilitar cierre de ventana mediante botón X
         self.protocol("WM_DELETE_WINDOW", lambda: None)
 
-
+        # Variables de estado para la calibración y navegación
         self.calibration_complete = False 
         
         self.launch_processes = []
         self.launch_thread = None
         
+        # Iniciar hilo para la comunicación con ROS
         self.ros_thread = threading.Thread(target=self.init_ros)
         self.ros_thread.daemon = True  # Daemon para que termine cuando la GUI se cierre
         self.ros_thread.start()
         
-        
+        # Variables para la visualización del robot en el mapa
         self.robot_patch = None
         self.robot_width = 0.15  # in meters
         self.robot_length = 0.35  # in meters
@@ -141,12 +156,12 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.fixed_cash_location = {'x': 0.1, 'y': 2.0} if self.nav_mode == "Real" \
             else {'x': -1.0, 'y': -2.0}
 
-        # Variable para controlar el estado del botón
+        # Variables para controlar el estado de la navegación
         self.navigation_started = False
         self.go_to_cashier= False
         self.continue_nav_published = False  # Nueva variable para controlar la publicación
 
-        # Frame superior
+        # Frame superior con información de estado
         self.top_frame = ctk.CTkFrame(self, height=100, fg_color=self.colors['secondary_bg'])
         self.top_frame.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=10)
         self.top_frame.pack_propagate(False)
@@ -158,6 +173,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         status_center_frame.pack(side=ctk.LEFT, expand=True, fill=ctk.BOTH, padx=20)
         status_center_frame.pack_propagate(False) 
         
+        # Etiqueta para mostrar el estado actual de la navegación
         self.status_label = ctk.CTkLabel(
             status_center_frame, 
             text="Por favor empiece con el proceso de compra",
@@ -167,13 +183,12 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.status_label.pack(pady=(10, 5))
 
+        # Barra de progreso para mostrar el avance de la navegación
         self.progress_bar = ctk.CTkProgressBar(status_center_frame, width=700, progress_color=self.colors['button_bg'], fg_color=self.colors['secondary_bg'])
         self.progress_bar.pack(pady=(10, 20))
         self.progress_bar.set(0)
 
-
-
-        # Frame para la información de fecha, hora, etc.
+        # Frame para la información lateral (fecha, hora, etc.)
         self.info_frame = ctk.CTkFrame(self, width=200, fg_color=self.colors['secondary_bg'])
         self.info_frame.pack(side=ctk.LEFT, fill=ctk.Y, padx=10, pady=10)
 
@@ -194,17 +209,18 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.label_reloj.pack(side=ctk.TOP, pady=5)
 
+        # Etiqueta SARA en la parte inferior izquierda
         shop_vision_label = ctk.CTkLabel(self.info_frame, text="SARA", font=('Helvetica', 35, 'bold'), text_color=self.colors['text_primary'],)
         shop_vision_label.pack(side=ctk.BOTTOM, padx=10, pady=10)
 
         # Iniciar la actualización del reloj y la fecha
         self.actualizar_reloj_y_fecha()
 
-        # Frame para el mapa
+        # Frame para el mapa de navegación
         self.map_frame = ctk.CTkFrame(self, width=800, height=600, fg_color=self.colors['primary_bg'])
         self.map_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
-        # Frame para el gráfico y la lista de productos
+        # Frame para los controles laterales derechos
         self.right_frame = ctk.CTkFrame(self, width=450,  fg_color=self.colors['secondary_bg'])
         self.right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=10, pady=10, expand=False)
         self.right_frame.pack_propagate(False) 
@@ -212,8 +228,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Frame para la lista de productos seleccionados
         self.selected_frame = ctk.CTkFrame(self.right_frame, width=350, fg_color=self.colors['list_bg'])
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
- # Prevent frame from shrinking
-        # Frame para el botón
+        
+        # Frame para el botón de navegación
         self.button_frame = ctk.CTkFrame(self.right_frame, width=120, fg_color=self.colors['secondary_bg'])
         self.button_frame.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
 
@@ -221,6 +237,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.button_inner_frame = ctk.CTkFrame(self.button_frame, height=100, width=100, fg_color=self.colors['secondary_bg'])
         self.button_inner_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=10, pady=10)
    
+        # Botón principal para controlar la navegación
         self.navigation_button = ctk.CTkButton(
             self.button_inner_frame,
             text="Iniciar",
@@ -233,15 +250,14 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.navigation_button.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
 
+        # Frame para mostrar el estado del control remoto
         self.control_frame = ctk.CTkFrame(self.info_frame, width=200, height=150, fg_color="transparent")
         self.control_frame.pack(side=ctk.TOP, padx=10, pady=20, expand=True)
         self.control_frame.pack_propagate(False)
         container = ctk.CTkFrame(self.control_frame, fg_color="transparent")
         container.place(relx=0.5, rely=0.5, anchor="center")
 
-
-
-        # Create a label for the control status text
+        # Etiqueta para el estado del control remoto
         self.control_label = ctk.CTkLabel(
             container, 
             text="Estado de Control Remoto",
@@ -252,8 +268,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.control_label.pack(pady=(0, 10))
 
-
-        # Create a canvas for the circle
+        # Canvas para el indicador visual del control remoto
         self.control_canvas = ctk.CTkCanvas(
             container, 
             width=40, 
@@ -263,9 +278,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.control_canvas.pack(pady=(5, 0))
 
-        # Create a circle on the canvas
-
-        # Create the circle with padding
+        # Crear el círculo indicador con padding
         padding = 5
         self.control_circle = self.control_canvas.create_oval(
             padding, 
@@ -275,6 +288,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             fill="red", 
             outline=""
         )
+        
+        # Etiqueta de texto para el estado del control
         self.control_status_label = ctk.CTkLabel(
             container,
             text="Deshabilitado",  # Texto inicial
@@ -284,10 +299,10 @@ class UnifiedNavigationWindow(ctk.CTk):
         )
         self.control_status_label.pack(pady=(5, 0))
 
-
-        # Crear y mostrar el gráfico
+        # Crear y mostrar el gráfico del mapa
         self.create_plot(self.map_frame)
         
+        # Iniciar la actualización de la posición del robot
         self.update_robot_position()
 
         # Actualizar la lista de productos seleccionados
@@ -295,6 +310,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.after(1000, self.view_selected_products)
 
     def init_ros(self):
+        # Método para inicializar la comunicación con ROS
+        # Configura los nodos, suscriptores y publicadores necesarios
         try:
             rclpy.init(args=None)
             self.ros_initialized = True
@@ -306,22 +323,28 @@ class UnifiedNavigationWindow(ctk.CTk):
             self.executor.add_node(self.node)
             self.navigator = BasicNavigator()
 
+            # Configuración de suscriptores según el modo de navegación
             if self.nav_mode == "Real":
+               # self.odom_subscriber = self.node.create_subscription(
+                #    PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
                 self.odom_subscriber = self.node.create_subscription(
-                    PoseWithCovarianceStamped, 'amcl_pose', self.odom_callback, 10)
+                    Odometry, 'odometry/filtered', self.odom_callback, 10)
+
                 self.lock_all_subscriber = self.node.create_subscription(
                     Bool, 'lock_all', self.lock_all_callback, 10)
             else:
                 self.odom_subscriber = self.node.create_subscription(
                     Odometry, 'odom', self.odom_callback, 10)
 
+            # Suscriptor para el estado del joystick
             self.is_joy_on_subscriber = self.node.create_subscription(String, 'is_joy_on', self.is_joy_on_callback, 10) 
 
+            # Publicadores para control de navegación
             self.continue_nav_publisher = self.node.create_publisher(String, '/continue_nav', 10)
             self.cashier_publisher = self.node.create_publisher(String, '/to_do_next', 10)
             self.status_subscriber = self.node.create_subscription(String, '/navigation_status', self.status_callback, 10)
         
-        # Spin the executor in a loop
+            # Bucle principal de ejecución de ROS
             while rclpy.ok() and not self.is_closing:
                 try:
                     self.executor.spin_once(timeout_sec=0.1)
@@ -338,6 +361,8 @@ class UnifiedNavigationWindow(ctk.CTk):
                 self.cleanup_ros()
 
     def odom_callback(self, msg):
+        # Callback para actualizar la posición del robot
+        # Procesa los mensajes de odometría para obtener la posición y orientación
         self.current_pose = {
             'x': msg.pose.pose.position.x,
             'y': msg.pose.pose.position.y,
@@ -345,6 +370,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         }
 
     def is_joy_on_callback(self, msg):
+        # Callback para actualizar el estado del control remoto
+        # Actualiza el indicador visual según si el joystick está activo
         try:
             if msg.data == "yes":
                 self.control_canvas.itemconfig(
@@ -366,6 +393,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             print(f"Error updating control circle color: {e}")
 
     def lock_all_callback(self, msg):
+        # Callback para manejar el bloqueo de la plataforma
+        # Muestra un mensaje cuando se excede el peso máximo permitido
         if msg.data and self.should_show_popup:  # Si es True y debemos mostrar el popup
             self.show_info("Peso máximo de plataforma excedida, por favor retire el último producto agregado", "¡Atención!")
             self.should_show_popup = False
@@ -378,11 +407,15 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.lock_all_active = msg.data
 
     def status_callback(self, msg):
+        # Callback para procesar los mensajes de estado de la navegación
+        # Actualiza la interfaz según el estado actual de la navegación
 
         status, waypoint_name, completion_percentage, visited_waypoints = msg.data.split('|')
         visited_waypoints = set(visited_waypoints.split(','))
         self.handle_progress_bar(status, waypoint_name, completion_percentage)
         self.update_waypoint_status(status, waypoint_name, visited_waypoints)
+        
+        # Llamar a handle_status para mostrar mensajes amigables
         self.handle_status(status, waypoint_name)
         
         # Actualizar el texto del botón según el estado
@@ -404,10 +437,11 @@ class UnifiedNavigationWindow(ctk.CTk):
             
         if status == "REACHED" and waypoint_name == "cashier":
             self.cashier_reached = True
-            self.status_label.configure(text="Status: REACHED - Waypoint: cashier")
-
+        
             
     def update_waypoint_status(self, status, waypoint_name, visited_waypoints):
+        # Método para actualizar el estado visual de los puntos de navegación
+        # Cambia los colores de los marcadores en el mapa y la lista de productos
         locations = self.get_product_locations()
         
         for loc in locations:
@@ -423,21 +457,24 @@ class UnifiedNavigationWindow(ctk.CTk):
                     self.update_product_color(waypoint_name, "#FFD700")  # Amarillo
 
     def update_product_color(self, product_name, color):
-        """Actualiza el color de un producto específico sin recrear la lista"""
+        # Método para actualizar el color de un producto en la lista
+        # Cambia el color del texto sin recrear la lista completa
         self.product_colors[product_name] = color
         if product_name in self.product_labels:
             label = self.product_labels[product_name]
             label.configure(text_color=color)
 
     def update_marker_color(self, x, y, color):
-    # Actualizar el color del marcador en el gráfico
+        # Método para actualizar el color de un marcador en el mapa
+        # Busca el marcador correspondiente y cambia su color
         for marker in self.ax.lines:
             if marker.get_xdata() == x and marker.get_ydata() == y:
                 marker.set_color(color)
         self.canvas.draw()
 
     def update_text_color(self, name, color):
-
+        # Método para actualizar el color del texto de un producto
+        # Busca la etiqueta correspondiente dentro de los contenedores
         self.product_colors[name] = color
         # Actualizar el color del texto en el panel de productos
         scrollable_frame = None
@@ -456,7 +493,8 @@ class UnifiedNavigationWindow(ctk.CTk):
                             return
       
     def get_yaw_from_quaternion(self, quaternion):
-        # Convert quaternion to Euler angles
+        # Método para convertir un cuaternión a ángulo de guiñada (yaw)
+        # Utiliza la representación de cuaternión para obtener la orientación
         x, y, z, w = quaternion.x, quaternion.y, quaternion.z, quaternion.w
         t3 = 2.0 * (w * z + x * y)
         t4 = 1.0 - 2.0 * (y * y + z * z)
@@ -464,24 +502,40 @@ class UnifiedNavigationWindow(ctk.CTk):
         return yaw
       
     def spin_ros_node(self):
+        # Método para hacer girar el nodo ROS
+        # Mantiene activa la comunicación con ROS
         rclpy.spin(self.node)
     
     def handle_status(self, status, waypoint_name):
+        # Método para manejar los cambios de estado de la navegación
+        # Actualiza la interfaz según el estado actual con mensajes más amigables
         if status == "READY":
             self.status_label.configure(text="Ahora puede empezar a dirigirse a sus productos, por favor dar click a siguiente producto")
             self.navigation_button.configure(state="enabled", text="Siguiente producto")
         elif status == "WAITING":
             self.status_label.configure(text="Ha llegado a su destino, cuando este listo dar click a siguiente producto")  
             self.navigation_button.configure(state="enabled")
+        elif status == "NAVIGATING":
+            # Mensaje más amigable mientras navega
+            product_name = waypoint_name.replace("_", " ").title() if waypoint_name else "destino"
+            self.status_label.configure(text=f"SARA se está dirigiendo hacia: {product_name}") 
+        elif status == "REACHED":
+            # Mensaje más amigable cuando llega al destino
+            product_name = waypoint_name.replace("_", " ").title() if waypoint_name else "destino"
+            if waypoint_name == "cashier":
+                self.status_label.configure(text="¡Ha llegado a la caja! Gracias por su compra.")
+            else:
+                self.status_label.configure(text=f"¡Ha llegado a {product_name}! Puede tomar su producto.")
         elif status == "FINISHED":
-            self.status_label.configure(text="Ha finalizado su proceso de compra cuando este listo dar click a Ir a caja") 
+            self.status_label.configure(text="Ha finalizado su proceso de compra, cuando esté listo dar click a Ir a caja") 
             self.navigation_button.configure(text="Ir a caja", state="enabled")
             self.go_to_cashier = True
         elif status == "SHOPPING_AGAIN":
             self.destroy()
-                 
+
     def handle_progress_bar(self, status, waypoint_name, completion_percentage):
-         
+        # Método para actualizar la barra de progreso
+        # Muestra el avance de la navegación hacia el destino actual
         if completion_percentage:
             progress = float(completion_percentage) / 100
             self.progress_bar.set(progress)
@@ -489,16 +543,12 @@ class UnifiedNavigationWindow(ctk.CTk):
             self.progress_bar.set(0)
             
         if status == "REACHED":
-           self.progress_bar.set(1)
-        
-        status_text = f"Status: {status}"
-        if waypoint_name:
-            status_text += f" - Waypoint: {waypoint_name}"
-        
-        self.status_label.configure(text=status_text)
+            self.progress_bar.set(1)
+    
 
     def setup_signal_handlers(self):
-        """Configura los manejadores de señales para SIGINT y SIGTERM"""
+        # Método para configurar los manejadores de señales del sistema
+        # Permite una terminación limpia al recibir señales SIGINT o SIGTERM
         def signal_handler(signum, frame):
             if hasattr(self, 'is_closing') and self.is_closing:
                 subprocess.run(['kill', '-9', str(os.getpid())], check=False)
@@ -508,6 +558,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         signal.signal(signal.SIGTERM, signal_handler)
 
     def show_popup(self):
+        # Método para mostrar una ventana emergente de opciones
+        # Ofrece al usuario la opción de ir a la caja
         popup_window = ctk.CTkToplevel()
         popup_window.configure(fg_color=self.colors['primary_bg'])
         popup_window.title("Acciones")
@@ -521,6 +573,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         go_to_checkout_button.pack(side="left", padx=20, pady=10)
             
     def go_to_checkout(self):
+        # Método para iniciar la navegación hacia la caja
+        # Marca la posición de la caja y publica el mensaje correspondiente
         self.navigation_button.configure(state="disabled")  # Añadir esta línea
         self.add_cashier_marker()
         self.publish_cashier()
@@ -528,12 +582,16 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.wait_for_cashier_reached()
 
     def wait_for_cashier_reached(self):
+        # Método para esperar a que el robot llegue a la caja
+        # Verifica periódicamente si se ha alcanzado la posición de la caja
         if self.cashier_reached:
             self.finish_shopping()
         else:
             self.after(100, self.wait_for_cashier_reached)
        
     def finish_shopping(self):
+        # Método para finalizar el proceso de compra
+        # Muestra la ventana de agradecimiento y cierra la navegación
         if self.after_id is not None:
             self.after_cancel(self.after_id) 
         
@@ -543,10 +601,14 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.new_window.mainloop()
         
     def show_main_window(self):
+        # Método para mostrar la ventana principal
+        # Vuelve a la pantalla de selección de productos
         self.product_manager.deiconify()  # Show the ProductManager window
         self.destroy()  # Close the NavigationWindow
     
     def add_cashier_marker(self):
+        # Método para añadir un marcador de la caja en el mapa
+        # Crea o actualiza el marcador visual para la posición de la caja
         if self.cashier_marker:
             self.cashier_marker.remove()
 
@@ -558,6 +620,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.canvas.draw()
         
     def stop_ros_processes(self):
+        # Método para detener todos los procesos ROS
+        # Limpia los procesos y recursos relacionados con ROS
         print("Stopping ROS processes...")
         
         # Stop all launch processes
@@ -601,6 +665,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.launch_processes = []
    
     def show_info(self, message, title="Info"):
+        # Método para mostrar ventanas de información al usuario
+        # Crea una ventana emergente personalizada con un mensaje
         if self.current_popup is not None:
             self.current_popup.destroy()
         
@@ -647,6 +713,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         self.current_popup = info_window 
           
     def update_robot_position(self):
+        # Método para actualizar la posición del robot en el mapa
+        # Convierte las coordenadas del robot y actualiza su representación visual
         if not self.is_closing:
             try:
                 if self.current_pose:
@@ -654,11 +722,9 @@ class UnifiedNavigationWindow(ctk.CTk):
                         # Convert map coordinates to pixel coordinates
                         pixel_x = int((self.current_pose['x'] - self.origin[0]) / self.resolution)
                         pixel_y = int((self.current_pose['y'] - self.origin[1]) / self.resolution)
-                    # print(f"Robot position: pixel_x={pixel_x}, pixel_y={pixel_y}")  # Debug print
-
                         orientation = self.current_pose.get('orientation', 0)  # in radians
 
-                                # Remove the previous robot image if it exists
+                        # Remove the previous robot image if it exists
                         robot_width_pixels = self.robot_width / self.resolution
                         robot_length_pixels = self.robot_length / self.resolution
                         
@@ -672,12 +738,11 @@ class UnifiedNavigationWindow(ctk.CTk):
                         self.robot_imobj.set_extent(extent)
 
                         if not self.is_closing:
-
                             self.canvas.draw()
 
                         if not self.pose_message_printed:  # Solo imprime si no se ha impreso antes
-                                    print("No current pose available")
-                                    self.pose_message_printed = True
+                            print("No current pose available")
+                            self.pose_message_printed = True
 
                 if not self.is_closing:
                     self.after(100, self.update_robot_position)
@@ -687,14 +752,17 @@ class UnifiedNavigationWindow(ctk.CTk):
                 if not self.is_closing:
                     self.after(100, self.update_robot_position)
 
-
     def actualizar_reloj_y_fecha(self):
+        # Método para actualizar la hora y fecha mostradas
+        # Actualiza las etiquetas de reloj y fecha cada segundo
         now = datetime.datetime.now()
         self.label_reloj.configure(text=now.strftime("%H:%M:%S"))
         self.label_fecha.configure(text=now.strftime("%Y-%m-%d"))
         self.after(1000, self.actualizar_reloj_y_fecha)
   
     def create_plot(self, frame):
+        # Método para crear el gráfico del mapa
+        # Configura la visualización del mapa y añade la imagen del robot
         self.fig, self.ax = plt.subplots(figsize=(6, 4), dpi=100)
         # Ocultar los ejes y números
         self.ax.set_xticks([])
@@ -710,6 +778,7 @@ class UnifiedNavigationWindow(ctk.CTk):
 
         self.update_map_plot()
         
+        # Cargar y configurar la imagen del robot
         pkg_dir = get_package_share_directory('turtlemart')
         robot_image_path = os.path.join(pkg_dir, 'images/shoppingcart.png')
         self.robot_image = plt.imread(robot_image_path)
@@ -725,12 +794,10 @@ class UnifiedNavigationWindow(ctk.CTk):
 
         # Set the initial position off-screen
         self.robot_imobj.set_transform(mtransforms.Affine2D().translate(-1000, -1000) + self.ax.transData)
-
-        
-        #self.ax.legend()
       
-
     def update_map_plot(self):
+        # Método para actualizar el gráfico del mapa
+        # Carga el mapa y muestra las ubicaciones de los productos
         self.ax.clear()
         # Cargar el mapa y actualizar el gráfico
         self.map_array, self.resolution, self.origin = self.load_map()
@@ -741,10 +808,9 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Obtener y plotear ubicaciones de productos
         self.plot_product_locations()
         
-        #self.robot_position, = self.ax.plot([], [], 'bo', markersize=10, label='Robot')
-        #self.ax.legend()
-        
     def load_map(self):
+        # Método para cargar el mapa desde un archivo YAML
+        # Lee el archivo de configuración del mapa y carga la imagen correspondiente
         bringup_dir = get_package_share_directory('turtlemart')
         if self.nav_mode == "Real":
             map_yaml_path = os.path.join(bringup_dir, 'maps/labrobfinal_mask.yaml')
@@ -767,6 +833,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         return map_array, resolution, origin
 
     def plot_product_locations(self):
+        # Método para mostrar las ubicaciones de los productos en el mapa
+        # Dibuja marcadores en las posiciones de los productos seleccionados
         # Obtener ubicaciones de la base de datos
         locations = self.get_product_locations()
 
@@ -779,9 +847,9 @@ class UnifiedNavigationWindow(ctk.CTk):
 
         self.canvas.draw()
 
-
-
     def get_product_locations(self):
+        # Método para obtener las ubicaciones de los productos de la base de datos
+        # Consulta la base de datos para obtener nombres y coordenadas
         db_dir = get_source_db_path('turtlemart', 'products.db')
         conn = sqlite3.connect(db_dir)
         cursor = conn.cursor()
@@ -791,6 +859,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         return locations
 
     def handle_navigation_button(self):
+        # Método para manejar la acción del botón de navegación
+        # Implementa la lógica de diferentes estados del botón
         if not self.calibration_complete:
             # Primera fase: iniciar calibración
             if not self.launch_thread or not self.launch_thread.is_alive():
@@ -812,6 +882,8 @@ class UnifiedNavigationWindow(ctk.CTk):
                 self.perform_alternate_action()
 
     def launch_and_update(self):
+        # Método para lanzar archivos ROS2 y actualizar la interfaz
+        # Inicia los procesos necesarios y actualiza el estado del botón
         # Lanzar los archivos ROS2
         self.launch_ros2_files()
         # Esperar un tiempo prudencial para que todo se inicie
@@ -822,9 +894,10 @@ class UnifiedNavigationWindow(ctk.CTk):
             text="Buscar productos",
             state="normal"
         ))
-
                 
     def launch_ros2_files(self):
+        # Método para lanzar los archivos de configuración ROS2
+        # Inicia los procesos necesarios según el modo de navegación
         launch_commands = [
             "ros2 launch turtlemart mux.launch.py",
         ]
@@ -845,10 +918,10 @@ class UnifiedNavigationWindow(ctk.CTk):
             self.launch_processes.append(process)
         
         print("Launch files started successfully (output suppressed).")
-       # basic_control_thread = threading.Thread(target=self.launch_basic_control)
-        #basic_control_thread.start()
     
     def launch_basic_control(self):
+        # Método para lanzar el control básico del robot
+        # Inicia y monitorea el proceso de control básico
         cmd = "ros2 launch turtlemart basic_control.launch.py"
         process = subprocess.Popen(
             cmd,
@@ -867,6 +940,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         print("Basic Control launch file completed.")
         
     def is_process_running(self, process_name):
+        # Método para verificar si un proceso está en ejecución
+        # Comprueba si existe un proceso con el nombre especificado
         """Verifica si un proceso con el nombre especificado ya está en ejecución"""
         try:
             # `pgrep` busca procesos que coincidan con el nombre
@@ -876,6 +951,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             return False  # Si no se encuentra el proceso, retorna False
 
     def run_navigation(self):
+        # Método para ejecutar la navegación
+        # Crea una instancia del navegador apropiado y ejecuta la navegación
         try:
             navigator_class = RealNavigator if self.nav_mode == "Real" else SimNavigator
             navigator = navigator_class()
@@ -894,6 +971,8 @@ class UnifiedNavigationWindow(ctk.CTk):
                 self.after_idle(lambda: self.navigation_button.configure(state="normal"))
             
     def __del__(self):
+        # Método destructor de la clase
+        # Limpia los recursos cuando se destruye la instancia
         # Terminate launch file processes when the window is closed
         for process in self.launch_processes:
             process.terminate()
@@ -906,33 +985,44 @@ class UnifiedNavigationWindow(ctk.CTk):
         rclpy.shutdown()
 
     def perform_alternate_action(self):
+        # Método para ejecutar acciones alternativas
+        # Publica mensajes para continuar la navegación
         self.navigation_button.configure(state="disabled")
         self.publish_continue_nav()
         self.continue_nav_published = True
         self.publish_stop()
 
     def publish_continue_nav(self):
+        # Método para publicar el mensaje de continuar la navegación
+        # Envía un mensaje al tópico correspondiente
         msg = String()
         msg.data = "continue"
         self.continue_nav_publisher.publish(msg)
         
     def publish_stop(self):
+        # Método para publicar el mensaje de detener la navegación
+        # Envía un mensaje de parada al tópico correspondiente
         msg = String()
         msg.data = "stop"
         self.continue_nav_publisher.publish(msg)
         
     def publish_cashier(self):
+        # Método para publicar el mensaje de ir a la caja
+        # Envía un mensaje para dirigirse a la caja
         msg = String()
         msg.data = "cash"
         self.cashier_publisher.publish(msg)
 
     def publish_shop_again(self):
+        # Método para publicar el mensaje de volver a comprar
+        # Envía un mensaje para reiniciar el proceso de compra
         msg = String()
         msg.data = "shop_again"
         self.cashier_publisher.publish(msg)
     
-
     def cleanup_gui(self):
+        # Método para limpiar los recursos de la interfaz gráfica
+        # Cancela callbacks pendientes y cierra ventanas
         """Limpia todos los recursos relacionados con la GUI"""
         print("Cleaning up GUI resources...")
         try:
@@ -967,6 +1057,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             print(f"Error during GUI cleanup: {e}")
 
     def cleanup_threads(self):
+        # Método para limpiar los hilos creados
+        # Espera a que los hilos terminen de forma ordenada
         """Limpia todos los hilos"""
         print("Cleaning up threads...")
         if hasattr(self, 'threads'):
@@ -978,6 +1070,8 @@ class UnifiedNavigationWindow(ctk.CTk):
                     print(f"Error joining thread: {e}")
 
     def cleanup_processes(self):
+        # Método para limpiar procesos externos
+        # Termina los procesos relacionados con ROS y otros subprocesos
         """Limpia todos los procesos relacionados con ROS y otros subprocesos"""
         print("Cleaning up processes...")
         
@@ -1014,9 +1108,9 @@ class UnifiedNavigationWindow(ctk.CTk):
             except Exception as e:
                 print(f"Error killing launch process: {e}")
 
-
-
     def cleanup_ros(self):
+        # Método para limpiar recursos de ROS
+        # Detiene la navegación y limpia nodos, publishers y subscribers
         """Limpia todos los recursos relacionados con ROS"""
         print("Cleaning up ROS resources...")
         try:
@@ -1066,6 +1160,8 @@ class UnifiedNavigationWindow(ctk.CTk):
             print(f"Error during ROS cleanup: {e}")
 
     def on_closing(self):
+        # Método para manejar el cierre de la aplicación
+        # Implementa un proceso completo de limpieza de recursos
         """Manejador principal de cierre"""
         if hasattr(self, 'is_closing') and self.is_closing:
             print("DEBUG: Already in closing process, forcing immediate kill...")
@@ -1209,9 +1305,9 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Forzar terminación
         subprocess.run(['kill', '-9', str(os.getpid())], check=False)
 
-
-
     def kill_all_ros_processes(self):
+        # Método para matar todos los procesos ROS inmediatamente
+        # Utiliza pkill para terminar procesos por nombre
         """Mata todos los procesos de ROS inmediatamente"""
         try:
             # Primero matar los procesos específicos
@@ -1258,7 +1354,9 @@ class UnifiedNavigationWindow(ctk.CTk):
             print(f"Error killing ROS processes: {e}")
 
     def stop_navigation(self):
-        """Detiene la navegación en curso"""
+        # Método para detener la navegación en curso
+        # Cancela la navegación y publica mensaje de parada
+
         try:
             if hasattr(self, 'navigator') and self.navigator:
                 self.navigator.cancelNavigation()
@@ -1271,9 +1369,10 @@ class UnifiedNavigationWindow(ctk.CTk):
         except Exception as e:
             print(f"Error stopping navigation: {e}")
 
-
     def force_kill_ros_processes(self):
-        """Fuerza la terminación de todos los procesos ROS"""
+        # Método para forzar la terminación de todos los procesos ROS
+        # Último recurso para matar procesos que no responden
+
         ros_processes = [
             "rviz2", "gazebo", "gzclient", "gzserver",
             "ros2", "map_server", "amcl", "nav2",
@@ -1288,9 +1387,9 @@ class UnifiedNavigationWindow(ctk.CTk):
             except Exception as e:
                 print(f"Error force killing {proc_name}: {e}")
 
-# Nueva función que manejará la acción del nuevo botón
     def start_thread(self, target, *args, **kwargs):
-        """Helper method to start and track threads"""
+        # Método auxiliar para iniciar y rastrear hilos
+        # Crea un hilo en modo daemon y lo almacena para su posterior limpieza
         thread = threading.Thread(target=target, args=args, kwargs=kwargs)
         thread.daemon = True
         self.threads.append(thread)
@@ -1298,6 +1397,8 @@ class UnifiedNavigationWindow(ctk.CTk):
         return thread
 
     def view_selected_products(self):
+        # Método para mostrar los productos seleccionados
+        # Recrea la lista de productos seleccionados con sus colores actuales
         self.selected_frame.destroy()
         self.selected_frame = ctk.CTkFrame(self.right_frame, width=250, fg_color=self.colors['list_bg'])
         self.selected_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand=True, padx=10, pady=10)
@@ -1345,15 +1446,17 @@ class UnifiedNavigationWindow(ctk.CTk):
             label.pack(expand=True)
             self.product_labels[product_name] = label
 
-
     def refresh_product_list(self):
+        # Método para actualizar la lista de productos
+        # Actualiza la visualización de los productos seleccionados
         # Llamar a view_selected_products para actualizar la lista completa
         self.view_selected_products()
 
 def get_source_db_path(package_name, db_filename):
-    """
-    Obtiene la ruta a la base de datos en el directorio src del paquete
-    """
+    # Función para obtener la ruta de la base de datos en el directorio src del paquete
+    # Navega desde el directorio share hasta la ubicación de la base de datos
+    # siguiendo la estructura estándar de un workspace ROS2
+
     # Obtener el directorio share del paquete
     share_dir = get_package_share_directory(package_name)
     
@@ -1368,5 +1471,7 @@ def get_source_db_path(package_name, db_filename):
     return db_path
 
 if __name__ == "__main__":
+    # Punto de entrada principal del programa
+    # Crea y ejecuta la ventana de navegación en modo real
     app = RealNavWindow()
     app.mainloop()

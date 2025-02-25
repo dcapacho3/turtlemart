@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Autor: David Capacho Parra
+# Fecha: Febrero 2025
+# Descripción: Ventana de agradecimiento del sistema Smart Autonomous Retail Assistant (SARA)
+# Implementa la pantalla final que se muestra al finalizar el proceso de compra,
+# agradeciendo al usuario y solicitando su valoración de la experiencia.
+
 import customtkinter as ctk
 import datetime
 import os
@@ -10,12 +16,17 @@ import time
 from std_msgs.msg import String
 
 class ThanksWindow(ctk.CTk):
+    # Clase que implementa la ventana de agradecimiento final
+    # Muestra un mensaje de agradecimiento y opciones para evaluar la experiencia
     def __init__(self, master=None):
+        # Inicialización de la ventana de agradecimiento
+        # Configura la interfaz gráfica y establece los manejadores de señales
         super().__init__()
         self.master = master
         self.after_id = None
         
         # Definición de los colores estandarizados
+        # Establece la paleta de colores para mantener la consistencia visual
         self.colors = {
         # Fondos
         'primary_bg': "#FEF2F2",  # Rojo claro suave
@@ -51,11 +62,14 @@ class ThanksWindow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def setup_ui(self):
+        # Método para configurar la interfaz de usuario
+        # Crea y dispone todos los elementos visuales de la interfaz
         self.title("Smart Autonomous Retail Assistant")
         self.geometry("%dx%d+0+0" % (self.winfo_screenwidth(), self.winfo_screenheight()))
         self.resizable(width=1, height=1)
 
         # Frame en la parte superior
+        # Contiene el título y el reloj/fecha
         top_frame = ctk.CTkFrame(self, height=100, fg_color=self.colors['frame_bg'])
         top_frame.pack(side=ctk.TOP, fill=ctk.X)
 
@@ -94,6 +108,7 @@ class ThanksWindow(ctk.CTk):
         self.actualizar_reloj_y_fecha()
 
         # Frame principal central
+        # Contiene el mensaje de agradecimiento y opciones de valoración
         main_frame = ctk.CTkFrame(self, fg_color=self.colors['primary_bg'])
         main_frame.pack(side=ctk.LEFT, fill=ctk.BOTH, padx=20, pady=20, expand=True)
 
@@ -112,16 +127,22 @@ class ThanksWindow(ctk.CTk):
         thank_you_label.pack(expand=True, padx=20, pady=20, anchor='center')
 
     def actualizar_reloj_y_fecha(self):
+        # Método para actualizar la hora y fecha mostradas
+        # Actualiza las etiquetas de reloj y fecha cada segundo
         now = datetime.datetime.now()
         self.label_reloj.configure(text=now.strftime("%H:%M:%S"))
         self.label_fecha.configure(text=now.strftime("%Y-%m-%d"))
         self.after_id = self.after(1000, self.actualizar_reloj_y_fecha)
 
     def signal_handler(self, sig, frame):
+        # Manejador de señales para interrupciones del sistema
+        # Permite detener la aplicación correctamente ante la señal SIGINT (Ctrl+C)
         print("Ctrl+C detectado, cerrando la aplicación...")
         self.on_closing()
 
     def on_closing(self):
+        # Método para manejar el cierre normal de la ventana
+        # Cancela los temporizadores y destruye la ventana
         print("Cerrando la ventana correctamente...")
         if self.after_id is not None:
             self.after_cancel(self.after_id)
@@ -129,6 +150,8 @@ class ThanksWindow(ctk.CTk):
         self.destroy()
 
     def setup_signal_handlers(self):
+        # Método para configurar los manejadores de señales del sistema
+        # Permite una terminación limpia al recibir señales SIGINT o SIGTERM
         """Configura los manejadores de señales para SIGINT y SIGTERM"""
         def signal_handler(signum, frame):
             if hasattr(self, 'is_closing') and self.is_closing:
@@ -139,6 +162,8 @@ class ThanksWindow(ctk.CTk):
         signal.signal(signal.SIGTERM, signal_handler)
 
     def on_closing(self):
+        # Método para manejar el cierre completo de la aplicación
+        # Implementa un proceso exhaustivo de limpieza de recursos
         """Manejador principal de cierre mejorado"""
         if hasattr(self, 'is_closing') and self.is_closing:
             print("DEBUG: Already in closing process, forcing immediate kill...")
@@ -150,6 +175,7 @@ class ThanksWindow(ctk.CTk):
         
         try:
             # Script de limpieza exhaustivo
+            # Crea un script bash para terminar todos los procesos relacionados
             kill_script = f"""#!/bin/bash
             
             # Función para matar procesos y sus hijos recursivamente
@@ -303,8 +329,9 @@ class ThanksWindow(ctk.CTk):
         # Forzar terminación
         subprocess.run(['kill', '-9', str(os.getpid())], check=False)
 
-
     def cleanup_gui(self):
+        # Método para limpiar los recursos de la interfaz gráfica
+        # Cancela callbacks pendientes y cierra ventanas
         """Limpia todos los recursos relacionados con la GUI"""
         print("Cleaning up GUI resources...")
         try:
@@ -337,9 +364,10 @@ class ThanksWindow(ctk.CTk):
                     print(f"Error destroying canvas: {e}")
         except Exception as e:
             print(f"Error during GUI cleanup: {e}")
-        
     
     def cleanup_ros(self):
+        # Método para limpiar recursos de ROS
+        # Detiene la navegación y limpia nodos, publishers y subscribers
         """Limpia todos los recursos relacionados con ROS"""
         print("Cleaning up ROS resources...")
         try:
@@ -389,5 +417,7 @@ class ThanksWindow(ctk.CTk):
             print(f"Error during ROS cleanup: {e}")
 
 if __name__ == '__main__':
+    # Punto de entrada principal del programa
+    # Crea y ejecuta la ventana de agradecimiento
     app = ThanksWindow()
     app.mainloop()
