@@ -176,7 +176,7 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Etiqueta para mostrar el estado actual de la navegación
         self.status_label = ctk.CTkLabel(
             status_center_frame, 
-            text="Por favor empiece con el proceso de compra",
+            text="Por favor empiece con el proceso de compra. Haga clic en el boton 'Iniciar'",
             font=self.STATUS_FONT,
             text_color=self.colors['text_primary'],
             wraplength=1400
@@ -510,15 +510,17 @@ class UnifiedNavigationWindow(ctk.CTk):
         # Método para manejar los cambios de estado de la navegación
         # Actualiza la interfaz según el estado actual con mensajes más amigables
         if status == "READY":
-            self.status_label.configure(text="Ahora puede empezar a dirigirse a sus productos, por favor dar click a siguiente producto")
+            self.status_label.configure(text="Ahora puede empezar a dirigirse a sus productos. Por favor dar clic a 'Siguiente producto'.")
             self.navigation_button.configure(state="enabled", text="Siguiente producto")
         elif status == "WAITING":
-            self.status_label.configure(text="Ha llegado a su destino, cuando este listo dar click a siguiente producto")  
+            self.status_label.configure(text="Ha llegado a su destino, cuando este listo dar clic a 'Siguiente producto'.")  
             self.navigation_button.configure(state="enabled")
         elif status == "NAVIGATING":
-            # Mensaje más amigable mientras navega
-            product_name = waypoint_name.replace("_", " ").title() if waypoint_name else "destino"
-            self.status_label.configure(text=f"SARA se está dirigiendo hacia: {product_name}") 
+            if waypoint_name == "cashier":
+                self.status_label.configure(text="SARA se está dirigiendo hacia: Caja Registradora")
+            else:
+                product_name = waypoint_name.replace("_", " ").title() if waypoint_name else "destino"
+                self.status_label.configure(text=f"SARA se está dirigiendo hacia: {product_name}")
         elif status == "REACHED":
             # Mensaje más amigable cuando llega al destino
             product_name = waypoint_name.replace("_", " ").title() if waypoint_name else "destino"
@@ -527,7 +529,7 @@ class UnifiedNavigationWindow(ctk.CTk):
             else:
                 self.status_label.configure(text=f"¡Ha llegado a {product_name}! Puede tomar su producto.")
         elif status == "FINISHED":
-            self.status_label.configure(text="Ha finalizado su proceso de compra, cuando esté listo dar click a Ir a caja") 
+            self.status_label.configure(text="Ha finalizado su proceso de compra, cuando esté listo dar clic a a 'Ir a caja'") 
             self.navigation_button.configure(text="Ir a caja", state="enabled")
             self.go_to_cashier = True
         elif status == "SHOPPING_AGAIN":
@@ -890,10 +892,16 @@ class UnifiedNavigationWindow(ctk.CTk):
         time.sleep(10)  # Ajusta este tiempo según sea necesario
         # Actualizar el botón
         self.calibration_complete = True
-        self.after(0, lambda: self.navigation_button.configure(
-            text="Buscar productos",
-            state="normal"
-        ))
+        def update_ui():
+            self.navigation_button.configure(
+                text="Buscar productos",
+                state="normal"
+            )
+            self.status_label.configure(
+                text=" Haga clic en 'Buscar productos' para encontrar la ruta mas eficiente."
+            )
+        self.after(0, update_ui)
+        
                 
     def launch_ros2_files(self):
         # Método para lanzar los archivos de configuración ROS2
