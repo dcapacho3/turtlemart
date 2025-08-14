@@ -1,0 +1,94 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /home/ros/turtlemart_env/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Found rclpy: 3.3.15 (/opt/ros/humble/share/rclpy/cmake)
+-- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)
+-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: 
+-- Configured cppcheck exclude dirs and/or files: 
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'uncrustify' to check C / C++ code style
+-- Configured uncrustify additional arguments: 
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart
+-- Install configuration: ""
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/mux.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/joystick.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/ekf.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/mux.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/bringup_launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/cartographerturtle.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_cartographer.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/turtlemart.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_nav.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/.goutputstream-4H17P2
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/occupancy_grid.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_turtlemart.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/basic_control.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/navagv.launch.py
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.pgm
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.pgm
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.pgm
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.yaml
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.pgm
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base_for_open_manipulator.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base_for_open_manipulator.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/burger_base.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/estanteria.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wrist.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.jpg
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/lds.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.jpg
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.dae
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.dae
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/left_tire.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/right_tire.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagv.urdf
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagvreal.urdf
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes/cashier.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.sdf
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.config
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.sdf
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.config
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/estanteria.stl
+-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/Estanteria.dae

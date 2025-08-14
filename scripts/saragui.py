@@ -11,7 +11,6 @@ import customtkinter as ctk
 from tkinter import simpledialog
 import os
 import datetime
-from navigationgui import NavigationWindow
 import signal
 from base_navgui import UnifiedNavigationWindow
 from PIL import Image
