@@ -1,3 +1,6 @@
+source;share/turtlemart/hook/cmake_prefix_path.ps1
+source;share/turtlemart/hook/cmake_prefix_path.dsv
+source;share/turtlemart/hook/cmake_prefix_path.sh
 source;share/turtlemart/local_setup.bash
 source;share/turtlemart/local_setup.dsv
 source;share/turtlemart/local_setup.ps1

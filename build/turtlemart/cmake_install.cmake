@@ -60,6 +60,7 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/turtlemart" TYPE PROGRAM FILES
+    "/home/ros/superdev_ws_old/src/turtlemart/scripts/auto_navigation_tutorial.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/base_navgui.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/costmap_cleaner.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/create_database.py"
@@ -72,10 +73,12 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/naive_obstacle_avoidance.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/object_recorder_gui.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/real_guiwaypoint.py"
+    "/home/ros/superdev_ws_old/src/turtlemart/scripts/robot_control_navigation.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/robot_navigator.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/saragui.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/speed_limit.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/subscriberagv.py"
+    "/home/ros/superdev_ws_old/src/turtlemart/scripts/teleop_tutorial.py"
     "/home/ros/superdev_ws_old/src/turtlemart/scripts/workergui.py"
     )
 endif()

@@ -1,0 +1,212 @@
+[0.000000] (-) TimerEvent: {}
+[0.000297] (turtlemart) JobQueued: {'identifier': 'turtlemart', 'dependencies': OrderedDict()}
+[0.000369] (turtlemart) JobStarted: {'identifier': 'turtlemart'}
+[0.006702] (turtlemart) JobProgress: {'identifier': 'turtlemart', 'progress': 'cmake'}
+[0.007149] (turtlemart) JobProgress: {'identifier': 'turtlemart', 'progress': 'build'}
+[0.007939] (turtlemart) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart', '--', '-j24', '-l24'], 'cwd': '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart', 'env': OrderedDict([('HOSTNAME', 'david-Crosshair-16-HX-D14VGKG'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins::/usr/share/gazebo-11/../../lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('HOME', '/home/ros'), ('OLDPWD', '/home/ros/superdev_ws_old/src/turtlemart/scripts'), ('GAZEBO_MASTER_URI', 'http://localhost:11345'), ('ROS_PYTHON_VERSION', '3'), ('PS1', '(turtlemart_env) \\[\\033[01;32m\\]\\u@docker:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$'), ('COLCON_PREFIX_PATH', '/home/ros/superdev_ws_old/install:/home/ros/superdev_ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('GAZEBO_MODEL_PATH', '/usr/share/gazebo-11/../../share/gazebo-11/models:/usr/share/gazebo/../../share/gazebo-11/models::/home/ros/superdev_ws/src/turtlemart/models/'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('OGRE_RESOURCE_PATH', '/usr/lib/x86_64-linux-gnu/OGRE-1.9.0'), ('PATH', '/home/ros/turtlemart_env/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('XDG_RUNTIME_DIR', '/tmp/runtime-ros'), ('SDL_AUDIODRIVER', 'dummy'), ('DISPLAY', ':1'), ('LANG', 'C.UTF-8'), ('VIRTUAL_ENV_PROMPT', '(turtlemart_env)'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '69'), ('AMENT_PREFIX_PATH', '/home/ros/superdev_ws_old/install/turtlemart:/home/ros/superdev_ws/install/turtlemart:/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11/../../share/gazebo-11:/usr/share/gazebo/../../share/gazebo-11:'), ('GAZEBO_MODEL_DATABASE_URI', 'http://models.gazebosim.org'), ('VIRTUAL_ENV', '/home/ros/turtlemart_env'), ('PWD', '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart'), ('TURTLEBOT3_MODEL', 'waffle_pi'), ('LC_ALL', 'C.UTF-8'), ('GAZEBO_PLUGIN_PATH', '/usr/share/gazebo-11/../../lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('TZ', 'UTC'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ros/superdev_ws_old/install/turtlemart:/home/ros/superdev_ws/install/turtlemart:/opt/ros/humble')]), 'shell': False}
+[0.023977] (turtlemart) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099833] (-) TimerEvent: {}
+[0.125990] (turtlemart) StdoutLine: {'line': b'-- Found rclpy: 3.3.15 (/opt/ros/humble/share/rclpy/cmake)\n'}
+[0.126105] (turtlemart) StdoutLine: {'line': b'-- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)\n'}
+[0.142066] (turtlemart) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.143482] (turtlemart) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.147250] (turtlemart) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.154002] (turtlemart) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.163361] (turtlemart) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.186344] (turtlemart) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[0.199938] (-) TimerEvent: {}
+[0.300196] (-) TimerEvent: {}
+[0.314309] (turtlemart) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[0.314434] (turtlemart) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[0.314465] (turtlemart) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[0.325591] (turtlemart) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[0.346633] (turtlemart) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[0.357493] (turtlemart) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[0.400337] (-) TimerEvent: {}
+[0.439906] (turtlemart) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[0.440029] (turtlemart) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[0.450268] (turtlemart) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[0.450839] (turtlemart) StdoutLine: {'line': b'-- Configuring done\n'}
+[0.452599] (turtlemart) StdoutLine: {'line': b'-- Generating done\n'}
+[0.453602] (turtlemart) StdoutLine: {'line': b'-- Build files have been written to: /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart\n'}
+[0.470825] (turtlemart) CommandEnded: {'returncode': 0}
+[0.471253] (turtlemart) JobProgress: {'identifier': 'turtlemart', 'progress': 'install'}
+[0.477546] (turtlemart) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart'], 'cwd': '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart', 'env': OrderedDict([('HOSTNAME', 'david-Crosshair-16-HX-D14VGKG'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins::/usr/share/gazebo-11/../../lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('HOME', '/home/ros'), ('OLDPWD', '/home/ros/superdev_ws_old/src/turtlemart/scripts'), ('GAZEBO_MASTER_URI', 'http://localhost:11345'), ('ROS_PYTHON_VERSION', '3'), ('PS1', '(turtlemart_env) \\[\\033[01;32m\\]\\u@docker:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$'), ('COLCON_PREFIX_PATH', '/home/ros/superdev_ws_old/install:/home/ros/superdev_ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('GAZEBO_MODEL_PATH', '/usr/share/gazebo-11/../../share/gazebo-11/models:/usr/share/gazebo/../../share/gazebo-11/models::/home/ros/superdev_ws/src/turtlemart/models/'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('OGRE_RESOURCE_PATH', '/usr/lib/x86_64-linux-gnu/OGRE-1.9.0'), ('PATH', '/home/ros/turtlemart_env/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('XDG_RUNTIME_DIR', '/tmp/runtime-ros'), ('SDL_AUDIODRIVER', 'dummy'), ('DISPLAY', ':1'), ('LANG', 'C.UTF-8'), ('VIRTUAL_ENV_PROMPT', '(turtlemart_env)'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '69'), ('AMENT_PREFIX_PATH', '/home/ros/superdev_ws_old/install/turtlemart:/home/ros/superdev_ws/install/turtlemart:/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11/../../share/gazebo-11:/usr/share/gazebo/../../share/gazebo-11:'), ('GAZEBO_MODEL_DATABASE_URI', 'http://models.gazebosim.org'), ('VIRTUAL_ENV', '/home/ros/turtlemart_env'), ('PWD', '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart'), ('TURTLEBOT3_MODEL', 'waffle_pi'), ('LC_ALL', 'C.UTF-8'), ('GAZEBO_PLUGIN_PATH', '/usr/share/gazebo-11/../../lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('TZ', 'UTC'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ros/superdev_ws_old/install/turtlemart:/home/ros/superdev_ws/install/turtlemart:/opt/ros/humble')]), 'shell': False}
+[0.484312] (turtlemart) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[0.484495] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config\n'}
+[0.484562] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/mux.yaml\n'}
+[0.484622] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/joystick.yaml\n'}
+[0.484673] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/ekf.yaml\n'}
+[0.484736] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch\n'}
+[0.484765] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/mux.launch.py\n'}
+[0.484794] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/bringup_launch.py\n'}
+[0.484823] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/cartographerturtle.launch.py\n'}
+[0.484851] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_cartographer.launch.py\n'}
+[0.484883] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/turtlemart.launch.py\n'}
+[0.484933] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_nav.launch.py\n'}
+[0.484990] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/.goutputstream-4H17P2\n'}
+[0.485081] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/occupancy_grid.launch.py\n'}
+[0.485140] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_turtlemart.launch.py\n'}
+[0.485191] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/basic_control.launch.py\n'}
+[0.485221] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/navagv.launch.py\n'}
+[0.485252] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/agv_control_navigation.launch.py\n'}
+[0.485457] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps\n'}
+[0.485596] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.yaml\n'}
+[0.485700] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.yaml\n'}
+[0.485789] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.yaml\n'}
+[0.485866] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.pgm\n'}
+[0.485949] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.pgm\n'}
+[0.486035] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.pgm\n'}
+[0.486116] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.yaml\n'}
+[0.486243] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.pgm\n'}
+[0.486311] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes\n'}
+[0.486342] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases\n'}
+[0.486368] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base_for_open_manipulator.stl\n'}
+[0.486400] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base_for_open_manipulator.stl\n'}
+[0.486426] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base.stl\n'}
+[0.486450] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base.stl\n'}
+[0.486474] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/burger_base.stl\n'}
+[0.486498] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/estanteria.stl\n'}
+[0.486523] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wrist.stl\n'}
+[0.486548] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors\n'}
+[0.486572] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.jpg\n'}
+[0.486598] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/lds.stl\n'}
+[0.486621] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.jpg\n'}
+[0.486646] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.dae\n'}
+[0.486670] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.dae\n'}
+[0.486695] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels\n'}
+[0.486719] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/left_tire.stl\n'}
+[0.486744] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/right_tire.stl\n'}
+[0.486790] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models\n'}
+[0.486818] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagv.urdf\n'}
+[0.486844] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagvreal.urdf\n'}
+[0.486870] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket\n'}
+[0.486895] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier\n'}
+[0.486920] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes\n'}
+[0.486945] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes/cashier.stl\n'}
+[0.486970] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.sdf\n'}
+[0.486995] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.config\n'}
+[0.487035] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls\n'}
+[0.487061] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.sdf\n'}
+[0.487087] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.config\n'}
+[0.487113] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real\n'}
+[0.487151] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes\n'}
+[0.487181] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/estanteria.stl\n'}
+[0.487206] (turtlemart) StdoutLine: {'line': b'-- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/Estanteria.dae\n'}
+[0.487231] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/model.sdf\n'}
+[0.487255] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/model.config\n'}
+[0.487280] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls\n'}
+[0.487305] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls/model.sdf\n'}
+[0.487330] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls/model.config\n'}
+[0.487356] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane\n'}
+[0.487381] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_4.sdf\n'}
+[0.487407] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model.sdf\n'}
+[0.487431] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model.config\n'}
+[0.487456] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_3.sdf\n'}
+[0.487479] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_2.sdf\n'}
+[0.487504] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart.urdf.xacro\n'}
+[0.487528] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlebot3_burger.gazebo.xacro\n'}
+[0.487574] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart.gazebo.xacro\n'}
+[0.487599] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/common_properties.xacro\n'}
+[0.487621] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description\n'}
+[0.487644] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes\n'}
+[0.487670] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/waffle_pi_base.dae\n'}
+[0.487696] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/waffle_base.dae\n'}
+[0.487722] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/lds.dae\n'}
+[0.487747] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/r200.dae\n'}
+[0.487772] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/burger_base.dae\n'}
+[0.487797] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/tire.dae\n'}
+[0.487822] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model-1_4.sdf\n'}
+[0.487847] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model.sdf\n'}
+[0.487873] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model.config\n'}
+[0.487897] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params\n'}
+[0.487923] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_super.yaml\n'}
+[0.487968] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_real.yaml\n'}
+[0.488026] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_sim.yaml\n'}
+[0.488196] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/cartographer_params.lua\n'}
+[0.488286] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz\n'}
+[0.488351] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/urdf_config.rviz\n'}
+[0.488444] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/cartographer_config.rviz\n'}
+[0.488520] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/nav2_config.rviz\n'}
+[0.488588] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/nav2_config_v2.rviz\n'}
+[0.488655] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds\n'}
+[0.488730] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world\n'}
+[0.488803] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/Supermarket_real.world\n'}
+[0.488870] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/Supermarket.world\n'}
+[0.488942] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/warehouse.world\n'}
+[0.489013] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafeobstacle.world\n'}
+[0.489086] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/smalltown.world\n'}
+[0.489157] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafestatic.world\n'}
+[0.489238] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafe.world\n'}
+[0.489310] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/house.world\n'}
+[0.489366] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts\n'}
+[0.489430] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/key_teleop.py\n'}
+[0.489485] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/auto_navigation_tutorial.py\n'}
+[0.489549] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/robot_control_navigation.py\n'}
+[0.489605] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/naive_obstacle_avoidance.py\n'}
+[0.489661] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/initial_pose_pub.py\n'}
+[0.489719] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/base_navgui.py\n'}
+[0.489798] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__\n'}
+[0.489865] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/robot_navigator.cpython-310.pyc\n'}
+[0.489940] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/guiwaypoint.cpython-310.pyc\n'}
+[0.490009] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/finishgui.cpython-310.pyc\n'}
+[0.490079] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/finishgui.py\n'}
+[0.490154] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/robot_navigator.py\n'}
+[0.490221] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/mux_locker.py\n'}
+[0.490298] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/teleop_tutorial.py\n'}
+[0.490371] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/object_recorder_gui.py\n'}
+[0.490449] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/speed_limit.py\n'}
+[0.490521] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/costmap_cleaner.py\n'}
+[0.490592] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/saragui.py\n'}
+[0.490670] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/workergui.py\n'}
+[0.490752] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/guiwaypoint.py\n'}
+[0.490815] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/real_guiwaypoint.py\n'}
+[0.490881] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/joy_teleop.py\n'}
+[0.490944] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/create_database.py\n'}
+[0.491016] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/subscriberagv.py\n'}
+[0.491093] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/database\n'}
+[0.491178] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/database/products.db\n'}
+[0.491266] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images\n'}
+[0.491352] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/search_icon.png\n'}
+[0.491427] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/shoppingcart.png\n'}
+[0.491505] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/Usuario.png\n'}
+[0.491575] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/userlogo.png\n'}
+[0.491652] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/auto_navigation_tutorial.py\n'}
+[0.491737] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/base_navgui.py\n'}
+[0.491819] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/costmap_cleaner.py\n'}
+[0.491907] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/create_database.py\n'}
+[0.491977] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/finishgui.py\n'}
+[0.492041] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/guiwaypoint.py\n'}
+[0.492104] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/initial_pose_pub.py\n'}
+[0.492172] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/joy_teleop.py\n'}
+[0.492243] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/key_teleop.py\n'}
+[0.492306] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/mux_locker.py\n'}
+[0.492366] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/naive_obstacle_avoidance.py\n'}
+[0.492427] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/object_recorder_gui.py\n'}
+[0.492486] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/real_guiwaypoint.py\n'}
+[0.492545] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/robot_control_navigation.py\n'}
+[0.492609] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/robot_navigator.py\n'}
+[0.492679] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/saragui.py\n'}
+[0.492750] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/speed_limit.py\n'}
+[0.492820] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/subscriberagv.py\n'}
+[0.492891] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/teleop_tutorial.py\n'}
+[0.492961] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/workergui.py\n'}
+[0.493144] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/package_run_dependencies/turtlemart\n'}
+[0.493432] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/parent_prefix_path/turtlemart\n'}
+[0.493567] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/ament_prefix_path.sh\n'}
+[0.493602] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/ament_prefix_path.dsv\n'}
+[0.493635] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/path.sh\n'}
+[0.493666] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/path.dsv\n'}
+[0.493697] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.bash\n'}
+[0.493731] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.sh\n'}
+[0.493759] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.zsh\n'}
+[0.493791] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.dsv\n'}
+[0.493818] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/package.dsv\n'}
+[0.493905] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/packages/turtlemart\n'}
+[0.494144] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/cmake/turtlemartConfig.cmake\n'}
+[0.494183] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/cmake/turtlemartConfig-version.cmake\n'}
+[0.494214] (turtlemart) StdoutLine: {'line': b'-- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/package.xml\n'}
+[0.494429] (turtlemart) CommandEnded: {'returncode': 0}
+[0.501275] (-) TimerEvent: {}
+[0.510218] (turtlemart) JobEnded: {'identifier': 'turtlemart', 'rc': 0}
+[0.510754] (-) EventReactorShutdown: {}

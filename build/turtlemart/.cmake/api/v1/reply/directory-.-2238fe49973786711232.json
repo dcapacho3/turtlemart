@@ -255,6 +255,7 @@
 			"destination" : "lib/turtlemart",
 			"paths" : 
 			[
+				"scripts/auto_navigation_tutorial.py",
 				"scripts/base_navgui.py",
 				"scripts/costmap_cleaner.py",
 				"scripts/create_database.py",
@@ -267,10 +268,12 @@
 				"scripts/naive_obstacle_avoidance.py",
 				"scripts/object_recorder_gui.py",
 				"scripts/real_guiwaypoint.py",
+				"scripts/robot_control_navigation.py",
 				"scripts/robot_navigator.py",
 				"scripts/saragui.py",
 				"scripts/speed_limit.py",
 				"scripts/subscriberagv.py",
+				"scripts/teleop_tutorial.py",
 				"scripts/workergui.py"
 			],
 			"type" : "file"

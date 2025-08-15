@@ -1,0 +1,199 @@
+[0.010s] Invoking command in '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=(turtlemart_env) \[\033[01;32m\]\u@docker:\[\033[01;34m\]\w\[\033[00m\]\$ VIRTUAL_ENV_PROMPT=(turtlemart_env) /usr/bin/cmake --build /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart -- -j24 -l24
+[0.024s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.126s] -- Found rclpy: 3.3.15 (/opt/ros/humble/share/rclpy/cmake)
+[0.126s] -- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)
+[0.142s] -- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.143s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.147s] -- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.154s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.163s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.186s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.314s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.314s] -- Configured cppcheck include dirs: 
+[0.314s] -- Configured cppcheck exclude dirs and/or files: 
+[0.325s] -- Added test 'flake8' to check Python code syntax and style conventions
+[0.346s] -- Added test 'lint_cmake' to check CMake code style
+[0.357s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[0.440s] -- Added test 'uncrustify' to check C / C++ code style
+[0.440s] -- Configured uncrustify additional arguments: 
+[0.450s] -- Added test 'xmllint' to check XML markup files
+[0.451s] -- Configuring done
+[0.452s] -- Generating done
+[0.453s] -- Build files have been written to: /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart
+[0.471s] Invoked command in '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=(turtlemart_env) \[\033[01;32m\]\u@docker:\[\033[01;34m\]\w\[\033[00m\]\$ VIRTUAL_ENV_PROMPT=(turtlemart_env) /usr/bin/cmake --build /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart -- -j24 -l24
+[0.478s] Invoking command in '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=(turtlemart_env) \[\033[01;32m\]\u@docker:\[\033[01;34m\]\w\[\033[00m\]\$ VIRTUAL_ENV_PROMPT=(turtlemart_env) /usr/bin/cmake --install /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart
+[0.484s] -- Install configuration: ""
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/mux.yaml
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/joystick.yaml
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/config/ekf.yaml
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/mux.launch.py
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/bringup_launch.py
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/cartographerturtle.launch.py
+[0.484s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_cartographer.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/turtlemart.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_nav.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/.goutputstream-4H17P2
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/occupancy_grid.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/real_turtlemart.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/basic_control.launch.py
+[0.485s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/navagv.launch.py
+[0.485s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/launch/agv_control_navigation.launch.py
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.yaml
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.yaml
+[0.485s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.yaml
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map_mask_keepout.pgm
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal_mask.pgm
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/labrobfinal.pgm
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.yaml
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/maps/supermarket_map.pgm
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base_for_open_manipulator.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base_for_open_manipulator.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_pi_base.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/waffle_base.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/bases/burger_base.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/estanteria.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wrist.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.jpg
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/lds.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.jpg
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/r200.dae
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/sensors/astra.dae
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/left_tire.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/meshes/wheels/right_tire.stl
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagv.urdf
+[0.486s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/myagvreal.urdf
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/meshes/cashier.stl
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.sdf
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/cashier/model.config
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.sdf
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/Supermarket_real_walls/model.config
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/estanteria.stl
+[0.487s] -- Up-to-date: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/meshes/Estanteria.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/model.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/markers_supermarket_real/model.config
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls/model.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/Supermarket/SupermarketWalls/model.config
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_4.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model.config
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_3.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/ground_plane/model-1_2.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart.urdf.xacro
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlebot3_burger.gazebo.xacro
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart.gazebo.xacro
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/common_properties.xacro
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/waffle_pi_base.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/waffle_base.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/lds.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/r200.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/burger_base.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/meshes/tire.dae
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model-1_4.sdf
+[0.487s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model.sdf
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/models/turtlemart_description/model.config
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_super.yaml
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_real.yaml
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/nav2_params_sim.yaml
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/params/cartographer_params.lua
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/urdf_config.rviz
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/cartographer_config.rviz
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/nav2_config.rviz
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/rviz/nav2_config_v2.rviz
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world
+[0.488s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/Supermarket_real.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/Supermarket.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/warehouse.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafeobstacle.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/smalltown.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafestatic.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/cafe.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/worlds/turtlemart_world/house.world
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/key_teleop.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/auto_navigation_tutorial.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/robot_control_navigation.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/naive_obstacle_avoidance.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/initial_pose_pub.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/base_navgui.py
+[0.489s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/robot_navigator.cpython-310.pyc
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/guiwaypoint.cpython-310.pyc
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/__pycache__/finishgui.cpython-310.pyc
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/finishgui.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/robot_navigator.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/mux_locker.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/teleop_tutorial.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/object_recorder_gui.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/speed_limit.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/costmap_cleaner.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/saragui.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/workergui.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/guiwaypoint.py
+[0.490s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/real_guiwaypoint.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/joy_teleop.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/create_database.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/scripts/subscriberagv.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/database
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/database/products.db
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/search_icon.png
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/shoppingcart.png
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/Usuario.png
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/images/userlogo.png
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/auto_navigation_tutorial.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/base_navgui.py
+[0.491s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/costmap_cleaner.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/create_database.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/finishgui.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/guiwaypoint.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/initial_pose_pub.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/joy_teleop.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/key_teleop.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/mux_locker.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/naive_obstacle_avoidance.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/object_recorder_gui.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/real_guiwaypoint.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/robot_control_navigation.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/robot_navigator.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/saragui.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/speed_limit.py
+[0.492s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/subscriberagv.py
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/teleop_tutorial.py
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/lib/turtlemart/workergui.py
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/package_run_dependencies/turtlemart
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/parent_prefix_path/turtlemart
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/ament_prefix_path.sh
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/ament_prefix_path.dsv
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/path.sh
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/environment/path.dsv
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.bash
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.sh
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.zsh
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/local_setup.dsv
+[0.493s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/package.dsv
+[0.494s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/ament_index/resource_index/packages/turtlemart
+[0.494s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/cmake/turtlemartConfig.cmake
+[0.494s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/cmake/turtlemartConfig-version.cmake
+[0.494s] -- Installing: /home/ros/superdev_ws_old/src/turtlemart/install/turtlemart/share/turtlemart/package.xml
+[0.494s] Invoked command in '/home/ros/superdev_ws_old/src/turtlemart/build/turtlemart' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=(turtlemart_env) \[\033[01;32m\]\u@docker:\[\033[01;34m\]\w\[\033[00m\]\$ VIRTUAL_ENV_PROMPT=(turtlemart_env) /usr/bin/cmake --install /home/ros/superdev_ws_old/src/turtlemart/build/turtlemart

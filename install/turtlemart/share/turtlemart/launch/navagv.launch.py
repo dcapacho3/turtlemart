@@ -1,13 +1,3 @@
-# Autor: David Capacho Parra
-# Fecha: Febrero 2025
-# Descripción: Archivo de lanzamiento para navegación utilizando Nav2 de manera simulada
-# Implementa la configuración de lanzamiento para un sistema de navegación
-# autónoma utilizando Nav2 en el robot SARA simulado en Gazebo.
-# La arquitectura integra la simulación del entorno,
-# carga de mapas previamente generados, visualización y control de movimiento,
-# permitiendo la navegación completa en un entorno de supermercado virtual.
-
-
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -22,19 +12,20 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # Configuración de directorios y rutas principales
+    # Get the launch directory
     bringup_dir = get_package_share_directory('turtlemart')
     launch_dir = os.path.join(bringup_dir, 'launch')
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')
     pkg_share = FindPackageShare(package='turtlemart').find('turtlemart')
     default_model_path = os.path.join(pkg_share, 'models/turtlemart.urdf.xacro') 
     world_file_name = 'turtlemart_world/Supermarket.world'
+    #world_file_name = 'turtlemart_world/cafestatic.world'
     world_path = os.path.join(pkg_share, 'worlds', world_file_name)
     
     ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
 
 
-    # Creación de variables de configuración del lanzamiento
+    # Create the launch configuration variables
     slam = LaunchConfiguration('slam')
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
@@ -45,7 +36,7 @@ def generate_launch_description():
     autostart = LaunchConfiguration('autostart')
     model = LaunchConfiguration('model')
 
-    # Variables de configuración específicas para la simulación
+    # Launch configuration variables specific to simulation
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/nav2_config_v2.rviz')
     rviz_config_file = LaunchConfiguration('rviz_config_file')
     use_simulator = LaunchConfiguration('use_simulator')
@@ -58,7 +49,7 @@ def generate_launch_description():
                   ('/tf_static', 'tf_static')
                  ]
 
-    # Declaración de los argumentos de lanzamiento
+    # Declare the launch arguments
     
     declare_model_path_cmd = DeclareLaunchArgument(
         name='model',
@@ -136,14 +127,14 @@ def generate_launch_description():
         default_value=world_path,
         description='Full path to the world model file to load')
 
-    # Iniciar el servidor de Gazebo
+
     start_gazebo_server_cmd = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
             ),
             launch_arguments={'world': world}.items(),
         )
-    # Iniciar el cliente de Gazebo
+
     start_gazebo_client_cmd = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')
@@ -157,7 +148,7 @@ def generate_launch_description():
         )
 
  
-    # Publicador del estado del robot
+
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
         package='robot_state_publisher',
@@ -165,8 +156,8 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time, 
         'robot_description': Command(['xacro ', model])}],
         arguments=[default_model_path])
-
-    #  Iniciar la visualización en RViz
+    #'''
+    #'''
     start_rviz_cmd = Node(
         condition=IfCondition(use_rviz),
         package='rviz2',
@@ -174,8 +165,7 @@ def generate_launch_description():
         name='rviz2',
         output='screen',
         arguments=['-d', rviz_config_file])
-
-    # Lanzamiento de la pila de navegación Nav2    
+        
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(launch_dir, 'bringup_launch.py')),
         launch_arguments={'namespace': '',
@@ -196,13 +186,11 @@ def generate_launch_description():
             cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster'], 
             output='screen'
         )
-
-    # Publicador de pose inicial
     initial_pose = Node(
             package='turtlemart',
             executable='initial_pose_pub.py',         )
             
-    # Nodo de localización del robot mediante EKF        
+            
     start_robot_localization_cmd = Node(
       package='robot_localization',
       executable='ekf_node',
@@ -214,10 +202,10 @@ def generate_launch_description():
     
  
 
-    # Creación de la descripción de lanzamiento y población
+    # Create the launch description and populate
     ld = LaunchDescription()
 
-    # Declaración de las opciones de lanzamiento
+    # Declare the launch options
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_namespace_cmd)
     ld.add_action(declare_slam_cmd)
@@ -235,14 +223,22 @@ def generate_launch_description():
     ld.add_action(declare_simulator_cmd)
     ld.add_action(declare_world_cmd)
 
-    # Adición de acciones condicionadas
+    # Add any conditioned actions
     ld.add_action(start_gazebo_server_cmd)
     ld.add_action(start_gazebo_client_cmd)
+
+    # Add the actions to launch all of the navigation nodes
     ld.add_action(start_robot_state_publisher_cmd)
-    #ld.add_action(start_rviz_cmd)
+    ld.add_action(start_rviz_cmd)
     ld.add_action(bringup_cmd)
+   
+    #ld.add_action(rf2o_node)
+
     ld.add_action(joint_state_broadcaster)
     ld.add_action(forward_position_controller)
+
+
+
     ld.add_action(agv_control)
     ld.add_action(initial_pose)
     ld.add_action(start_robot_localization_cmd)
