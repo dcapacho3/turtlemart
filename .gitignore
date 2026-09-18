@@ -1,0 +1,16 @@
+# ROS2 colcon workspace build artifacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editor / OS temp files
+.goutputstream-*
+*.swp
+*~
+.DS_Store

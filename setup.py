@@ -2,7 +2,7 @@ from setuptools import setup
 import glob
 import os
 
-package_name = 'superdev_ws'
+package_name = 'turtlemart'
 
 # Find all scripts in the 'scripts' and 'debug' folders
 scripts = glob.glob('scripts/*.py')
@@ -17,7 +17,7 @@ setup(
     zip_safe=True,
     maintainer='David Capacho',
     maintainer_email='dcapacho3@gmail.com',
-    description='Mi paquete de ROS 2',
+    description='SARA (Smart Autonomous Retail Assistant): autonomous shopping-cart robot for structured retail environments.',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
